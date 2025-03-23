@@ -1,0 +1,6 @@
+[submodule "Dependencies/pico-sdk"]
+	path = Dependencies/pico-sdk
+	url = https://github.com/raspberrypi/pico-sdk.git
+[submodule "Dependencies/micro_ros_pico_sdk"]
+	path = Dependencies/micro_ros_pico_sdk
+	url = https://github.com/micro-ROS/micro_ros_raspberrypi_pico_sdk.git
