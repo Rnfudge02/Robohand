@@ -1,3 +1,13 @@
+#
+# @file CMakeLists.txt
+# @brief Implementation of robotic hand control system with dual-core operation.
+# @details Manages hardware interfaces, sensor data collection, and servo control on Core 1.
+# @author Robert Fudge
+# @date 2025
+# @copyright Apache 2.0 License
+#
+
+#Set the minimum CMake version allowed for compilation
 cmake_minimum_required(VERSION 3.13)
 
 #Base configuration
@@ -14,11 +24,11 @@ set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Include)
 set(PICO_SDK_PATH ${DEPS_DIR}/pico-sdk)
 include(${PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 
-#micro-ROS configuration
+#Micro-ROS configuration
 set(MICRO_ROS_DIR ${DEPS_DIR}/micro_ros_pico_sdk)
 set(MICRO_ROS_PLATFORM_DIR ${MICRO_ROS_DIR}/libmicroros)
 
-#Main project setup 
+#Main project setup
 project(${PROJECT_NAME} C CXX ASM)
 
 #Initialize Pico SDK
@@ -31,26 +41,29 @@ set(COMMON_SOURCES
     ./Include/Robohand.h
 )
 
+#Set include directories that header files can be found in
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/Include
     ${MICRO_ROS_PLATFORM_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-#Configure micro-ROS build
+#Link the libmicroros library
 add_library(microros STATIC IMPORTED)
 set_target_properties(microros PROPERTIES
     IMPORTED_LOCATION ${MICRO_ROS_PLATFORM_DIR}/libmicroros.a
     INTERFACE_INCLUDE_DIRECTORIES "${MICRO_ROS_PLATFORM_DIR}/include"
 )
 
-#Build configurations
+#Build variations
 set(TARGET_VARIANTS
     "_uros:pico"
     "_usb:pico"
 )
 
+#Configure for each executable
 foreach(TARGET_INFO IN LISTS TARGET_VARIANTS)
+    #Get the required suffix and board to compile for
     string(REPLACE ":" ";" TARGET_PARTS ${TARGET_INFO})
     list(GET TARGET_PARTS 0 TARGET_SUFFIX)
     list(GET TARGET_PARTS 1 PICO_BOARD)
@@ -102,7 +115,7 @@ foreach(TARGET_INFO IN LISTS TARGET_VARIANTS)
         )
     endif()
 
-    # micro-ROS configurations
+    #Micro-ROS specific configuration
     if(TARGET_SUFFIX MATCHES "_uros")
         target_link_libraries(${TARGET_NAME} microros)
         target_include_directories(${TARGET_NAME} PRIVATE
@@ -110,7 +123,7 @@ foreach(TARGET_INFO IN LISTS TARGET_VARIANTS)
         )
     endif()
 
-    # Common compile definitions
+    #Common compile definitions
     target_compile_definitions(${TARGET_NAME} PRIVATE
         PICO_UART_ENABLE_CRLF_SUPPORT=0
         PICO_STDIO_ENABLE_CRLF_SUPPORT=0
@@ -120,7 +133,7 @@ foreach(TARGET_INFO IN LISTS TARGET_VARIANTS)
     pico_add_extra_outputs(${TARGET_NAME})
 endforeach()
 
-# VSCode-specific settings
+#VSCode-specific settings
 if(CMAKE_EXPORT_COMPILE_COMMANDS)
     add_custom_target(copy_compile_commands ALL
         COMMAND ${CMAKE_COMMAND} -E copy_if_different

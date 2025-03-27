@@ -1,9 +1,10 @@
 /*!
  * \file Robohand.h
- * \brief Robotic hand control hardware interface
- * \details Used for other robohand modules, which each handle different methods of connection
+ * \brief Robotic hand control hardware interface.
+ * \details Used for other robohand modules, which each handle different methods of connection.
  * \author Robert Fudge <rnfudge@mun.ca>
  * \date 2025
+ * \copyright Apache 2.0 License
  */
 
 #ifndef ROBOHAND_H
@@ -38,9 +39,9 @@ extern "C" {
 #define HAS_ADS1115 true                                        ///< Whether the ADS1115 (ADC) is connected to the I2C bus
 #define HAS_HMC5883L true                                       ///< Whether the HMC5883L (Magnometer) is connected to the i2c bus
 #define HAS_MPU6050 true                                        ///< Whether the MPU6050 (Accelerometer) is connected to the i2c bus
-#define HAS_I2C (HAS_ADS1115 || HAS_HMC5883L || HAS_MPU6050)    ///< Whether or not I2C is required
+#define HAS_I2C (HAS_ADS1115 || HAS_HMC5883L || HAS_MPU6050)    ///< Whether or not I2C initialization is required
 #define HAS_PI_ADC true                                         ///< Whether a pressure sensor is connected to the pi pico
-#define HAS_ADC (HAS_PI_ADC || HAS_ADS1115)                     ///< Whether or not I2C initalization is required
+#define HAS_ADC (HAS_PI_ADC || HAS_ADS1115)                     ///< Whether or not ADC initalization is required
 #define HAS_RGB true                                            ///< Whether common Cathode RGB LED is connected to the pi pico
 #define HAS_SERVOS true                                         ///< Whether servos are connected to the device
 #define I2C_PORT i2c1                                           ///< I2C port used for device connections(i2c1 on pico)
@@ -280,7 +281,6 @@ void rgb_set_brightness(float brightness); // 0.0-1.0
 void rgb_set_color(uint8_t r, uint8_t g, uint8_t b);
 
 /** @} */ // end of user_facing
-
 
 #ifdef __cplusplus
 }

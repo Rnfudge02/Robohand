@@ -7,6 +7,12 @@
  * @copyright Apache 2.0 License
  */
 
+ /*! TODO
+ * Fix issues present within code, check for correctness.
+ * Ensure code for preventing the running of code on missing components does not break functionality.
+ * Fix issue with HMC5883L always returning 0.
+ */
+
 #include "Robohand.h"
 
 #include <stdatomic.h>
@@ -482,7 +488,7 @@ static void handle_servo_commands(void) {
  * @brief System heartbeat callback.
  * @param t Pointer to repeating timer structure.
  * @return Always returns true to continue timer.
- * @details Toggles onboard LED to indicate system liveness.
+ * @details Toggles onboard LED to indicate system liveliness.
  */
 static bool heartbeat_callback(struct repeating_timer* t) {
     static bool led_state = false;
@@ -567,7 +573,7 @@ static float read_adc2(void) {
         return adc_read() * 3.3f / 4096.0f;
     }
 
-    return -1.0f;
+    return -4.096f;
 }
 
 /*!
@@ -594,17 +600,6 @@ static void read_adc_data(void) {
         sensor_readings.adc_values[4] = adc_tmp[4];
         mutex_exit(&sensor_readings.data_mutex);
     }
-
-    else {
-        //Enter mutex to update DS
-        mutex_enter_blocking(&sensor_readings.data_mutex);
-        sensor_readings.adc_values[0] = -1.0f;
-        sensor_readings.adc_values[1] = -1.0f;
-        sensor_readings.adc_values[2] = -1.0f;
-        sensor_readings.adc_values[3] = -1.0f;
-        sensor_readings.adc_values[4] = -1.0f;
-        mutex_exit(&sensor_readings.data_mutex);
-    }
     
 }
 
@@ -627,7 +622,7 @@ static uint16_t read_ads_channel(uint8_t channel) {
     }
 
     else {
-        return 0;
+        return ~0;
     }
 }
 
@@ -653,12 +648,16 @@ static void read_hmc5883l_data(void) {
     }
 
     else {
-        mutex_enter_blocking(&sensor_readings.data_mutex);
-        sensor_readings.mag[0] = 0;
-        sensor_readings.mag[1] = 0;
-        sensor_readings.mag[2] = 0;
-        mutex_exit(&sensor_readings.data_mutex);
-        
+        //Only write the invalid values once
+        if (!hmc5883l_written) {
+            mutex_enter_blocking(&sensor_readings.data_mutex);
+            sensor_readings.mag[0] = ~0;
+            sensor_readings.mag[1] = ~0;
+            sensor_readings.mag[2] = ~0;
+            mutex_exit(&sensor_readings.data_mutex);
+
+            hmc5883l_written = true;
+        }
     }
 
 }
@@ -687,7 +686,21 @@ static void read_mpu6050_data(void) {
             mutex_exit(&sensor_readings.data_mutex);
         }
     }
-    
+
+    else {
+        if (!mpu6050_written) {
+            mutex_enter_blocking(&sensor_readings.data_mutex);
+            sensor_readings.accel[0] = ~0;
+            sensor_readings.accel[1] = ~0;
+            sensor_readings.accel[2] = ~0;
+            sensor_readings.gyro[0] = ~0;
+            sensor_readings.gyro[1] = ~0;
+            sensor_readings.gyro[2] = ~0;
+            mutex_exit(&sensor_readings.data_mutex);
+
+            mpu6050_written = true;
+        }
+    }
 }
 
 /*!
@@ -696,44 +709,49 @@ static void read_mpu6050_data(void) {
  * @post Servo PWM outputs are updated with new calculated positions.
  */
 static void update_servo_positions(void) {
-    absolute_time_t now = get_absolute_time();
-    int32_t dt_us = absolute_time_diff_us(prev_update_time, now);
+    if (HAS_SERVOS) {
+        absolute_time_t now = get_absolute_time();
+        int32_t dt_us = absolute_time_diff_us(prev_update_time, now);
     
-    if(dt_us <= 0) return;  //Prevent time travel
+        if(dt_us <= 0) return;  //Prevent time travel
     
-    for(int i = 0; i < NUM_SERVOS; i++) {
-        if(mutex_try_enter(&servo_mutex, NULL)) {
-            if(!servo_profiles[i].is_moving) {
+        for(int i = 0; i < NUM_SERVOS; i++) {
+            if(mutex_try_enter(&servo_mutex, NULL)) {
+                if(!servo_profiles[i].is_moving) {
+                    mutex_exit(&servo_mutex);
+                    continue;
+                }
+
+                uint32_t elapsed = time_us_32() - servo_profiles[i].start_time;
+                float t = (float)elapsed / (servo_profiles[i].duration_ms * 1000);
+            
+                if(t >= 1.0f) {
+                    servo_profiles[i].current_pw = servo_profiles[i].target_pw;
+                    servo_profiles[i].is_moving = false;
+                }
+                
+                else {
+                    //Quintic easing for smoother motion
+                    float eased_t = t * t * t * (t * (6 * t - 15) + 10);
+                    int32_t delta = servo_profiles[i].target_pw - servo_profiles[i].current_pw;
+                    servo_profiles[i].current_pw += (int32_t)(delta * eased_t);
+                    servo_profiles[i].current_pw = constrain(
+                        servo_profiles[i].current_pw, SERVO_MIN_PULSE, SERVO_MAX_PULSE
+                    );
+                }
+
+                //Update PWM (50Hz = 20ms period)
+                uint slice = pwm_gpio_to_slice_num(SERVO_PINS[i]);
+                uint16_t wrap = pwm_hw->slice[slice].top;
+                uint16_t level = (uint16_t)(servo_profiles[i].current_pw * PWM_US_TO_LEVEL);
+                pwm_set_gpio_level(SERVO_PINS[i], level);
+            
                 mutex_exit(&servo_mutex);
-                continue;
             }
-
-            uint32_t elapsed = time_us_32() - servo_profiles[i].start_time;
-            float t = (float)elapsed / (servo_profiles[i].duration_ms * 1000);
-            
-            if(t >= 1.0f) {
-                servo_profiles[i].current_pw = servo_profiles[i].target_pw;
-                servo_profiles[i].is_moving = false;
-            } else {
-                //Quintic easing for smoother motion
-                float eased_t = t * t * t * (t * (6 * t - 15) + 10);
-                int32_t delta = servo_profiles[i].target_pw - servo_profiles[i].current_pw;
-                servo_profiles[i].current_pw += (int32_t)(delta * eased_t);
-                servo_profiles[i].current_pw = constrain(
-                    servo_profiles[i].current_pw, SERVO_MIN_PULSE, SERVO_MAX_PULSE
-                );
-            }
-
-            //Update PWM (50Hz = 20ms period)
-            uint slice = pwm_gpio_to_slice_num(SERVO_PINS[i]);
-            uint16_t wrap = pwm_hw->slice[slice].top;
-            uint16_t level = (uint16_t)(servo_profiles[i].current_pw * PWM_US_TO_LEVEL);
-            pwm_set_gpio_level(SERVO_PINS[i], level);
-            
-            mutex_exit(&servo_mutex);
         }
+
+        prev_update_time = now;
     }
-    prev_update_time = now;
 }
 
 /** @} */ // end of static

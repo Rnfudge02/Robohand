@@ -1,8 +1,15 @@
 /*!
  * \file Robohand_uros.c
- * \brief micro-ROS wrapper for Robohand control system
+ * \brief micro-ROS interface for robotic hand control.
  * \author Robert Fudge
  * \date 2025
+ * \copyright Apache 2.0 License
+ */
+
+/*! TODO
+ * Fix issues present within code, check for correctness.
+ * Finish converted sensor data publishing.
+ * 
  */
 
 #include "Robohand.h"
@@ -15,6 +22,8 @@
 #include <std_msgs/msg/color_rgba.h>
 #include <sensor_msgs/msg/imu.h>
 #include <sensor_msgs/msg/magnetic_field.h>
+
+#include <uxr/client/profile/transport/custom/custom_transport.h>
  
 //Micro-ROS Components
 static rclc_executor_t executor;
@@ -40,9 +49,8 @@ static std_msgs__msg__Float32MultiArray adc_msg;
 
 //Global debug flag
 static uint8_t debug = DEBUG;
- 
-//Transport implementation
-#include <uxr/client/profile/transport/custom/custom_transport.h>
+
+static void rgb_callback(void);
 
 //! Time retrieval function for compatibility between uros and pi pico
 int clock_gettime(clockid_t clk_id, struct timespec *tp) {
@@ -52,17 +60,17 @@ int clock_gettime(clockid_t clk_id, struct timespec *tp) {
     return 0;
 }
 
-//! 
+//! Function for microsecond sleep compatibility
 void usleep(uint64_t us) {
     sleep_us(us);
 }
 
-//!
+//! Function for closing the desired serial interface
 bool pico_serial_transport_close(struct uxrCustomTransport* transport) {
     return true;
 }
 
-//!
+//!  Function for opening the desired serial interface
 bool pico_serial_transport_open(struct uxrCustomTransport* transport) {
     static bool stdio_initialized = false;
     if(!stdio_initialized) {
@@ -72,7 +80,7 @@ bool pico_serial_transport_open(struct uxrCustomTransport* transport) {
     return true;
 }
 
-//!
+//! Function for reading from the desired serial interface
 size_t pico_serial_transport_read(struct uxrCustomTransport* transport, 
                             uint8_t* buf, size_t len, int timeout, uint8_t* errcode) {
     uint64_t start = time_us_64();
@@ -92,7 +100,7 @@ size_t pico_serial_transport_read(struct uxrCustomTransport* transport,
     return len;
 }
 
-//!
+//! Function for writing to the desired serial interface
 size_t pico_serial_transport_write(struct uxrCustomTransport* transport, 
                             const uint8_t* buf, size_t len, uint8_t* errcode) {
     for(size_t i = 0; i < len; ++i) {
@@ -104,15 +112,12 @@ size_t pico_serial_transport_write(struct uxrCustomTransport* transport,
     return len;
 }
  
-/*!
- * \brief Servo command callback
- * \param msg_in Received servo command message
- */
+//! Function for actuating servos
 void servo_callback(const void* msg_in) {
     const std_msgs__msg__Int32MultiArray* msg = (const std_msgs__msg__Int32MultiArray*)msg_in;
 
     if(msg->data.size % 3 != 0) {
-        if(debug) printf("Invalid command format. Expected [servo, target, duration]*\n");
+        if(debug) printf("Invalid command format. Expected [servo target duration].\n");
         return;
     }
 
@@ -131,9 +136,7 @@ void servo_callback(const void* msg_in) {
     }
 }
 
-/*!
- * \brief Updated sensor publishing callback
- */
+//! Function for checking the sensor values, and updating the ROS2 messages
 void sensor_timer_callback(rcl_timer_t* timer, int64_t last_call_time) {
     sensor_data raw_data;
     sensor_data_physical converted;
@@ -142,22 +145,7 @@ void sensor_timer_callback(rcl_timer_t* timer, int64_t last_call_time) {
         //IMU Data (accel + gyro)
         
         int64_t current_time = rmw_uros_epoch_millis();
-        imu_msg.header.stamp.sec = current_time / 1000;
-        imu_msg.header.stamp.nanosec = (current_time % 1000) * 1e6;
-        imu_msg.linear_acceleration.x = converted.accel[0] * 9.80665;  // g to m/s²
-        imu_msg.linear_acceleration.y = converted.accel[1] * 9.80665;
-        imu_msg.linear_acceleration.z = converted.accel[2] * 9.80665;
-        
-        imu_msg.angular_velocity.x = converted.gyro[0] * (M_PI/180);  // deg/s to rad/s
-        imu_msg.angular_velocity.y = converted.gyro[1] * (M_PI/180);
-        imu_msg.angular_velocity.z = converted.gyro[2] * (M_PI/180);
-        
-        //Magnetometer (convert from µT to T)
-        mag_msg.header.stamp.sec = imu_msg.header.stamp.sec;
-        mag_msg.header.stamp.nanosec = imu_msg.header.stamp.nanosec;
-        mag_msg.magnetic_field.x = converted.mag[0] * 1e-6;
-        mag_msg.magnetic_field.y = converted.mag[1] * 1e-6;
-        mag_msg.magnetic_field.z = converted.mag[2] * 1e-6;
+
         
         //ADC Values
         memcpy(adc_msg.data.data, converted.adc_values, sizeof(converted.adc_values));
@@ -170,9 +158,9 @@ void sensor_timer_callback(rcl_timer_t* timer, int64_t last_call_time) {
 }
 
 /*!
- * \brief RGB command callback
+ * \brief RGB subscription command callback
  */
-void rgb_callback(const void* msg_in) {
+static void rgb_callback(const void* msg_in) {
     const std_msgs__msg__ColorRGBA* msg = (const std_msgs__msg__ColorRGBA*)msg_in;
     
     uint8_t r = (uint8_t)(msg->r * 255);
@@ -187,14 +175,16 @@ void rgb_callback(const void* msg_in) {
                     r, g, b, brightness*100);
 }
 
-
+/*!
+ * \brief Core 0 main loop routine - MicroROS Variation.
+ */
 int main() {
     rgb_init();
     //Set color (R, G, B values 0-255)
     rgb_set_color(255, 0, 0); //Red
 
     //Adjust brightness (0.0-1.0)
-    rgb_set_brightness(1.0); //50% brightness
+    rgb_set_brightness(1.0); //100% brightness
 
     //Initialize transport over USB
     rmw_uros_set_custom_transport(
@@ -206,11 +196,6 @@ int main() {
         pico_serial_transport_read
     );
 
-    //Set color (R, G, B values 0-255)
-    rgb_set_color(255, 0, 0); //Red
- 
-
-    //Set color (R, G, B values 0-255)
     rgb_set_color(255, 128, 0); //Orange
  
     //micro-ROS Initialization
@@ -225,7 +210,8 @@ int main() {
     }
 
     rgb_set_color(0, 255, 0); //Green
- 
+
+    //TODO: Code does not make it past here currently, why?
     RCCHECK(rclc_support_init(&support, 0, NULL, &allocator));
     RCCHECK(rclc_node_init_default(&node, "robohand_node", "", &support));
 

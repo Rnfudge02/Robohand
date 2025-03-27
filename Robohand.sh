@@ -22,11 +22,57 @@ NEW_BOARD="pico"
 #Parse command line arguments
 while getopts "bhip:s:" options; do
     case ${options} in
+        #AI-prompt - generate a template prompt document
+        a)
+            echo -e "${FG_GREEN}[Robohand Controller]${FG_BLUE} Generating prompt template file"
+            rm -rf ./prompt_file.txt
+
+            #Core system information
+            echo "I am trying to develop a robotic hand using C, the Raspberry Pi Pico SDK, and \
+the MicroROS library. I am trying to keep the code lightweight, extensible, and multithreaded. \
+The system hardware is structured as follows: The Pi Pico actuates a total of 5 MG996R servos powered \
+at 5V, using the PWM functionality, on GPIO 11-15. The Pi Pico also reads a total of 5 thin-film pressure \
+sensors, 4 of which are read using an ADS1115 ADC via I2C, and the fifth read using the ADC2 on the Pico. \
+The device also contains an MPU6050 accelerometer for retrieval of kinematic data for a local frame of \
+reference, and a HMC8553L magnometer to get a rough global frame of reference from magnetic north, both \
+connected via I2C. All I2C devices are connected on I2C1 using GPIO 28-29 for the clock and data signal.
+\
+The system code is structured as follows: Robohand.c/h contains the \
+system hardware implementation, allowing for interaction with the physical hardware \
+via the Pico SDK. Robohand_usb.c contains code to provide a minimal terminal experience \
+to a client using the Pico SDK, and allow for reading and interacting with the sensors \
+using the accessible functions contained in Robohand.h. Robohand_uros.c/h is responsible \
+for allowing host devices running the Micro-ROS client to interact with the hand via the \
+interface provided by Robohand.c/h. \
+\
+The system is currently accessing the ADC's and MPU6050 at a fixed rate based on timer callbacks, \
+and the HMC8553L informs the system of data readiness using GPIO 10." > prompt_file.txt
+
+
+            #Append file information to end of prompt
+            echo "The current impelmentation is shown below. Robohand.h header file"
+
+            cat Robohand.h > prompt_file.txt
+
+            echo "Robohand.h header file end, begin Robohand.c source file"
+
+            cat Robohand.c > prompt_file.txt
+
+            echo "Robohand.c header file end, begin CMakelists.txt"
+
+            cat CMakeLists.txt > prompt_file.txt
+
+            echo "Please try not to overcomplicate suggestions. Do not hallucinate Pi Pico SDK \
+functions, or MicroROS functions. Consider and provide information regarding the speed versus \
+complexity of the problem. Double check all suggestions provided to CMakeLists.txt" > prompt_file.txt
+
+        ;;
+
         #Build - controls building of target container
         b)
             echo -e "${FG_GREEN}[Robohand Controller]${FG_BLUE} Building Robohand Projects.${RESET}"
 
-            # Update or add variables
+            #Update or add variables
             update_var PICO_SDK_PATH "$NEW_SDK_PATH"
             update_var PICO_PLATFORM "$NEW_PLATFORM"
             update_var PICO_BOARD "$NEW_BOARD"
@@ -49,16 +95,22 @@ while getopts "bhip:s:" options; do
             echo -e "${FG_GREEN}[Robohand Controller]${FG_GREEN} Robohand build script finished.${RESET}"
         ;;
 
+        d)
+
+        ;;
+
         #Help - Displays the valid commands for the controller
         h)
             echo -e "${FG_GREEN}${BOLD}Robohand Controller V1.0 - Developed by Robert Fudge${RESET}"
             echo -e "${FG_GREEN}Valid commands are listed below:"
 
             echo -e "ARGUMENT       NAME            INFO"
-            echo -e "-b             Build           Build robohand projects"
-            echo -e "-i             Init            Initialize host software packages to well-known environment, needs sudo"
-            echo -e "-p             push            Pushes desired project to the device if it is in flash mode"
-            echo -e "-s             Start           Start desired container, pass in suffix of top-level dockerfile${RESET}"
+            echo -e "-a             AI-prompt       Formats a prompt template for passing into LLM's."
+            echo -e "-b             Build           Build robohand projects."
+            echo -e "-d             Document        Generates local copy of Doxygen documentation for viewing purposes."
+            echo -e "-i             Init            Initialize host software packages to well-known environment, needs sudo."
+            echo -e "-p             push            Pushes desired project to the device if it is in flash mode."
+            echo -e "-s             Start           Start desired container, pass in suffix of top-level dockerfile.${RESET}"
         ;;
 
         #Init - build for opposite architecture as target - NOT WORKING, issue with transferring build stages
@@ -68,10 +120,10 @@ while getopts "bhip:s:" options; do
             #Install needed apt packages
             sudo apt update && sudo apt install -y minicom cmake build-essential gcc g++ gcc-arm-none-eabi
 
-            # Initialize submodules
+            #Initialize submodules
             git submodule update --init --recursive
 
-            # Build micro-ROS library first
+            #Build micro-ROS library first
             cd Dependencies/micro_ros_pico_sdk
             mkdir build && cd build
             cmake ..

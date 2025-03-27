@@ -1,3 +1,11 @@
+/*!
+ * \file Robohand_usb.c
+ * \brief USB interface for robotic hand control.
+ * \author Robert Fudge <rnfudge@mun.ca>
+ * \date 2025
+ * \copyright Apache 2.0 License
+ */
+
 //Include headers
 #include <math.h>
 #include <stdatomic.h>
@@ -21,7 +29,6 @@ void process_command(const char* cmd);
 
 /*!
  * \brief Core 0 main loop routine - USB Variation.
- * \param[out] dest Pointer to system_status structure to populate.
  */
 int main(void) {
 
@@ -30,7 +37,6 @@ int main(void) {
     rgb_set_color(255, 0, 0); //Red
     rgb_set_brightness(1.0); //100% brightness
     
-
     stdio_init_all();
     while(!stdio_usb_connected()) {
         sleep_ms(100);
@@ -73,6 +79,7 @@ int main(void) {
                 printf("\r\n> ");
             }
 
+            //Add character to buffer
             else if(buf_idx < sizeof(cmd_buf)-1) {
                 cmd_buf[buf_idx++] = c;
             }

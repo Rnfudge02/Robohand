@@ -1,6 +1,6 @@
 /*!
  * \file Robohand_uros.h
- * \brief Micro-ROS interface for robotic hand control system
+ * \brief Micro-ROS interface for robotic hand control system.
  * \details Provides declarations for micro-ROS integration with sensor data publishing
  *          and servo command subscription. Manages custom serial transport implementation
  *          for Pico-RTOS compatibility.
@@ -60,56 +60,56 @@ extern "C" {
 
 /** @} */ // end of debug_macros
 
-/** \defgroup time_utils Time Compatibility
- *  \brief POSIX time functions for micro-ROS compatibility
+/** \defgroup time_utils Time Compatibility.
+ *  \brief POSIX time functions for micro-ROS compatibility.
  *  @{
  */
 
 /*!
- * \brief Provides POSIX-compatible clock implementation
- * \param[in] clk_id Clock identifier (unused)
- * \param[out] tp Timespec structure to populate
- * \return Always returns 0 (success)
- * \note Uses Pico's time_us_64() for timing
+ * \brief Provides POSIX-compatible clock implementation.
+ * \param[in] clk_id Clock identifier (unused).
+ * \param[out] tp Timespec structure to populate.
+ * \return Always returns 0 (success).
+ * \note Uses Pico's time_us_64() for timing.
  */
 int clock_gettime(clockid_t clk_id, struct timespec* tp);
 
 /*!
- * \brief Provides POSIX-compatible sleep implementation
- * \param us Microsecond count to sleep
+ * \brief Provides POSIX-compatible sleep implementation.
+ * \param us Microsecond count to sleep.
  */
 void usleep(uint64_t us);
 
 /** @} */ // end of time_utils
 
-//Transport interface for micro-ROS
-/** \defgroup transport_functions Custom Transport Implementation
- *  \brief Low-level serial communication functions for micro-ROS
+//Transport interface for micro-ROS.
+/** \defgroup transport_functions Custom Transport Implementation.
+ *  \brief Low-level serial communication functions for micro-ROS.
  *  @{
  */
 
 /*!
- * \brief Initializes custom serial transport for micro-ROS
- * \param[in] transport Pointer to custom transport structure
- * \return true if initialization succeeded, false otherwise
- * \note Configures standard I/O only once during first call
+ * \brief Initializes custom serial transport for micro-ROS.
+ * \param[in] transport Pointer to custom transport structure.
+ * \return true if initialization succeeded, false otherwise.
+ * \note Configures standard I/O only once during first call.
  */
 bool pico_serial_transport_open(struct uxrCustomTransport* transport);
 
 /*!
- * \brief Closes custom serial transport
- * \param[in] transport Pointer to custom transport structure
- * \return Always returns true (Pico serial doesn't require close handling)
+ * \brief Closes custom serial transport.
+ * \param[in] transport Pointer to custom transport structure.
+ * \return Always returns true (Pico serial doesn't require close handling).
  */
 bool pico_serial_transport_close(struct uxrCustomTransport* transport);
 
 /*!
- * \brief Writes data through serial transport
- * \param[in] transport Pointer to custom transport structure
- * \param[in] buf Buffer containing data to write
- * \param[in] len Length of data to write
- * \param[out] errcode Error code output (1 on failure)
- * \return Number of bytes actually written
+ * \brief Writes data through serial transport.
+ * \param[in] transport Pointer to custom transport structure.
+ * \param[in] buf Buffer containing data to write.
+ * \param[in] len Length of data to write.
+ * \param[out] errcode Error code output (1 on failure).
+ * \return Number of bytes actually written.
  */
 size_t pico_serial_transport_write(struct uxrCustomTransport* transport, 
                                    const uint8_t* buf, 
@@ -117,13 +117,13 @@ size_t pico_serial_transport_write(struct uxrCustomTransport* transport,
                                    uint8_t* errcode);
 
 /*!
- * \brief Reads data from serial transport
- * \param[in] transport Pointer to custom transport structure
- * \param[out] buf Buffer to store read data
- * \param[in] len Maximum length to read
- * \param[in] timeout Timeout in milliseconds
- * \param[out] errcode Error code output (1 on failure)
- * \return Number of bytes actually read
+ * \brief Reads data from serial transport.
+ * \param[in] transport Pointer to custom transport structure.
+ * \param[out] buf Buffer to store read data.
+ * \param[in] len Maximum length to read.
+ * \param[in] timeout Timeout in milliseconds.
+ * \param[out] errcode Error code output (1 on failure).
+ * \return Number of bytes actually read.
  */
 size_t pico_serial_transport_read(struct uxrCustomTransport* transport,
                                   uint8_t* buf,
@@ -133,23 +133,23 @@ size_t pico_serial_transport_read(struct uxrCustomTransport* transport,
 
  /** @} */ // end of transport_functions
 
-/** \defgroup ros_interface ROS Message Handling
- *  \brief Functions for managing ROS communication and data conversion
+/** \defgroup ros_interface ROS Message Handling.
+ *  \brief Functions for managing ROS communication and data conversion.
  *  @{
  */
 
 /*!
- * \brief Callback for servo command messages
- * \param[in] msg_in Received Int32MultiArray message pointer
- * \details Expects message data in triplets: [servo_num, target_pw, duration_ms]
- * \note Servo numbers are validated against NUM_SERVOS constant
+ * \brief Callback for servo command messages.
+ * \param[in] msg_in Received Int32MultiArray message pointer.
+ * \details Expects message data in triplets: [servo_num, target_pw, duration_ms].
+ * \note Servo numbers are validated against NUM_SERVOS constant.
  */
 void servo_callback(const void* msg_in);
 
 /*!
- * \brief Timer callback for sensor data publishing
- * \param[in] timer Timer object reference
- * \param[in] last_call_time Timestamp of last invocation (unused)
+ * \brief Timer callback for sensor data publishing.
+ * \param[in] timer Timer object reference.
+ * \param[in] last_call_time Timestamp of last invocation (unused).
  * \details Publishes combined sensor data at 10Hz rate:
  *          - Accelerometer (3 axes, m/s²)
  *          - Gyroscope (3 axes, rad/s)
@@ -157,6 +157,8 @@ void servo_callback(const void* msg_in);
  *          - Analog sensors (5 channels, volts)
  */
 void sensor_timer_callback(rcl_timer_t* timer, int64_t last_call_time);
+
+ /** @} */ // ros_interface_functions
 
 #ifdef __cplusplus
 }
