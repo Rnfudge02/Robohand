@@ -16,9 +16,8 @@
 
 #include "pico/stdlib.h"
 
-
-#define STATUS_UPDATE_MS 1000
-#define CMD_BUFFER_SIZE 64
+#define STATUS_UPDATE_MS 1000               ///< Millisecond timer for status retrieval, soon to be deprecated
+#define CMD_BUFFER_SIZE 64                  ///< Size of the command buffer, exceeding this will cause overflow
 
 /*!
  * \brief Handles commands over USB.

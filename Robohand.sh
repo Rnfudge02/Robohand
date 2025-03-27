@@ -20,7 +20,7 @@ NEW_PLATFORM="rp2040"
 NEW_BOARD="pico"
 
 #Parse command line arguments
-while getopts "bhip:s:" options; do
+while getopts "abdhip:s:" options; do
     case ${options} in
         #AI-prompt - generate a template prompt document
         a)
@@ -28,43 +28,45 @@ while getopts "bhip:s:" options; do
             rm -rf ./prompt_file.txt
 
             #Core system information
-            echo "I am trying to develop a robotic hand using C, the Raspberry Pi Pico SDK, and \
-the MicroROS library. I am trying to keep the code lightweight, extensible, and multithreaded. \
-The system hardware is structured as follows: The Pi Pico actuates a total of 5 MG996R servos powered \
-at 5V, using the PWM functionality, on GPIO 11-15. The Pi Pico also reads a total of 5 thin-film pressure \
-sensors, 4 of which are read using an ADS1115 ADC via I2C, and the fifth read using the ADC2 on the Pico. \
-The device also contains an MPU6050 accelerometer for retrieval of kinematic data for a local frame of \
-reference, and a HMC8553L magnometer to get a rough global frame of reference from magnetic north, both \
-connected via I2C. All I2C devices are connected on I2C1 using GPIO 28-29 for the clock and data signal.
-\
-The system code is structured as follows: Robohand.c/h contains the \
-system hardware implementation, allowing for interaction with the physical hardware \
-via the Pico SDK. Robohand_usb.c contains code to provide a minimal terminal experience \
-to a client using the Pico SDK, and allow for reading and interacting with the sensors \
-using the accessible functions contained in Robohand.h. Robohand_uros.c/h is responsible \
-for allowing host devices running the Micro-ROS client to interact with the hand via the \
-interface provided by Robohand.c/h. \
-\
-The system is currently accessing the ADC's and MPU6050 at a fixed rate based on timer callbacks, \
-and the HMC8553L informs the system of data readiness using GPIO 10." > prompt_file.txt
+            echo -e "I am trying to develop a robotic hand using C, the Raspberry Pi Pico SDK, and \n\
+the MicroROS library. I am trying to keep the code lightweight, extensible, and multithreaded. \n\
+The system hardware is structured as follows: The Pi Pico actuates a total of 5 MG996R servos powered \n\
+at 5V, using the PWM functionality, on GPIO 11-15. The Pi Pico also reads a total of 5 thin-film pressure \n\
+sensors, 4 of which are read using an ADS1115 ADC via I2C, and the fifth read using the ADC2 on the Pico. \n\
+The device also contains an MPU6050 accelerometer for retrieval of kinematic data for a local frame of \n\
+reference, and a HMC8553L magnometer to get a rough global frame of reference from magnetic north, both \n\
+connected via I2C. All I2C devices are connected on I2C1 using GPIO 28-29 for the clock and data signal. \n\
+\n\
+The system code is structured as follows: Robohand.c/h contains the \n\
+system hardware implementation, allowing for interaction with the physical hardware \n\
+via the Pico SDK. Robohand_usb.c contains code to provide a minimal terminal experience \n\
+to a client using the Pico SDK, and allow for reading and interacting with the sensors \n\
+using the accessible functions contained in Robohand.h. Robohand_uros.c/h is responsible \n\
+for allowing host devices running the Micro-ROS client to interact with the hand via the \n\
+interface provided by Robohand.c/h. \n\
+\n\
+The system is currently accessing the ADC's and MPU6050 at a fixed rate based on timer callbacks, \n\
+and the HMC8553L informs the system of data readiness using GPIO 10." >> prompt_file.txt
 
+            #Insert user request
+            echo -e $2 >> prompt_file.txt
 
             #Append file information to end of prompt
-            echo "The current impelmentation is shown below. Robohand.h header file"
+            echo -e "The current impelmentation is shown below. Robohand.h header file" >> prompt_file.txt
 
-            cat Robohand.h > prompt_file.txt
+            cat ./Include/Robohand.h >> prompt_file.txt
 
-            echo "Robohand.h header file end, begin Robohand.c source file"
+            echo -e "Robohand.h header file end, begin Robohand.c source file"  >> prompt_file.txt
 
-            cat Robohand.c > prompt_file.txt
+            cat ./Src/Robohand.c >> prompt_file.txt
 
-            echo "Robohand.c header file end, begin CMakelists.txt"
+            echo -e "Robohand.c header file end, begin CMakelists.txt" >> prompt_file.txt
 
-            cat CMakeLists.txt > prompt_file.txt
+            cat CMakeLists.txt >> prompt_file.txt
 
-            echo "Please try not to overcomplicate suggestions. Do not hallucinate Pi Pico SDK \
-functions, or MicroROS functions. Consider and provide information regarding the speed versus \
-complexity of the problem. Double check all suggestions provided to CMakeLists.txt" > prompt_file.txt
+            echo -e "Please try not to overcomplicate suggestions. Do not hallucinate Pi Pico SDK \n\
+functions, or MicroROS functions. Consider and provide information regarding the speed versus \n\
+complexity of the problem. Double check all suggestions provided to CMakeLists.txt" >> prompt_file.txt
 
         ;;
 
@@ -96,6 +98,15 @@ complexity of the problem. Double check all suggestions provided to CMakeLists.t
         ;;
 
         d)
+            echo -e "${FG_GREEN}[Robohand Controller]${FG_BLUE} Generating doxygen documentation.${RESET}"
+
+            mkdir -p ./Documentation
+
+            if [ ! -f ./Robohand.doxyfile ]; then
+                doxygen -g Robohand.doxyfile
+            fi
+
+            doxygen Robohand.doxyfile
 
         ;;
 
@@ -118,7 +129,7 @@ complexity of the problem. Double check all suggestions provided to CMakeLists.t
             echo -e "${FG_GREEN}[Robohand Controller]${FG_BLUE} Initializing system for Robohand communication.${RESET}"
 
             #Install needed apt packages
-            sudo apt update && sudo apt install -y minicom cmake build-essential gcc g++ gcc-arm-none-eabi
+            sudo apt update && sudo apt install -y minicom cmake build-essential gcc g++ gcc-arm-none-eabi doxygen libxapian30 graphviz
 
             #Initialize submodules
             git submodule update --init --recursive

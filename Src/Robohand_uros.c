@@ -1,9 +1,9 @@
 /*!
- * \file Robohand_uros.c
- * \brief micro-ROS interface for robotic hand control.
- * \author Robert Fudge
- * \date 2025
- * \copyright Apache 2.0 License
+ * @file Robohand_uros.c
+ * @brief micro-ROS interface for robotic hand control.
+ * @author Robert Fudge
+ * @date 2025
+ * @copyright Apache 2.0 License
  */
 
 /*! TODO
@@ -26,31 +26,30 @@
 #include <uxr/client/profile/transport/custom/custom_transport.h>
  
 //Micro-ROS Components
-static rclc_executor_t executor;
-static rclc_support_t support;
-static rcl_allocator_t allocator;
-static rcl_node_t node;
+static rclc_executor_t executor;                            //! Micro-ROS Executor container
+static rclc_support_t support;                              //! Micro-ROS Support container
+static rcl_allocator_t allocator;                           //! Micro-ROS Allocator container
+static rcl_node_t node;                                     //! Micro-ROS Node container
 
 //Publishers and subscribers
-static rcl_publisher_t sensor_pub;
-static rcl_subscription_t servo_sub;
-static rcl_timer_t sensor_timer;
-static rcl_publisher_t imu_pub;
-static rcl_publisher_t mag_pub;
-static rcl_publisher_t adc_pub;
-static rcl_subscription_t rgb_sub;
+static rcl_publisher_t sensor_pub;                          //! Sensor publishing component - Provides access to sensor data
+static rcl_subscription_t servo_sub;                        //! Servo subcriber component - Allows for servo actuation from host device
+static rcl_timer_t sensor_timer;                            //! Sensor timer component - How often should publishing happen for sensor data
+static rcl_publisher_t imu_pub;                             //! IMU publishing component - Publishes data from the MPU6050
+static rcl_publisher_t mag_pub;                             //! Magnometer publishing component - Publishes data from the HMC5883L
+static rcl_publisher_t adc_pub;                             //! Ananlog-Digital Converter publishing component - Allows user to access voltages at ADC inputs
+static rcl_subscription_t rgb_sub;                          //! RGB Subscriber component - Provides access to RGB LED configuration
 
 //Message instances
-static std_msgs__msg__Int32MultiArray servo_cmd_msg;
-static std_msgs__msg__Float32MultiArray sensor_msg;
-static sensor_msgs__msg__Imu imu_msg;
-static sensor_msgs__msg__MagneticField mag_msg;
-static std_msgs__msg__Float32MultiArray adc_msg;
+static std_msgs__msg__Int32MultiArray servo_cmd_msg;        //! Servo command message [SERVO POSITION TIME]
+static std_msgs__msg__Float32MultiArray sensor_msg;         //! Sensor message, unsure of why I made this again
+static sensor_msgs__msg__Imu imu_msg;                       //! IMU message, contains Linear Acceleration and Orientation
+static sensor_msgs__msg__MagneticField mag_msg;             //! Magnetic Field message, contains field in microtesla
+static std_msgs__msg__Float32MultiArray adc_msg;            //! ADC message, contains the ADC readings in volts
 
-//Global debug flag
-static uint8_t debug = DEBUG;
+static uint8_t debug = DEBUG;                               //!Copy of global debug macro
 
-static void rgb_callback(void);
+static void rgb_callback(const void*);
 
 //! Time retrieval function for compatibility between uros and pi pico
 int clock_gettime(clockid_t clk_id, struct timespec *tp) {
@@ -211,7 +210,7 @@ int main() {
 
     rgb_set_color(0, 255, 0); //Green
 
-    //TODO: Code does not make it past here currently, why?
+    //! \todo Code does not make it past here currently, why?
     RCCHECK(rclc_support_init(&support, 0, NULL, &allocator));
     RCCHECK(rclc_node_init_default(&node, "robohand_node", "", &support));
 
@@ -249,6 +248,7 @@ int main() {
         "robohand/imu"
     ));
 
+    //Create Magnometer publisher
     RCCHECK(rclc_publisher_init_default(
         &mag_pub,
         &node,
@@ -256,6 +256,7 @@ int main() {
         "robohand/mag"
     ));
 
+    //Create ADC publisher
     RCCHECK(rclc_publisher_init_default(
         &adc_pub,
         &node,
@@ -290,7 +291,7 @@ int main() {
     }
     mag_msg.magnetic_field_covariance[0] = 0.001;
     
-    //ADC
+    //ADC message properties
     adc_msg.data.capacity = 5;
     adc_msg.data.size = 5;
     adc_msg.data.data = allocator.allocate(sizeof(float)*5, allocator.state);

@@ -7,6 +7,11 @@
  * \copyright Apache 2.0 License
  */
 
+/*! \todo Fix issues present within code, check for correctness.
+ *  \todo Ensure code for preventing the running of code on missing components does not break functionality.
+ *  \todo Fix issue with HMC5883L always returning 0. (observed behavior when running program with USB driver)
+ */
+
 #ifndef ROBOHAND_H
 #define ROBOHAND_H
 
@@ -27,11 +32,11 @@ extern "C" {
 #include "pico/cyw43_arch.h"
 #define ROBOHAND_LED_PIN CYW43_WL_GPIO_LED_PIN
 #else
-#define ROBOHAND_LED_PIN 25                                     
+#define ROBOHAND_LED_PIN 25                                     ///< Pin to use for heartbeat callback                                    
 #endif
 
 #ifndef WATCHDOG_IRQ
-#define WATCHDOG_IRQ 1
+#define WATCHDOG_IRQ 1                                          ///< Needed for watchdog intervention
 #endif
 
 //System configuration
@@ -59,7 +64,6 @@ extern "C" {
 #define SERVO_MAX_PULSE 2500                                    ///< Upper threshold for pulse time
 #define MAX_MOVE_DURATION_MS 30000                              ///< Max amount of time the motor is allowed to move over
 
-#define SENSOR_DATA_COUNT 14
 #define MAX_SERVO_ACCEL 2500                                    ///< µs/s² (adjust for servo dynamics)
 
 //I2C Addresses
@@ -90,22 +94,21 @@ extern "C" {
 #define ADS1115_COMP_LAT    0x0000                              ///< Non-latching
 #define ADS1115_COMP_QUE    0x0003                              ///< Disable comparator
 
-//ADS1115 Base Configuration (Combine with MUX)
 #define ADS1115_BASE_CONFIG (ADS1115_OS_SINGLE | ADS1115_FSR_4V096 | ADS1115_MODE_SINGLE | \
                             ADS1115_DR_128SPS | ADS1115_COMP_MODE | ADS1115_COMP_POL | \
-                            ADS1115_COMP_LAT | ADS1115_COMP_QUE)
+                            ADS1115_COMP_LAT | ADS1115_COMP_QUE)                                    ///< ADS1115 base configuration
 
 //Function macro - inlined
-#define constrain(value, min, max) ((value) < (min) ? (min) : ((value) > (max) ? (max) : (value)))
+#define constrain(value, min, max) ((value) < (min) ? (min) : ((value) > (max) ? (max) : (value)))  ///< Macro for constraining
 
-/** \defgroup system_structs Structures used during program execution.
- *  \brief Ease development with safe, lockable access to resources.
+/** @defgroup system_structs System Structures
+ *  @brief Structures used during program execution. Eases development with safe, lockable access to resources.
  *  @{
  */
 
 /*!
- * \brief Structure for RGB LED configuration and state.
- * \details Stores current color, brightness, and synchronization primitives.
+ * @brief Structure for RGB LED configuration and state.
+ * @details Stores current color, brightness, and synchronization primitives.
  */
 typedef struct {
     bool blink_active;         ///< Whether blinking is active
@@ -118,12 +121,12 @@ typedef struct {
     uint32_t blink_interval;   ///< Blink interval in milliseconds
     mutex_t rgb_mutex;         ///< Mutex for color/brightness access
     mutex_t pwm_mutex;         ///< Mutex for PWM hardware access
-} rgb_config;
+} rgb_state;
 
 /*!
- * \brief Sensor data structure with mutex protection.
- * \details Contains sensor readings from accelerometer, gyroscope, magnetometer, and ADCs.
- * \pre acquire mutex before performing any read/write on this structure.
+ * @brief Sensor data structure with mutex protection.
+ * @details Contains sensor readings from accelerometer, gyroscope, magnetometer, and ADCs.
+ * @pre acquire mutex before performing any read/write on this structure.
  */
 typedef struct {
     int16_t accel[3];        ///< Accelerometer readings (X, Y, Z)
@@ -134,9 +137,9 @@ typedef struct {
 } sensor_data;
 
 /*!
- * \brief Physical sensor data structure.
- * \details Contains converted sensor readings in physical units.
- * \note Doesn't need to be used on core 1, technically doesn't need mutex, also not involved with any callbacks.
+ * @brief Physical sensor data structure.
+ * @details Contains converted sensor readings in physical units.
+ * @note Doesn't need to be used on core 1, technically doesn't need mutex, also not involved with any callbacks.
  */
 typedef struct {
     float accel[3];        ///< Accelerometer in g (9.81 m/s²)
@@ -146,8 +149,8 @@ typedef struct {
 } sensor_data_physical;
 
 /*!
- * \brief Servo motion profile structure.
- * \details Stores parameters for smooth servo movement using trapezoidal profiles.
+ * @brief Servo motion profile structure.
+ * @details Stores parameters for smooth servo movement using trapezoidal profiles.
  */
 typedef struct {
     uint16_t current_pw;    ///< Current pulse width (µs)
@@ -158,61 +161,61 @@ typedef struct {
 } servo_motion_profile;
 
 /*!
- * \brief Status data structure.
- * \details Contains information about system health.
- * \pre acquire mutex before performing any read/write on this structure.
+ * @brief Status data structure.
+ * @details Contains information about system health.
+ * @pre acquire mutex before performing any read/write on this structure.
  */
 typedef struct {
-    uint32_t core0_loops;
-    uint32_t core1_loops;
-    uint32_t last_reset_core0;
-    uint32_t last_watchdog; 
-    bool system_ok;
-    bool emergency_stop;
-    mutex_t status_mutex;
+    uint32_t core0_loops;                                   ///< Counts on core 0 main loop since last status retrieval
+    uint32_t core1_loops;                                   ///< Counts on core 1 main loop since last status retrieval
+    uint32_t last_reset_core0;                              ///< Last time the counter was reset on core 0
+    uint32_t last_watchdog;                                 ///< Time since last watchdog event
+    bool system_ok;                                         ///< Did the watchdog reset the system?
+    bool emergency_stop;                                    ///< To be used for automatic servo stoppage
+    mutex_t status_mutex;                                   ///< Mutex to protect access to internal members
 } system_status;
 
 /** @} */ // end of system_structs
 
 
 //Global variables
-extern const uint8_t gamma_table[256];
-extern servo_motion_profile servo_profiles[NUM_SERVOS];
-extern system_status sys_status;
-extern const uint SERVO_PINS[NUM_SERVOS];       ///< Servo control pins
-extern const float VOLTAGE_DIVIDER_RATIO;       ///< Voltage divider ratio (1:1)
+extern const uint8_t gamma_table[256];                      ///< Gamma table for brightness scaling
+extern servo_motion_profile servo_profiles[NUM_SERVOS];     ///< Data structure array for holding servo profiles
+extern system_status sys_status;                            ///< System status data structure instance
+extern const uint SERVO_PINS[NUM_SERVOS];                   ///< Servo control pins
+extern const float VOLTAGE_DIVIDER_RATIO;                   ///< Voltage divider ratio (1:1)
 
-/** \defgroup user_facing Functions designed to be used in other source code.
- *  \brief Allow for hardware interaction.
+/** @defgroup user_facing User Facing Functions
+ *  @brief Functions designed to be used in other source code. Allows for hardware interaction.
  *  @{
  */
 
 /*!
- * \brief Actuates a servo to a specified position over a given duration.
- * \param servo Servo index (0 to NUM_SERVOS-1).
- * \param pulse_width Target pulse width in microseconds (500-2500µs).
- * \param duration_ms Movement duration in milliseconds.
+ * @brief Actuates a servo to a specified position over a given duration.
+ * @param servo Servo index (0 to NUM_SERVOS-1).
+ * @param pulse_width Target pulse width in microseconds (500-2500µs).
+ * @param duration_ms Movement duration in milliseconds.
  */
 void actuate_servo(uint8_t servo, uint16_t pulse_width, uint16_t duration_ms);
 
 /*!
- * \brief Converts passed sensor data to physical parameters.
- * \param[in] raw Pointer to sensor_data structure to containing unconverted values.
- * \param[out] dest Pointer to sensor_data_physical structure to receive readings as physical parameters.
- * \return true if data copied successfully, false if mutex was busy.
- * \warning Caller must allocate destination buffer. Data valid until next update.
+ * @brief Converts passed sensor data to physical parameters.
+ * @param[in] raw Pointer to sensor_data structure to containing unconverted values.
+ * @param[out] converted Pointer to sensor_data_physical structure to receive readings as physical parameters.
+ * @return true if data copied successfully, false if mutex was busy.
+ * @warning Caller must allocate destination buffer. Data valid until next update.
  */
 bool convert_sensor_data(const sensor_data* raw, sensor_data_physical* converted);
 
 /*!
- * \brief Core 1 main execution loop.
- * \details Handles all hardware-related operations:
+ * @brief Core 1 main execution loop.
+ * @details Handles all hardware-related operations:
  *          - Sensor polling (accelerometer, gyroscope, magnetometer)
  *          - ADC sampling
  *          - Servo control
  *          - System status monitoring
- * \pre The system has been initialized.
- * \note Runs indefinitely after system initialization.
+ * @pre The system has been initialized.
+ * @note Runs indefinitely after system initialization.
  */
 void core1_entry(void);
 

@@ -7,12 +7,6 @@
  * @copyright Apache 2.0 License
  */
 
- /*! TODO
- * Fix issues present within code, check for correctness.
- * Ensure code for preventing the running of code on missing components does not break functionality.
- * Fix issue with HMC5883L always returning 0.
- */
-
 #include "Robohand.h"
 
 #include <stdatomic.h>
@@ -25,9 +19,9 @@
 #include "hardware/pwm.h"
 
 //Macros for I2C flag
-#define MPU_READ_FLAG (1 << 0)
-#define HMC_READ_FLAG (1 << 1)
-#define ADC_READ_FLAG (1 << 2)
+#define MPU_READ_FLAG (1 << 0)          ///< Bit signalling an MPU read is needed over the I2C bus
+#define HMC_READ_FLAG (1 << 1)          ///< Bit signalling an HMC read is needed over the I2C bus
+#define ADC_READ_FLAG (1 << 2)          ///< Bit signalling an ADC read is needed over the I2C bus
 
 //Gamma correction table (gamma = 2.8) for brightness smoothing
 const uint8_t gamma_table[256] = {
@@ -50,35 +44,37 @@ const uint8_t gamma_table[256] = {
 };
 
 //Global variables - All files
-servo_motion_profile servo_profiles[NUM_SERVOS];
-const uint SERVO_PINS[NUM_SERVOS] = {11, 12, 13, 14, 15};
-system_status sys_status;
-const float VOLTAGE_DIVIDER_RATIO = 1.0f;
+servo_motion_profile servo_profiles[NUM_SERVOS];                    //! Structure array containing the servo profiles
+const uint SERVO_PINS[NUM_SERVOS] = {11, 12, 13, 14, 15};           //! GPIO pins to use for mechanical actuation
+system_status sys_status;                                           //! Structure containing system status
+const float VOLTAGE_DIVIDER_RATIO = 1.0f;                           //! Ratio for voltage calculations (Not sure if this is needed anymore)
 
 //Static bools to prevent resource contention of missing components
-static bool ads_written = false;
-static bool hmc5883l_written = false;
-static bool mpu6050_written = false;
-static bool pico_adc_written = false;
+static bool ads_written = false;                                    //! Will skip trying to re-acquire and write to sensor mutex if the ADS1115 is disconnected
+static bool hmc5883l_written = false;                               //! Will skip trying to re-acquire and write to sensor mutex if the HMC5883L is disconnected
+static bool mpu6050_written = false;                                //! Will skip trying to re-acquire and write to sensor mutex if the MPU6050 is disconnected
+static bool pico_adc_written = false;                               //! Will skip trying to re-acquire and write to sensor mutex if the Pi Pico ADC is unused
 
 //Global variables - This file only, only initialized once
-static const float PWM_US_TO_LEVEL = 39062.0f / 20000.0f;
-static absolute_time_t prev_update_time;
+static const float PWM_US_TO_LEVEL = 39062.0f / 20000.0f;           //! Constant value used for PWM conversion for servos
+static absolute_time_t prev_update_time;                            //! Used to track the time since last update
 
 //Dedicated hardware mutexes
-static mutex_t i2c_mutex;
-static mutex_t servo_mutex;
+static mutex_t i2c_mutex;                                           //! Mutex protecting I2C access
+static mutex_t servo_mutex;                                         //! Mutex protecting Servo access
 
-/*! \brief Shared sensor data structure protected by mutex */
-static sensor_data sensor_readings;
+static sensor_data sensor_readings;                                 //! Mutex protected structure containing sensor information
 
 /*! \brief Timers for device polling **/
-static struct repeating_timer adc_timer;
-static struct repeating_timer hb_timer;
-static struct repeating_timer mpu_timer;
+static struct repeating_timer adc_timer;                            //! Timer for ADC callback (Default 100ms / 10Hz)
+static struct repeating_timer hb_timer;                             //! Timer for ADC callback (Default 500ms / 2Hz)
+static struct repeating_timer mpu_timer;                            //! Timer for ADC callback (Default 50ms / 20Hz)
 
-//Flags register to determine which i2c devices need to be read on next call
-static volatile uint8_t i2c_operation_flags = 0;
+//Static structures for rgb control
+static struct repeating_timer blink_timer;                          //! Timer for triggering the blink callback
+static rgb_state rgb_conf;                                          //! Global struct for configuring the Common Cathode RGB
+
+static volatile uint8_t i2c_operation_flags = 0;                    //! Register coordinating I2C accesses, may change at any point
 
 /*! \brief Static function prototypes **/
 static bool adc_sample_callback(struct repeating_timer* t);
@@ -88,7 +84,7 @@ static void gy271_drdy_handler(uint gpio, uint32_t events);
 static void handle_servo_commands(void);
 static bool heartbeat_callback(struct repeating_timer* t);
 static bool i2c_write_with_retry(uint8_t addr, const uint8_t* src, size_t len);
-static void init_servo_pwm(void)
+static void init_servo_pwm(void);
 static void init_watchdog(void);
 static bool mpu6050_callback(struct repeating_timer* t);
 static float read_adc2(void);
@@ -97,10 +93,6 @@ static void read_adc_data(void);
 static void read_hmc5883l_data(void);
 static void read_mpu6050_data(void);
 static void update_servo_positions(void);
-
-//Static structures for rgb control
-static struct repeating_timer blink_timer;
-static rgb_config rgb_conf;
 
 //! Move the servo with the desired settings
 void actuate_servo(uint8_t servo, uint16_t pulse_width, uint16_t duration_ms) {
@@ -119,7 +111,9 @@ void actuate_servo(uint8_t servo, uint16_t pulse_width, uint16_t duration_ms) {
 
 //! Convert data to physical parameters
 bool convert_sensor_data(const sensor_data* raw, sensor_data_physical* converted) {
-    if (!raw || !converted) return false;
+    if (!raw || !converted) {
+        return false;
+    }
 
     //MPU6050 Accelerometer conversion (±2g range: 16384 LSB/g)
     for (int i = 0; i < 3; i++) {
@@ -144,7 +138,7 @@ bool convert_sensor_data(const sensor_data* raw, sensor_data_physical* converted
 
 //Core 1 config will need to be different between pico and pico w
 #if defined(PICO_BOARD_pico_w) || defined(PICO_BOARD_IS_PICO_W)
-    //W will likely need its own core1 config
+    //Pico W will likely need its own core1 config
 #else
 
 //! Core 1 main routine
@@ -391,8 +385,8 @@ void rgb_set_color(uint8_t r, uint8_t g, uint8_t b) {
     }
 }
 
-/** \defgroup static These functions are designed solely to work in this source file.
- *  \brief Trying to use any of these from another source file will give a compiler error.
+/** @defgroup static These functions are designed solely to work in this source file.
+ *  @brief Trying to use any of these from another source file will give a compiler error.
  *  @{
  */
 
