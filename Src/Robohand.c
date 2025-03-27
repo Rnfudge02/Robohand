@@ -84,7 +84,12 @@ static void gy271_drdy_handler(uint gpio, uint32_t events);
 static void handle_servo_commands(void);
 static bool heartbeat_callback(struct repeating_timer* t);
 static bool i2c_write_with_retry(uint8_t addr, const uint8_t* src, size_t len);
+static void init_rgb_state_struct(rgb_state* rgb_struct);
+static void init_sensor_data_struct(sensor_data* sensor_struct);
+static void init_sensor_data_physical_struct(sensor_data_physical* sensor_struct);
+static void init_servo_motion_profile_struct(servo_motion_profile* servo__profile);
 static void init_servo_pwm(void);
+static void init_system_status_struct(system_status* sys_status);
 static void init_watchdog(void);
 static bool mpu6050_callback(struct repeating_timer* t);
 static float read_adc2(void);
@@ -195,7 +200,7 @@ void core1_entry(void) {
     multicore_fifo_push_blocking(1);
 
     //Initialize watchdog
-    //init_watchdog(); 
+    //init_watchdog();
 
     while(1) {
         loop_count++;
@@ -385,8 +390,93 @@ void rgb_set_color(uint8_t r, uint8_t g, uint8_t b) {
     }
 }
 
-/** @defgroup static These functions are designed solely to work in this source file.
- *  @brief Trying to use any of these from another source file will give a compiler error.
+/** @defgroup struct_init Robohand Structure Initializers
+ *  @brief These functions are designed to set required data structures to well-known state
+ *  @{
+ */
+
+/*!
+ * @brief Initialize RGB state structure.
+ * @details Sets structure members to a well known state. If memory has not been allocated, the system will allocate it.
+ * @param[out] rgb_struct Populated, valid data structure.
+ */
+static void init_rgb_state_struct(rgb_state* rgb_struct) {
+    if (rgb_struct = NULL) {
+        rgb_struct = (rgb_state*) malloc(1 * sizeof(rgb_state));
+    }
+
+    rgb_struct->blink_active = false;
+    rgb_struct->blink_state = false;
+    rgb_struct->current_r = 0;
+    rgb_struct->current_g = 0;
+    rgb_struct->current_b = 0;
+    rgb_struct->current_brightness = 1.0;
+    rgb_struct->pwm_wrap;
+    rgb_struct->blink_interval = 1000;
+    
+    mutex_init(rgb_struct->rgb_mutex);
+    mutex_init(rgb_struct->pwm_mutex);
+
+}
+
+/*!
+ * @brief Initialize sensor data structure (internal).
+ * @details Sets structure members to well-known state.
+ * @param[out] sensor_struct Intitialized sensor structure.
+ */
+static void init_sensor_data_struct(sensor_data* sensor_struct) {
+    if (sensor_struct = NULL) {
+        sensor_struct = (sensor_data*) malloc(1 * sizeof(sensor_data));
+    }
+
+    sensor_struct->accel[0] = ~0;
+    sensor_struct->gyro[3] = ~0;
+    sensor_struct->mag[3] = ~0;
+    sensor_struct->adc_values[5];
+    sensor_struct->data_mutex;
+
+}
+
+/*!
+ * @brief Initialize physical sensor data structure.
+ * @details Sets structure members to well-known state.
+ * @param[out] sensor_struct write was successful or not.
+ */
+static void init_sensor_data_physical_struct(sensor_data_physical* sensor_struct) {
+    if (sensor_struct = NULL) {
+        sensor_struct = (sensor_data_physical*) malloc(1 * sizeof(sensor_data_physical));
+    }
+
+}
+
+/*!
+ * @brief Write to the I2C port.
+ * @details Retries write three times before quitting.
+ * @param[out] Whether write was successful or not.
+ */
+static void init_servo_motion_profile_struct(servo_motion_profile* servo_profile) {
+    if (servo_profile = NULL) {
+        servo_profile = (servo_motion_profile*) malloc(1 * sizeof(servo_motion_profile));
+    }
+
+}
+
+/*!
+ * @brief Write to the I2C port.
+ * @details Retries write three times before quitting.
+ * @param[out] sys_status write was successful or not.
+ */
+static void init_system_status_struct(system_status* sys_status) {
+    if (sys_status = NULL) {
+        sys_status = (system_status*) malloc(1 * sizeof(system_status));
+    }
+
+}
+
+/** @} */ // end of struct_init
+
+/** @defgroup static Static Hardware Functions
+ *  @brief These functions are designed solely to work in this source file. Trying to use any of these from another source file will give a compiler error.
  *  @{
  */
 
