@@ -1,34 +1,35 @@
 //Include headers
+#include <math.h>
+#include <stdatomic.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 
 #include "Robohand.h"
 
-#include <stdatomic.h>
-
 #include "pico/stdlib.h"
-#include "pico/util/queue.h"
-#include "hardware/watchdog.h"
+
 
 #define STATUS_UPDATE_MS 1000
 #define CMD_BUFFER_SIZE 64
 
-//Shared system status
-static queue_t cmd_queue;
-
-//
-void get_system_status(system_status* dest);
+/*!
+ * \brief Handles commands over USB.
+ * \param cmd Pointer to command array for reading.
+ * \pre The cmd array should be null-terminated.
+ */
 void process_command(const char* cmd);
 
-//! Main function: initializes hardware and runs the control loop.
-int main() {
-    rgb_init();
-    //Set color (R, G, B values 0-255)
-    rgb_set_color(255, 0, 0); //Red
+/*!
+ * \brief Core 0 main loop routine - USB Variation.
+ * \param[out] dest Pointer to system_status structure to populate.
+ */
+int main(void) {
 
-    //Adjust brightness (0.0-1.0)
-    rgb_set_brightness(1.0); //50% brightness
+    //Configure RGB light for debugging purposes
+    init_rgb();
+    rgb_set_color(255, 0, 0); //Red
+    rgb_set_brightness(1.0); //100% brightness
+    
 
     stdio_init_all();
     while(!stdio_usb_connected()) {
@@ -39,26 +40,24 @@ int main() {
 
     rgb_set_color(255, 255, 0); //Yellow
 
+    //Set up LED for heartbeat
     gpio_init(ROBOHAND_LED_PIN);
     gpio_set_dir(ROBOHAND_LED_PIN, GPIO_OUT);
 
+    //Initialize the system, sync with Core 1
     init_robohand_system();
 
     rgb_set_color(0, 255, 0); //Green
 
-    queue_init(&cmd_queue, sizeof(char), CMD_BUFFER_SIZE);
-    
-    //Launch status monitor
-    absolute_time_t next_status = get_absolute_time();
-    bool display_on = true;
-
     printf("System initialized!, both cores online, entering main loop.\r\n");
 
     printf("\r\n> ");
+
+    //Routine main loop
     while(true) {
         sys_status.core0_loops++;
         
-        //1. Non-blocking command input
+        //Non-blocking command input
         int c = getchar_timeout_us(0);
         if(c != PICO_ERROR_TIMEOUT) {
             static char cmd_buf[64];
@@ -66,10 +65,12 @@ int main() {
 
             printf("%c", c);
 
+            //If either newline or cr is detected, null-terminate the array, and send to processing
             if(c == '\n' || c == '\r') {
                 cmd_buf[buf_idx] = '\0';
                 process_command(cmd_buf);
                 buf_idx = 0;
+                printf("\r\n> ");
             }
 
             else if(buf_idx < sizeof(cmd_buf)-1) {
@@ -81,12 +82,13 @@ int main() {
     }
 }
 
-//New command processing function
+//! Command processing function
 void process_command(const char* cmd) {
     int servo, pos, duration;
     sensor_data raw_data;
     sensor_data_physical converted;
 
+    //If the sent command was 'help' or "HELP"
     if (strcasecmp(cmd, "HELP") == 0) {
         printf("Commands:\r\n"
                "SERVO [0-4] [500-2500] [duration_ms]\r\n"
@@ -95,7 +97,9 @@ void process_command(const char* cmd) {
                "HELP - This message\r\n");
     }
     
-    else if (sscanf(cmd, "SERVO %d %d %d", &servo, &pos, &duration) >= 2) {
+    //If the sent command wanted servo actuation
+    else if ((sscanf(cmd, "SERVO %d %d %d", &servo, &pos, &duration) >= 2) ||
+    (sscanf(cmd, "servo %d %d %d", &servo, &pos, &duration) >= 2)) {
         if (servo < 0 || servo >= NUM_SERVOS) {
             printf("Invalid servo\r\n");
             return;
@@ -106,6 +110,7 @@ void process_command(const char* cmd) {
         printf("Moving servo %d to %dμs in %dms\r\n", servo, pos, duration);
     }
 
+    //If the sent command wishes to view sensor output
     else if (strcasecmp(cmd, "VIEW") == 0) {
         if (get_sensor_data(&raw_data) && convert_sensor_data(&raw_data, &converted)) {
             printf("Accel: %.4fg, %.2fg, %.4fg\r\n", 
@@ -125,6 +130,7 @@ void process_command(const char* cmd) {
         }
     }
 
+    //If the sent command wishes to view the systems status
     else if (strcasecmp(cmd, "STATUS") == 0) {
         system_status status;
         sensor_data sensors;
@@ -133,7 +139,7 @@ void process_command(const char* cmd) {
 
         get_system_status(&status);
 
-        //printf("\033[2J\033[H"); // Clear screen
+        //Print load statistics
         printf("=== Robohand System Status ===\r\n");
         printf("Cores: 0(%s) | 1(%s)\r\n", 
             status.system_ok ? "OK" : "ERR",
@@ -143,6 +149,7 @@ void process_command(const char* cmd) {
             status.core0_loops / (STATUS_UPDATE_MS/1000),
             status.core1_loops / (STATUS_UPDATE_MS/1000));
 
+        //Print sensor data
         if(get_sensor_data(&sensors) && convert_sensor_data(&sensors, &converted)) {
             printf("\r\nSensors:\r\n");
             printf(" Accel: X%.2fg Y%.2fg Z%.2fg\r\n", 
@@ -151,6 +158,7 @@ void process_command(const char* cmd) {
                 converted.gyro[0], converted.gyro[1], converted.gyro[2]);
         }
 
+        //Retrieve and print servo data
         printf("\r\nServos:\r\n");
         for(int i=0; i<NUM_SERVOS; i++) {
             get_servo_status(i, &profile);
@@ -158,6 +166,7 @@ void process_command(const char* cmd) {
         }
     }
 
+    //Unrecognized command
     else {
         printf("Unknown command\r\n");
     }

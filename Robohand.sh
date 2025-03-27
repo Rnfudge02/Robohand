@@ -31,6 +31,7 @@ while getopts "bhip:s:" options; do
             update_var PICO_PLATFORM "$NEW_PLATFORM"
             update_var PICO_BOARD "$NEW_BOARD"
 
+            mkdir -p Build
             rm -rf ./Build/*
             cd ./Build/
 
@@ -65,7 +66,7 @@ while getopts "bhip:s:" options; do
             echo -e "${FG_GREEN}[Robohand Controller]${FG_BLUE} Initializing system for Robohand communication.${RESET}"
 
             #Install needed apt packages
-            sudo apt update && sudo apt install minicom cmake build-esssential gcc g++ gcc-arm-none-eabi
+            sudo apt update && sudo apt install -y minicom cmake build-essential gcc g++ gcc-arm-none-eabi
 
             # Initialize submodules
             git submodule update --init --recursive

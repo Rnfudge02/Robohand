@@ -33,12 +33,16 @@ extern "C" {
 #include <std_msgs/msg/float32_multi_array.h>
 #include <rmw_microros/rmw_microros.h>
 
-// Debugging and error checking macros
+/** \defgroup debug_macros Macros to provide extra stability to the application.
+ *  \brief Prints error message if referenced function returns an error.
+ *  @{
+ */
+
 /*!
- * \def RCCHECK
- * \brief Checks return code from RCL functions
- * \param fn RCL function call to check
- * \details Logs failures with file/line info when DEBUG is enabled
+ * \def RCCHECK.
+ * \brief Checks return code from RCL functions.
+ * \param fn RCL function call to check.
+ * \details Logs failures with file/line info when DEBUG is enabled.
  */
 #define RCCHECK(fn) { \
     rcl_ret_t temp_rc = fn; \
@@ -48,13 +52,35 @@ extern "C" {
 }
 
 /*!
- * \def RCSOFTCHECK
- * \brief Soft error checking macro for non-critical operations
- * \param fn RCL function call to check
+ * \def RCSOFTCHECK.
+ * \brief Soft error checking macro for non-critical operations.
+ * \param fn RCL function call to check.
  */
 #define RCSOFTCHECK(fn) RCCHECK(fn)
 
+/** @} */ // end of debug_macros
 
+/** \defgroup time_utils Time Compatibility
+ *  \brief POSIX time functions for micro-ROS compatibility
+ *  @{
+ */
+
+/*!
+ * \brief Provides POSIX-compatible clock implementation
+ * \param[in] clk_id Clock identifier (unused)
+ * \param[out] tp Timespec structure to populate
+ * \return Always returns 0 (success)
+ * \note Uses Pico's time_us_64() for timing
+ */
+int clock_gettime(clockid_t clk_id, struct timespec* tp);
+
+/*!
+ * \brief Provides POSIX-compatible sleep implementation
+ * \param us Microsecond count to sleep
+ */
+void usleep(uint64_t us);
+
+/** @} */ // end of time_utils
 
 //Transport interface for micro-ROS
 /** \defgroup transport_functions Custom Transport Implementation
@@ -131,22 +157,6 @@ void servo_callback(const void* msg_in);
  *          - Analog sensors (5 channels, volts)
  */
 void sensor_timer_callback(rcl_timer_t* timer, int64_t last_call_time);
-
-/** \defgroup time_utils Time Compatibility
- *  \brief POSIX time functions for micro-ROS compatibility
- *  @{
- */
-
-/*!
- * \brief Provides POSIX-compatible clock implementation
- * \param[in] clk_id Clock identifier (unused)
- * \param[out] tp Timespec structure to populate
- * \return Always returns 0 (success)
- * \note Uses Pico's time_us_64() for timing
- */
-int __clock_gettime(clockid_t clk_id, struct timespec* tp);
-
-/** @} */ // end of time_utils
 
 #ifdef __cplusplus
 }

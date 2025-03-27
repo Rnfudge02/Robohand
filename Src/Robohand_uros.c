@@ -43,17 +43,65 @@ static uint8_t debug = DEBUG;
  
 //Transport implementation
 #include <uxr/client/profile/transport/custom/custom_transport.h>
- 
-//Time compatibility
+
+//! Time retrieval function for compatibility between uros and pi pico
 int clock_gettime(clockid_t clk_id, struct timespec *tp) {
     uint64_t m = time_us_64();
     tp->tv_sec = m / 1000000;
     tp->tv_nsec = (m % 1000000) * 1000;
     return 0;
 }
- 
+
+//! 
 void usleep(uint64_t us) {
     sleep_us(us);
+}
+
+//!
+bool pico_serial_transport_close(struct uxrCustomTransport* transport) {
+    return true;
+}
+
+//!
+bool pico_serial_transport_open(struct uxrCustomTransport* transport) {
+    static bool stdio_initialized = false;
+    if(!stdio_initialized) {
+        stdio_init_all();
+        stdio_initialized = true;
+    }
+    return true;
+}
+
+//!
+size_t pico_serial_transport_read(struct uxrCustomTransport* transport, 
+                            uint8_t* buf, size_t len, int timeout, uint8_t* errcode) {
+    uint64_t start = time_us_64();
+    for(size_t i = 0; i < len; ++i) {
+        while((time_us_64() - start) < timeout * 1000) {
+            int c = getchar_timeout_us(0);
+            if(c != PICO_ERROR_TIMEOUT) {
+                buf[i] = (uint8_t)c;
+                break;
+            }
+        }
+        if((time_us_64() - start) >= timeout * 1000) {
+            *errcode = 1;
+            return i;
+        }
+    }
+    return len;
+}
+
+//!
+size_t pico_serial_transport_write(struct uxrCustomTransport* transport, 
+                            const uint8_t* buf, size_t len, uint8_t* errcode) {
+    for(size_t i = 0; i < len; ++i) {
+        if(putchar(buf[i]) != buf[i]) {
+            *errcode = 1;
+            return i;
+        }
+    }
+    return len;
 }
  
 /*!
@@ -139,6 +187,7 @@ void rgb_callback(const void* msg_in) {
                     r, g, b, brightness*100);
 }
 
+
 int main() {
     rgb_init();
     //Set color (R, G, B values 0-255)
@@ -147,7 +196,7 @@ int main() {
     //Adjust brightness (0.0-1.0)
     rgb_set_brightness(1.0); //50% brightness
 
-    //Initialize transport
+    //Initialize transport over USB
     rmw_uros_set_custom_transport(
         true,
         NULL,
@@ -160,7 +209,6 @@ int main() {
     //Set color (R, G, B values 0-255)
     rgb_set_color(255, 0, 0); //Red
  
-    
 
     //Set color (R, G, B values 0-255)
     rgb_set_color(255, 128, 0); //Orange
@@ -191,7 +239,7 @@ int main() {
         "robohand/sensor_data"
     ));
  
-    //Create subscriber
+    //Create subscriber to recieve servo commands
      RCCHECK(rclc_subscription_init_default(
         &servo_sub,
         &node,
@@ -199,7 +247,7 @@ int main() {
         "robohand/servo_commands"
     ));
  
-    //Create timer
+    //Create timer for sensor checking callback
     RCCHECK(rclc_timer_init_default(
         &sensor_timer,
         &support,
@@ -207,7 +255,7 @@ int main() {
         sensor_timer_callback
     ));
 
-    //Create publishers
+    //Create publishers for the Kinematic data
     RCCHECK(rclc_publisher_init_default(
         &imu_pub,
         &node,
@@ -307,47 +355,4 @@ int main() {
  
     return 0;
 }
- 
-//Transport implementation
-bool pico_serial_transport_open(struct uxrCustomTransport* transport) {
-    static bool stdio_initialized = false;
-    if(!stdio_initialized) {
-        stdio_init_all();
-        stdio_initialized = true;
-    }
-    return true;
-}
- 
-bool pico_serial_transport_close(struct uxrCustomTransport* transport) {
-    return true;
-}
- 
-size_t pico_serial_transport_write(struct uxrCustomTransport* transport, 
-                            const uint8_t* buf, size_t len, uint8_t* errcode) {
-    for(size_t i = 0; i < len; ++i) {
-        if(putchar(buf[i]) != buf[i]) {
-            *errcode = 1;
-            return i;
-        }
-    }
-    return len;
-}
- 
-size_t pico_serial_transport_read(struct uxrCustomTransport* transport, 
-                            uint8_t* buf, size_t len, int timeout, uint8_t* errcode) {
-    uint64_t start = time_us_64();
-    for(size_t i = 0; i < len; ++i) {
-        while((time_us_64() - start) < timeout * 1000) {
-            int c = getchar_timeout_us(0);
-            if(c != PICO_ERROR_TIMEOUT) {
-                buf[i] = (uint8_t)c;
-                break;
-            }
-        }
-        if((time_us_64() - start) >= timeout * 1000) {
-            *errcode = 1;
-            return i;
-        }
-    }
-    return len;
-}
+
