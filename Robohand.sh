@@ -60,7 +60,15 @@ and the HMC8553L informs the system of data readiness using GPIO 10." >> prompt_
 
             cat ./Src/Robohand.c >> prompt_file.txt
 
-            echo -e "Robohand.c header file end, begin CMakelists.txt" >> prompt_file.txt
+            echo -e "Robohand.c header file end, begin Robohand_advanced.h" >> promp_file.txt
+
+            cat ./Include/Robohand_advanced.h >> prompt_file.txt
+
+            echo -e "End Robohand_advanced.h, begin Robohand_advanced.c" >> prompt_file.txt
+
+            cat ./Include/Robohand_advanced.c >> prompt_file.txt
+            
+            echo -e "End Robohand_advanced.c, begin CMakelists.txt" >> prompt_file.txt
 
             cat CMakeLists.txt >> prompt_file.txt
 
@@ -83,7 +91,7 @@ complexity of the problem. Double check all suggestions provided to CMakeLists.t
             rm -rf ./Build/*
             cd ./Build/
 
-            cmake -DPICO_BOARD=pico ..
+            cmake -DPICO_BOARD=pico -DUSE_DMA=OFF ..
             make Robohand_usb Robohand_uros -j$(nproc)
 
             cd ..

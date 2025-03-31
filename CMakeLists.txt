@@ -28,6 +28,9 @@ include(${PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 set(MICRO_ROS_DIR ${DEPS_DIR}/micro_ros_pico_sdk)
 set(MICRO_ROS_PLATFORM_DIR ${MICRO_ROS_DIR}/libmicroros)
 
+option(USE_INTERRUPTS "Enable DMA transfers" OFF)
+option(USE_DMA "Enable DMA transfers" OFF)
+
 #Main project setup
 project(${PROJECT_NAME} C CXX ASM)
 
@@ -38,8 +41,18 @@ set(PICO_LWIP_COMPILER_FLAGS "-Wno-address-of-packed-member -Wno-unused-but-set-
 #Common sources and includes
 set(COMMON_SOURCES
     ./Src/Robohand.c
+    ./Src/Robohand_advanced.c
     ./Include/Robohand.h
+    ./Include/Robohand_advanced.h
 )
+
+if(USE_DMA)
+    target_compile_definitions(${TARGET_NAME} PRIVATE DMA_ENABLE=1)
+    target_sources(${TARGET_NAME} PRIVATE 
+        ${CMAKE_CURRENT_SOURCE_DIR}/Src/Robohand_advanced.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/Include/Robohand_advanced.h
+    )
+endif()
 
 #Set include directories that header files can be found in
 include_directories(
@@ -84,6 +97,8 @@ foreach(TARGET_INFO IN LISTS TARGET_VARIANTS)
     
     target_compile_definitions(${TARGET_NAME} PRIVATE
         PICO_BOARD_${PICO_BOARD}
+        PICO_DMA_ENABLE=1
+        PICO_USE_DMA_RAM=1
     )
 
     pico_set_program_name(${TARGET_NAME} "${TARGET_NAME}")
@@ -97,6 +112,7 @@ foreach(TARGET_INFO IN LISTS TARGET_VARIANTS)
         hardware_watchdog
         hardware_i2c
         hardware_adc
+        hardware_dma
         hardware_pwm
         hardware_pio
     )

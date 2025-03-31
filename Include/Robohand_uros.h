@@ -39,6 +39,7 @@ extern "C" {
 #include <rmw_microros/rmw_microros.h>
 
 #define SENSOR_DATA_COUNT 14
+#define SENSOR_PUB_INTERVAL_MS 1000
 
 /*! @defgroup debug_macros MicroROS Debugging Macros
  *  @brief Macros to provide extra stability to the application. Prints error message if referenced function returns an error.

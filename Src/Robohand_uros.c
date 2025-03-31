@@ -178,7 +178,7 @@ static void rgb_callback(const void* msg_in) {
  * \brief Core 0 main loop routine - MicroROS Variation.
  */
 int main() {
-    rgb_init();
+    init_rgb();
     //Set color (R, G, B values 0-255)
     rgb_set_color(255, 0, 0); //Red
 
