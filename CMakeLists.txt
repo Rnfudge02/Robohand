@@ -46,14 +46,6 @@ set(COMMON_SOURCES
     ./Include/Robohand_advanced.h
 )
 
-if(USE_DMA)
-    target_compile_definitions(${TARGET_NAME} PRIVATE DMA_ENABLE=1)
-    target_sources(${TARGET_NAME} PRIVATE 
-        ${CMAKE_CURRENT_SOURCE_DIR}/Src/Robohand_advanced.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/Include/Robohand_advanced.h
-    )
-endif()
-
 #Set include directories that header files can be found in
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/Include
@@ -76,7 +68,6 @@ set(TARGET_VARIANTS
 
 #Configure for each executable
 foreach(TARGET_INFO IN LISTS TARGET_VARIANTS)
-    #Get the required suffix and board to compile for
     string(REPLACE ":" ";" TARGET_PARTS ${TARGET_INFO})
     list(GET TARGET_PARTS 0 TARGET_SUFFIX)
     list(GET TARGET_PARTS 1 PICO_BOARD)
@@ -84,23 +75,38 @@ foreach(TARGET_INFO IN LISTS TARGET_VARIANTS)
     set(TARGET_NAME ${PROJECT_NAME}${TARGET_SUFFIX})
     set(SOURCE_FILE ./Src/Robohand${TARGET_SUFFIX}.c)
 
-    #Create executable with board-specific settings
+    # Create executable first
     add_executable(${TARGET_NAME} 
         ${SOURCE_FILE} 
         ${COMMON_SOURCES}
     )
-    
-    #Set board definition for conditional compilation
+
+    # THEN configure target properties
     set_target_properties(${TARGET_NAME} PROPERTIES 
         PICO_BOARD ${PICO_BOARD}
     )
-    
+
+    # Common configurations for all targets
     target_compile_definitions(${TARGET_NAME} PRIVATE
         PICO_BOARD_${PICO_BOARD}
         PICO_DMA_ENABLE=1
         PICO_USE_DMA_RAM=1
     )
 
+    # DMA-specific configuration
+    if(USE_DMA)
+        target_compile_definitions(${TARGET_NAME} PRIVATE
+            USE_DMA=1
+        )
+        target_sources(${TARGET_NAME} PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/Src/Robohand_advanced.c
+        )
+        target_include_directories(${TARGET_NAME} PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/Include
+        )
+    endif()
+
+    # Continue with other configurations...
     pico_set_program_name(${TARGET_NAME} "${TARGET_NAME}")
     pico_set_program_version(${TARGET_NAME} "0.1")
 

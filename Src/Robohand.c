@@ -10,6 +10,7 @@
 #include "Robohand.h"
 
 #include <stdatomic.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -73,35 +74,56 @@ static sensor_data sensor_readings;                                 //! Mutex pr
 
 static volatile uint8_t i2c_operation_flags = 0;                    //! Register coordinating I2C accesses, may change at any point
 
-/*! \brief Static function prototypes **/
-static bool adc_sample_callback(struct repeating_timer* t);
-static float ads_voltage(uint16_t raw);
-static bool blink_callback(struct repeating_timer *t);
+//Forward function declarations
+//Struct interactors
 static void destroy_rgb_state_struct(rgb_state* rgb_struct);
 static void destroy_sensor_data_struct(sensor_data* sensor_struct);
 static void destroy_sensor_data_physical_struct(sensor_data_physical* sensor_struct);
 static void destroy_servo_motion_profile_struct(servo_motion_profile* servo_profile);
 static void destroy_system_status_struct(system_status* sys_status);
-static void ads1115_drdy_handler(uint gpio, uint32_t events);
-static void gy271_drdy_handler(uint gpio, uint32_t events);
-static void mpu6050_alert_handler(uint gpio, uint32_t events);
-static void handle_servo_commands(void);
-static bool heartbeat_callback(struct repeating_timer* t);
-static bool i2c_write_with_retry(uint8_t addr, const uint8_t* src, size_t len);
+
 static void init_rgb_state_struct(rgb_state* rgb_struct);
 static void init_sensor_data_struct(sensor_data* sensor_struct);
 static void init_sensor_data_physical_struct(sensor_data_physical* sensor_struct);
 static void init_servo_motion_profile_struct(servo_motion_profile* servo_profile, uint8_t pwm_pin);
-static void init_servo_pwm(void);
 static void init_system_status_struct(system_status* sys_status);
-static void init_watchdog(void);
+
+//Interrupt handlers
+static void ads1115_drdy_handler(uint gpio, uint32_t events);
+static void gy271_drdy_handler(uint gpio, uint32_t events);
+static void mpu6050_drdy_handler(uint gpio, uint32_t events);
+
+//Callbacks
+static bool adc_sample_callback(struct repeating_timer* t);
+static bool blink_callback(struct repeating_timer *t);
+static bool heartbeat_callback(struct repeating_timer* t);
 static bool mpu6050_callback(struct repeating_timer* t);
+
+//Servo setup functions
+static void handle_servo_commands(void);
+static void init_servo_pwm(void);
+static void update_servo_positions(void);
+
+//Helper functions
+static float ads_voltage(uint16_t raw);
+static bool i2c_write_with_retry(uint8_t addr, const uint8_t* src, size_t len);
+
+//System intitialization functions
+static void init_system_comms(void);
+static void init_watchdog(void);
+
+//Reader functions
 static float read_adc2(void);
 static uint16_t read_ads_channel(uint8_t channel);
 static void read_adc_data(void);
 static void read_hmc5883l_data(void);
 static void read_mpu6050_data(void);
-static void update_servo_positions(void);
+
+/**
+ * 
+ * User facing function definitions
+ * 
+ */
 
 //! Move the servo with the desired settings
 void actuate_servo(uint8_t servo, uint16_t pulse_width, uint16_t duration_ms) {
@@ -171,7 +193,6 @@ void core1_entry(void) {
     if (DEBUG) {
         printf("Starting main loop.\r\n");
     }
-
 
     while(1) {
         loop_count++;
@@ -294,12 +315,12 @@ void init_robohand_system(void) {
     //Launch core1 with sensor handling
     multicore_launch_core1(core1_entry);
 
-    printf("Waiting for core1 init");
+    printf("Waiting for core1 init.\r\n");
      
     //Wait for core1 initialization
     while(!multicore_fifo_rvalid());
 
-    printf("Done waiting for core1 init");
+    printf("Done waiting for core1 init.\r\n");
 
     multicore_fifo_pop_blocking();
 }
@@ -498,7 +519,7 @@ static void init_sensor_data_struct(sensor_data* sensor_struct) {
 /*!
  * @brief Initialize physical sensor data structure.
  * @details Sets structure members to well-known state.
- * @param[out] sensor_struct write was successful or not.
+ * @param[out] sensor_struct Initialized sensor data structure.
  */
 static void init_sensor_data_physical_struct(sensor_data_physical* sensor_struct) {
     if (sensor_struct = NULL) {
@@ -527,9 +548,10 @@ static void init_sensor_data_physical_struct(sensor_data_physical* sensor_struct
 }
 
 /*!
- * @brief Write to the I2C port.
+ * @brief Intitialize a servo motion profile.
  * @details Retries write three times before quitting.
- * @param[out] Whether write was successful or not.
+ * @param[out] servo_profile Initialized servo profile.
+ * @param[in] pwm_pin Pin to use for PWM signal modulation.
  */
 static void init_servo_motion_profile_struct(servo_motion_profile* servo_profile, uint8_t pwm_pin) {
     if (servo_profile = NULL) {
@@ -547,9 +569,9 @@ static void init_servo_motion_profile_struct(servo_motion_profile* servo_profile
 }
 
 /*!
- * @brief Write to the I2C port.
- * @details Retries write three times before quitting.
- * @param[out] sys_status write was successful or not.
+ * @brief Initialize system status structure.
+ * @details Used to hold information for system state/performance metrics.
+ * @param[out] sys_status Initialized system status structure.
  */
 static void init_system_status_struct(system_status* sys_status) {
     if (sys_status = NULL) {
@@ -566,14 +588,56 @@ static void init_system_status_struct(system_status* sys_status) {
     mutex_init(&sys_status->status_mutex);
 }
 
-/** @} */ // end of struct_init
+/** @} */ // end of struct_interact
 
-/** @defgroup static Static Hardware Functions
- *  @brief These functions are designed solely to work in this source file. Trying to use any of these from another source file will give a compiler error.
+/** @defgroup interrupt_handlers Interrupt Handlers
+ *  @brief Used to eliminate polling. Change the CMake macro -DUSE_INTERRUPTS=ON to utilizes this backend.
  *  @{
  */
 
 /*!
+ * @brief ADS1115 data read handler (responds to physical interrupt).
+ * @param gpio GPIO pin number.
+ * @param events Triggering events.
+ */
+static void ads1115_drdy_handler(uint gpio, uint32_t events) {
+    if (gpio == ADS1115_INT_PIN && (events & GPIO_IRQ_EDGE_FALL)) {
+        atomic_fetch_or_explicit(&i2c_operation_flags, ADC_READ_FLAG, memory_order_relaxed);
+    }
+}
+
+/*!
+ * @brief GY271 data read handler (responds to physical interrupt).
+ * @param gpio GPIO pin number.
+ * @param events Triggering events.
+ */
+static void gy271_drdy_handler(uint gpio, uint32_t events) {
+    if (HAS_HMC5883L) {
+        if(gpio == 10 && (events & GPIO_IRQ_EDGE_RISE)) {
+            atomic_fetch_or_explicit(&i2c_operation_flags, HMC_READ_FLAG, memory_order_relaxed);
+        }
+    }
+}
+
+/*!
+ * @brief MPU6050 data read handler (responds to physical interrupt).
+ * @param gpio GPIO pin number.
+ * @param events Triggering events.
+ */
+static void mpu6050_drdy_handler(uint gpio, uint32_t events) {
+    if (gpio == MPU6050_INT_PIN && (events & GPIO_IRQ_EDGE_FALL)) {
+        atomic_fetch_or_explicit(&i2c_operation_flags, MPU_READ_FLAG, memory_order_relaxed);
+    }
+}
+
+/** @} */ // end of interrupt_handlers
+
+/** @defgroup callbacks Callbacks
+ *  @brief Used as a fallback if no other implementations are available (USE_FALLBACK macro is true).
+ *  @{
+ */
+
+ /*!
  * @brief ADC data read callback.
  * @param t Timer structure.
  * @return Always returns true to continue timer.
@@ -584,15 +648,6 @@ static bool adc_sample_callback(struct repeating_timer* t) {
     }
     
     return true;
-}
-
-/*!
- * @brief Convert raw ADS1115 value to voltage
- * @param raw 16-bit raw ADC value
- * @return Voltage in volts
- */
-static float ads_voltage(uint16_t raw) {
-    return (int16_t)raw * (4.096f / 32768.0); //±4.096V range
 }
 
 /*!
@@ -625,61 +680,18 @@ static bool blink_callback(struct repeating_timer *t) {
 }
 
 /*!
- * @brief ADS1115 data read handler (responds to physical interrupt).
- * @param gpio GPIO pin number.
- * @param events Triggering events.
+ * @brief GY271 data read callback.
+ * @param t Timer structure.
+ * @return true if the callback should continue running.
  */
-static void ads1115_drdy_handler(uint gpio, uint32_t events) {
-    if (gpio == ADS1115_ALERT_PIN && (events & GPIO_IRQ_EDGE_FALL)) {
-        atomic_fetch_or_explicit(&i2c_operation_flags, ADC_READ_FLAG, memory_order_relaxed);
-    }
-}
-
-/*!
- * @brief GY271 data read handler (responds to physical interrupt).
- * @param gpio GPIO pin number.
- * @param events Triggering events.
- */
-static void gy271_drdy_handler(uint gpio, uint32_t events) {
+static bool gy271_callback(struct repeating_timer* t) {
     if (HAS_HMC5883L) {
-        if(gpio == 10 && (events & GPIO_IRQ_EDGE_RISE)) {
-            atomic_fetch_or_explicit(&i2c_operation_flags, HMC_READ_FLAG, memory_order_relaxed);
-        }
+        atomic_fetch_or_explicit(&i2c_operation_flags, HMC_READ_FLAG, memory_order_relaxed);
+        return true;
     }
-}
 
-/*!
- * @brief MPU6050 data read handler (responds to physical interrupt).
- * @param gpio GPIO pin number.
- * @param events Triggering events.
- */
-static void mpu6050_drdy_handler(uint gpio, uint32_t events) {
-    if (gpio == MPU6050_INT_PIN && (events & GPIO_IRQ_EDGE_FALL)) {
-        atomic_fetch_or_explicit(&i2c_operation_flags, MPU_READ_FLAG, memory_order_relaxed);
-    }
-}
-
-/*!
- * @brief Function that unpacks commands sent from other modules.
- * @details Reads from the FIFO and parses servo commands.
- * @post The appropriate servo profile is updated.
- */
-static void handle_servo_commands(void) {
-    if (HAS_SERVOS) {
-        while(multicore_fifo_rvalid()) {
-            uint32_t cmd = multicore_fifo_pop_blocking();
-            uint8_t servo = (cmd >> 28) & 0x0F;         //Extract top 4 bits for servo
-            uint16_t pulse_width = (cmd >> 16) & 0xFFF; //Next 12 bits for pulse width
-            uint16_t duration = cmd & 0xFFFF;           //Lower 16 bits for duration
-    
-            if(servo < NUM_SERVOS && mutex_try_enter(&servo_mutex, NULL)) {
-                servo_profiles[servo].target_pw = pulse_width;
-                servo_profiles[servo].duration_ms = duration;
-                servo_profiles[servo].start_time = time_us_32();
-                servo_profiles[servo].is_moving = true;
-                mutex_exit(&servo_mutex);
-            }
-        }
+    else {
+        return false;
     }
 }
 
@@ -703,20 +715,50 @@ static bool heartbeat_callback(struct repeating_timer* t) {
 }
 
 /*!
- * @brief Write to the I2C port.
- * @details Retries write three times before quitting.
- * @return Whether write was successful or not.
+ * @brief MPU6050 data read callback.
+ * @param t Timer structure.
+ * @return true if the callback should continue running.
  */
-static bool i2c_write_with_retry(uint8_t addr, const uint8_t* src, size_t len) {
-    if (HAS_I2C) {
-        int retries = 3;
-        while(retries--) {
-            if(i2c_write_blocking(I2C_PORT, addr, src, len, false) == len) 
-                return true;
-            sleep_ms(1);
-        }
+static bool mpu6050_callback(struct repeating_timer* t) {
+    if (HAS_MPU6050) {
+        atomic_fetch_or_explicit(&i2c_operation_flags, MPU_READ_FLAG, memory_order_relaxed);
+        return true;
+    }
 
+    else {
         return false;
+    }
+}
+
+/** @} */ // end of callbacks
+
+/** @defgroup servo_ctl Servo Control
+ *  @brief Used to control servos.
+ *  @{
+ */
+
+
+/*!
+ * @brief Function that unpacks commands sent from other modules.
+ * @details Reads from the FIFO and parses servo commands.
+ * @post The appropriate servo profile is updated.
+ */
+static void handle_servo_commands(void) {
+    if (HAS_SERVOS) {
+        while(multicore_fifo_rvalid()) {
+            uint32_t cmd = multicore_fifo_pop_blocking();
+            uint8_t servo = (cmd >> 28) & 0x0F;         //Extract top 4 bits for servo
+            uint16_t pulse_width = (cmd >> 16) & 0xFFF; //Next 12 bits for pulse width
+            uint16_t duration = cmd & 0xFFFF;           //Lower 16 bits for duration
+
+            if(servo < NUM_SERVOS && mutex_try_enter(&servo_mutex, NULL)) {
+                servo_profiles[servo].target_pw = pulse_width;
+                servo_profiles[servo].duration_ms = duration;
+                servo_profiles[servo].start_time = time_us_32();
+                servo_profiles[servo].is_moving = true;
+                mutex_exit(&servo_mutex);
+            }
+        }
     }
 }
 
@@ -737,6 +779,93 @@ static void init_servo_pwm(void) {
         }
     }
 }
+
+/*!
+ * @brief Update servo positions using motion profiles.
+ * @details Calculates smooth transitions between current and target positions.
+ * @post Servo PWM outputs are updated with new calculated positions.
+ */
+static void update_servo_positions(void) {
+    if (HAS_SERVOS) {
+        absolute_time_t now = get_absolute_time();
+        int32_t dt_us = absolute_time_diff_us(prev_update_time, now);
+    
+        if(dt_us <= 0) return;  //Prevent time travel
+    
+        for(int i = 0; i < NUM_SERVOS; i++) {
+            if(mutex_try_enter(&servo_mutex, NULL)) {
+                if(!servo_profiles[i].is_moving) {
+                    mutex_exit(&servo_mutex);
+                    continue;
+                }
+
+                uint32_t elapsed = time_us_32() - servo_profiles[i].start_time;
+                float t = (float)elapsed / (servo_profiles[i].duration_ms * 1000);
+            
+                if(t >= 1.0f) {
+                    servo_profiles[i].current_pw = servo_profiles[i].target_pw;
+                    servo_profiles[i].is_moving = false;
+                }
+                
+                else {
+                    //Quintic easing for smoother motion
+                    float eased_t = t * t * t * (t * (6 * t - 15) + 10);
+                    int32_t delta = servo_profiles[i].target_pw - servo_profiles[i].current_pw;
+                    servo_profiles[i].current_pw += (int32_t)(delta * eased_t);
+                    servo_profiles[i].current_pw = constrain(
+                        servo_profiles[i].current_pw, SERVO_MIN_PULSE, SERVO_MAX_PULSE
+                    );
+                }
+
+                //Update PWM (50Hz = 20ms period)
+                uint slice = pwm_gpio_to_slice_num(SERVO_PINS[i]);
+                uint16_t wrap = pwm_hw->slice[slice].top;
+                uint16_t level = (uint16_t)(servo_profiles[i].current_pw * PWM_US_TO_LEVEL);
+                pwm_set_gpio_level(SERVO_PINS[i], level);
+            
+                mutex_exit(&servo_mutex);
+            }
+        }
+
+        prev_update_time = now;
+    }
+}
+
+/** @} */ // end of servo_ctl
+
+/** @defgroup misc Miscellaneous
+ *  @brief Helper functions providing utility to developers.
+ *  @{
+ */
+
+/*!
+ * @brief Convert raw ADS1115 value to voltage
+ * @param raw 16-bit raw ADC value
+ * @return Voltage in volts
+ */
+static float ads_voltage(uint16_t raw) {
+    return (int16_t)raw * (4.096f / 32768.0); //±4.096V range
+}
+
+/*!
+ * @brief Write to the I2C port.
+ * @details Retries write three times before quitting.
+ * @return Whether write was successful or not.
+ */
+static bool i2c_write_with_retry(uint8_t addr, const uint8_t* src, size_t len) {
+    if (HAS_I2C) {
+        int retries = 3;
+        while(retries--) {
+            if(i2c_write_blocking(I2C_PORT, addr, src, len, false) == len) 
+                return true;
+            sleep_ms(1);
+        }
+
+        return false;
+    }
+}
+
+/** @} */ // end of misc
 
 /*!
  * @brief Initialize the system configuration.
@@ -775,10 +904,10 @@ void init_system_comms() {
 
         if (USE_INTERRUPTS) {
             //Configure ALERT pin
-            gpio_init(ADS1115_ALERT_PIN);
-            gpio_set_dir(ADS1115_ALERT_PIN, GPIO_IN);
-            gpio_pull_up(ADS1115_ALERT_PIN);
-            gpio_set_irq_enabled_with_callback(ADS1115_ALERT_PIN, GPIO_IRQ_EDGE_FALL, true, &ads1115_drdy_handler);
+            gpio_init(ADS1115_INT_PIN);
+            gpio_set_dir(ADS1115_INT_PIN, GPIO_IN);
+            gpio_pull_up(ADS1115_INT_PIN);
+            gpio_set_irq_enabled_with_callback(ADS1115_INT_PIN, GPIO_IRQ_EDGE_FALL, true, &ads1115_drdy_handler);
 
             //Start first conversion
             uint8_t channel = 0;
@@ -824,7 +953,7 @@ void init_system_comms() {
         };
 
         if (USE_INTERRUPTS) {
-            i2c_write_blocking(i2c1, HMC5883L_ADDR, hmc_config, 6, false);
+            i2c_write_blocking(I2C_PORT, HMC5883L_ADDR, hmc_config, 6, false);
 
             //Interrupt setup - Assuming pin will be held low when data ready, could this be confirmed?
             gpio_init(10);
@@ -848,12 +977,12 @@ void init_system_comms() {
         }
 
         uint8_t mpu_init[] = {0x6B, 0x00};
-        i2c_write_blocking(i2c1, MPU6050_ADDR, mpu_init, 2, false);
+        i2c_write_blocking(I2C_PORT, MPU6050_ADDR, mpu_init, 2, false);
 
         if (USE_INTERRUPTS) {
             //Enable Data Ready Interrupt
             uint8_t int_enable[] = {0x38, 0x01}; // INT_ENABLE register
-            i2c_write_blocking(i2c1, MPU6050_ADDR, int_enable, 2, false);
+            i2c_write_blocking(I2C_PORT, MPU6050_ADDR, int_enable, 2, false);
 
             //Configure GPIO interrupt
             gpio_init(MPU6050_INT_PIN);
@@ -867,7 +996,7 @@ void init_system_comms() {
         }
 
         if (DEBUG) {
-            printf("Configuring MPU6050.\r\n");
+            printf("Finished configuring MPU6050.\r\n");
         }
 
     }
@@ -883,59 +1012,13 @@ static void init_watchdog(void) {
     //irq_set_enabled(WATCHDOG_IRQ, false);
 }
 
-/*!
- * @brief ADS1115 and internal ADC data read callback.
- * @param t Timer structure.
- * @return true if the callback should continue running.
- */
-static bool adc_callback(struct repeating_timer* t) {
-    if (HAS_ADC) {
-        atomic_fetch_or_explicit(&i2c_operation_flags, ADC_READ_FLAG, memory_order_relaxed);
-        return true;
-    }
-    
-    else {
-        return false;
-    }
-}
-
-/*!
- * @brief GY271 data read callback.
- * @param t Timer structure.
- * @return true if the callback should continue running.
- */
-static bool gy271_callback(struct repeating_timer* t) {
-    if (HAS_HMC5883L) {
-        atomic_fetch_or_explicit(&i2c_operation_flags, HMC_READ_FLAG, memory_order_relaxed);
-        return true;
-    }
-
-    else {
-        return false;
-    }
-}
-
-
-/*!
- * @brief MPU6050 data read callback.
- * @param t Timer structure.
- * @return true if the callback should continue running.
- */
-static bool mpu6050_callback(struct repeating_timer* t) {
-    if (HAS_MPU6050) {
-        atomic_fetch_or_explicit(&i2c_operation_flags, MPU_READ_FLAG, memory_order_relaxed);
-        return true;
-    }
-
-    else {
-        return false;
-    }
-}
 
 /*!
  * @brief Read Pico's internal ADC channel 2.
  * @details needed because ADS only has 4 inputs.
  * @return Voltage in volts.
+ * @pre HAS_PI_ADC macros is true
+ * @post Returns voltage in V, returns -4.096f if error occurs
  */
 static float read_adc2(void) {
     if (HAS_PI_ADC) {
@@ -968,6 +1051,7 @@ static void read_adc_data(void) {
         uint8_t config_bytes[2] = {config >> 8, config & 0xFF};
         i2c_write_blocking(I2C_PORT, ADS1115_ADDR, config_bytes, 2, true);
     }
+
     // Read Pico's ADC2 (existing code)
     if (HAS_PI_ADC) {
         float adc2_val = read_adc2();
@@ -1076,56 +1160,3 @@ static void read_mpu6050_data(void) {
         }
     }
 }
-
-/*!
- * @brief Update servo positions using motion profiles.
- * @details Calculates smooth transitions between current and target positions.
- * @post Servo PWM outputs are updated with new calculated positions.
- */
-static void update_servo_positions(void) {
-    if (HAS_SERVOS) {
-        absolute_time_t now = get_absolute_time();
-        int32_t dt_us = absolute_time_diff_us(prev_update_time, now);
-    
-        if(dt_us <= 0) return;  //Prevent time travel
-    
-        for(int i = 0; i < NUM_SERVOS; i++) {
-            if(mutex_try_enter(&servo_mutex, NULL)) {
-                if(!servo_profiles[i].is_moving) {
-                    mutex_exit(&servo_mutex);
-                    continue;
-                }
-
-                uint32_t elapsed = time_us_32() - servo_profiles[i].start_time;
-                float t = (float)elapsed / (servo_profiles[i].duration_ms * 1000);
-            
-                if(t >= 1.0f) {
-                    servo_profiles[i].current_pw = servo_profiles[i].target_pw;
-                    servo_profiles[i].is_moving = false;
-                }
-                
-                else {
-                    //Quintic easing for smoother motion
-                    float eased_t = t * t * t * (t * (6 * t - 15) + 10);
-                    int32_t delta = servo_profiles[i].target_pw - servo_profiles[i].current_pw;
-                    servo_profiles[i].current_pw += (int32_t)(delta * eased_t);
-                    servo_profiles[i].current_pw = constrain(
-                        servo_profiles[i].current_pw, SERVO_MIN_PULSE, SERVO_MAX_PULSE
-                    );
-                }
-
-                //Update PWM (50Hz = 20ms period)
-                uint slice = pwm_gpio_to_slice_num(SERVO_PINS[i]);
-                uint16_t wrap = pwm_hw->slice[slice].top;
-                uint16_t level = (uint16_t)(servo_profiles[i].current_pw * PWM_US_TO_LEVEL);
-                pwm_set_gpio_level(SERVO_PINS[i], level);
-            
-                mutex_exit(&servo_mutex);
-            }
-        }
-
-        prev_update_time = now;
-    }
-}
-
-/** @} */ // end of static

@@ -47,29 +47,33 @@ extern "C" {
 
 //System configuration
 #define DEBUG 1                                                 ///< Enable debug output (0 - Disabled, 1 - Enabled)
+
 #define HAS_ADS1115 false                                       ///< Whether the ADS1115 (ADC) is connected to the I2C bus
-#define HAS_HMC5883L true                                       ///< Whether the HMC5883L (Magnometer) is connected to the i2c bus
+#define HAS_HMC5883L false                                       ///< Whether the HMC5883L (Magnometer) is connected to the i2c bus
 #define HAS_MPU6050 true                                        ///< Whether the MPU6050 (Accelerometer) is connected to the i2c bus
 #define HAS_I2C (HAS_ADS1115 || HAS_HMC5883L || HAS_MPU6050)    ///< Whether or not I2C initialization is required
 #define HAS_PI_ADC false                                        ///< Whether a pressure sensor is connected to the pi pico
 #define HAS_ADC (HAS_PI_ADC || HAS_ADS1115)                     ///< Whether or not ADC initalization is required
 #define HAS_RGB true                                            ///< Whether common Cathode RGB LED is connected to the pi pico
 #define HAS_SERVOS false                                        ///< Whether servos are connected to the device
+
 #define USE_INTERRUPTS false                                    ///< Use interupts for system communication
 #define USE_DMA false                                           ///< Use DMA for system communication
 #define USE_FALLBACK (!(USE_INTERRUPTS || USE_DMA))             ///< Use fallback if other options are not selected
+
 #define SYS_CLOCK 125000000                                     ///< System operating frequency
 #define I2C_PORT i2c0                                           ///< I2C port used for device connections(i2c0 on pico)
+
+#define NUM_SERVOS 5                                            ///< Number of servos to control
+#define NUM_PRESPNTS 5                                          ///< Number of pressure points to sample
+#define DMA_IN_USE 4                                            ///< Number of channels to use for DMA
+
 #define SDA_PIN 0                                               ///< GPIO pin for I2C SDA
 #define SCL_PIN 1                                               ///< GPIO pin for I2C SCL
 #define ADC2_PIN 28                                             ///< GPIO pin for Pico's ADC channel 2
-#define NUM_SERVOS 5                                            ///< Number of servos to control
-#define NUM_PRESPNTS 5                                          ///< Number of pressure points to sample
-#define NUM_DMA_CHANNELS 4                                      ///< Number of channels to use for DMA
 #define MPU6050_INT_PIN 20                                      ///< Data ready pin for the MPU6050 
 #define ADS1115_INT_PIN 21                                      ///< Data ready pin for the ADS1115
 #define HMC5883L_INT_PIN 22                                     ///< Data ready pin for the HMC5883L
-
 #define RGB_RED_PIN 18                                          ///< GPIO pin connected to the red channel
 #define RGB_GREEN_PIN 17                                        ///< GPIO pin connected to the green channel
 #define RGB_BLUE_PIN 16                                         ///< GPIO pin connected to the blue channel

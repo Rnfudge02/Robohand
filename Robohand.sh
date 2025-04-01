@@ -60,13 +60,13 @@ and the HMC8553L informs the system of data readiness using GPIO 10." >> prompt_
 
             cat ./Src/Robohand.c >> prompt_file.txt
 
-            echo -e "Robohand.c header file end, begin Robohand_advanced.h" >> promp_file.txt
+            echo -e "Robohand.c header file end, begin Robohand_advanced.h" >> prompt_file.txt
 
             cat ./Include/Robohand_advanced.h >> prompt_file.txt
 
             echo -e "End Robohand_advanced.h, begin Robohand_advanced.c" >> prompt_file.txt
 
-            cat ./Include/Robohand_advanced.c >> prompt_file.txt
+            cat ./Src/Robohand_advanced.c >> prompt_file.txt
             
             echo -e "End Robohand_advanced.c, begin CMakelists.txt" >> prompt_file.txt
 
