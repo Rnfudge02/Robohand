@@ -8,6 +8,7 @@
  */
 
 #include "Robohand.h"
+#include "Robohand_advanced.h"
 
 #include <stdatomic.h>
 #include <stdio.h>
@@ -20,10 +21,7 @@
 #include "hardware/i2c.h"
 #include "hardware/pwm.h"
 
-//Macros for I2C flag
-#define MPU_READ_FLAG (1 << 0)          ///< Bit signalling an MPU read is needed over the I2C bus
-#define HMC_READ_FLAG (1 << 1)          ///< Bit signalling an HMC read is needed over the I2C bus
-#define ADC_READ_FLAG (1 << 2)          ///< Bit signalling an ADC read is needed over the I2C bus
+
 
 //Gamma correction table (gamma = 2.8) for brightness smoothing
 const uint8_t gamma_table[256] = {
@@ -72,8 +70,6 @@ static struct repeating_timer blink_timer;                          //! Timer fo
 static rgb_state rgb_conf;                                          //! Global struct for configuring the Common Cathode RGB
 static sensor_data sensor_readings;                                 //! Mutex protected structure containing sensor information
 
-static volatile uint8_t i2c_operation_flags = 0;                    //! Register coordinating I2C accesses, may change at any point
-
 //Forward function declarations
 //Struct interactors
 static void destroy_rgb_state_struct(rgb_state* rgb_struct);
@@ -87,17 +83,6 @@ static void init_sensor_data_struct(sensor_data* sensor_struct);
 static void init_sensor_data_physical_struct(sensor_data_physical* sensor_struct);
 static void init_servo_motion_profile_struct(servo_motion_profile* servo_profile, uint8_t pwm_pin);
 static void init_system_status_struct(system_status* sys_status);
-
-//Interrupt handlers
-static void ads1115_drdy_handler(uint gpio, uint32_t events);
-static void gy271_drdy_handler(uint gpio, uint32_t events);
-static void mpu6050_drdy_handler(uint gpio, uint32_t events);
-
-//Callbacks
-static bool adc_sample_callback(struct repeating_timer* t);
-static bool blink_callback(struct repeating_timer *t);
-static bool heartbeat_callback(struct repeating_timer* t);
-static bool mpu6050_callback(struct repeating_timer* t);
 
 //Servo setup functions
 static void handle_servo_commands(void);
@@ -589,148 +574,6 @@ static void init_system_status_struct(system_status* sys_status) {
 }
 
 /** @} */ // end of struct_interact
-
-/** @defgroup interrupt_handlers Interrupt Handlers
- *  @brief Used to eliminate polling. Change the CMake macro -DUSE_INTERRUPTS=ON to utilizes this backend.
- *  @{
- */
-
-/*!
- * @brief ADS1115 data read handler (responds to physical interrupt).
- * @param gpio GPIO pin number.
- * @param events Triggering events.
- */
-static void ads1115_drdy_handler(uint gpio, uint32_t events) {
-    if (gpio == ADS1115_INT_PIN && (events & GPIO_IRQ_EDGE_FALL)) {
-        atomic_fetch_or_explicit(&i2c_operation_flags, ADC_READ_FLAG, memory_order_relaxed);
-    }
-}
-
-/*!
- * @brief GY271 data read handler (responds to physical interrupt).
- * @param gpio GPIO pin number.
- * @param events Triggering events.
- */
-static void gy271_drdy_handler(uint gpio, uint32_t events) {
-    if (HAS_HMC5883L) {
-        if(gpio == 10 && (events & GPIO_IRQ_EDGE_RISE)) {
-            atomic_fetch_or_explicit(&i2c_operation_flags, HMC_READ_FLAG, memory_order_relaxed);
-        }
-    }
-}
-
-/*!
- * @brief MPU6050 data read handler (responds to physical interrupt).
- * @param gpio GPIO pin number.
- * @param events Triggering events.
- */
-static void mpu6050_drdy_handler(uint gpio, uint32_t events) {
-    if (gpio == MPU6050_INT_PIN && (events & GPIO_IRQ_EDGE_FALL)) {
-        atomic_fetch_or_explicit(&i2c_operation_flags, MPU_READ_FLAG, memory_order_relaxed);
-    }
-}
-
-/** @} */ // end of interrupt_handlers
-
-/** @defgroup callbacks Callbacks
- *  @brief Used as a fallback if no other implementations are available (USE_FALLBACK macro is true).
- *  @{
- */
-
- /*!
- * @brief ADC data read callback.
- * @param t Timer structure.
- * @return Always returns true to continue timer.
- */
-static bool adc_sample_callback(struct repeating_timer* t) {
-    if (HAS_ADC) {
-        atomic_fetch_or_explicit(&i2c_operation_flags, ADC_READ_FLAG, memory_order_relaxed);
-    }
-    
-    return true;
-}
-
-/*!
- * @brief Callback allowing for toggling of RGB functionality.
- * @return Always returns true to continue the timer.
- */
-static bool blink_callback(struct repeating_timer *t) {
-    if (HAS_RGB) {
-        if (mutex_try_enter(&rgb_conf.rgb_mutex, NULL)) {
-            if(rgb_conf.blink_active) {
-                rgb_conf.blink_state = !rgb_conf.blink_state;
-                
-                if(rgb_conf.blink_state) {
-                    //Restore original color
-                    pwm_set_gpio_level(RGB_RED_PIN, gamma_table[(uint8_t)(rgb_conf.current_r * rgb_conf.current_brightness)]);
-                    pwm_set_gpio_level(RGB_GREEN_PIN, gamma_table[(uint8_t)(rgb_conf.current_g * rgb_conf.current_brightness)]);
-                    pwm_set_gpio_level(RGB_BLUE_PIN, gamma_table[(uint8_t)(rgb_conf.current_b * rgb_conf.current_brightness)]);
-                } else {
-                    //Turn off LEDs
-                    pwm_set_gpio_level(RGB_RED_PIN, 0);
-                    pwm_set_gpio_level(RGB_GREEN_PIN, 0);
-                    pwm_set_gpio_level(RGB_BLUE_PIN, 0);
-                }
-            }
-            mutex_exit(&rgb_conf.rgb_mutex);
-        }
-    }
-    
-    return true;
-}
-
-/*!
- * @brief GY271 data read callback.
- * @param t Timer structure.
- * @return true if the callback should continue running.
- */
-static bool gy271_callback(struct repeating_timer* t) {
-    if (HAS_HMC5883L) {
-        atomic_fetch_or_explicit(&i2c_operation_flags, HMC_READ_FLAG, memory_order_relaxed);
-        return true;
-    }
-
-    else {
-        return false;
-    }
-}
-
-/*!
- * @brief System heartbeat callback.
- * @param t Pointer to repeating timer structure.
- * @return Always returns true to continue timer.
- * @details Toggles onboard LED to indicate system liveliness.
- */
-static bool heartbeat_callback(struct repeating_timer* t) {
-    static bool led_state = false;
-    
-    #if defined(PICO_BOARD_IS_PICO_W)
-    cyw43_arch_gpio_put(ROBOHAND_LED_PIN, led_state);
-    #else
-    gpio_put(ROBOHAND_LED_PIN, led_state);
-    #endif
-    
-    led_state = !led_state;
-    return true;
-}
-
-/*!
- * @brief MPU6050 data read callback.
- * @param t Timer structure.
- * @return true if the callback should continue running.
- */
-static bool mpu6050_callback(struct repeating_timer* t) {
-    if (HAS_MPU6050) {
-        atomic_fetch_or_explicit(&i2c_operation_flags, MPU_READ_FLAG, memory_order_relaxed);
-        return true;
-    }
-
-    else {
-        return false;
-    }
-}
-
-/** @} */ // end of callbacks
 
 /** @defgroup servo_ctl Servo Control
  *  @brief Used to control servos.

@@ -131,27 +131,6 @@ extern "C" {
  */
 
 /*!
- * @brief Structure for storing the data for a DMA channel.
- * @details Contains the channel ID, whether the request is complete, and its IRQ status.
- */
-typedef struct {
-    uint8_t channel;
-    volatile bool complete;
-    uint32_t irq_status;
-} dma_channel_state;
-
-/*!
- * @brief Structure for stroring system DMA configuration.
- * @details Stores current color, brightness, and synchronization primitives.
- */
-typedef struct {
-    dma_channel_state i2c_tx;
-    dma_channel_state i2c_rx;
-    dma_channel_state adc;
-    dma_channel_state pwm;
-} dma_control;
-
-/*!
  * @brief Structure for RGB LED configuration and state.
  * @details Stores current color, brightness, and synchronization primitives.
  */

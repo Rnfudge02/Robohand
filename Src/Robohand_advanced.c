@@ -3,11 +3,12 @@
 
 #include <stdio.h>
 
+#include <stdatomic.h>
+
 #include "hardware/adc.h"
 #include "hardware/i2c.h"
 #include "hardware/dma.h"
 #include "hardware/irq.h"
-
 
 #ifdef USE_DMA
 
@@ -117,3 +118,155 @@ void process_adc_samples(uint16_t* samples) {
 }
 
 #endif
+
+#ifdef USE_INTERRUPTS
+
+/** @defgroup interrupt_handlers Interrupt Handlers
+ *  @brief Used to eliminate polling. Change the CMake macro -DUSE_INTERRUPTS=ON to utilizes this backend.
+ *  @{
+ */
+
+/*!
+ * @brief ADS1115 data read handler (responds to physical interrupt).
+ * @param gpio GPIO pin number.
+ * @param events Triggering events.
+ */
+static void ads1115_drdy_handler(uint gpio, uint32_t events) {
+    if (gpio == ADS1115_INT_PIN && (events & GPIO_IRQ_EDGE_FALL)) {
+        atomic_fetch_or_explicit(&i2c_operation_flags, ADC_READ_FLAG, memory_order_relaxed);
+    }
+}
+
+/*!
+ * @brief GY271 data read handler (responds to physical interrupt).
+ * @param gpio GPIO pin number.
+ * @param events Triggering events.
+ */
+static void gy271_drdy_handler(uint gpio, uint32_t events) {
+    if (HAS_HMC5883L) {
+        if(gpio == 10 && (events & GPIO_IRQ_EDGE_RISE)) {
+            atomic_fetch_or_explicit(&i2c_operation_flags, HMC_READ_FLAG, memory_order_relaxed);
+        }
+    }
+}
+
+/*!
+ * @brief MPU6050 data read handler (responds to physical interrupt).
+ * @param gpio GPIO pin number.
+ * @param events Triggering events.
+ */
+static void mpu6050_drdy_handler(uint gpio, uint32_t events) {
+    if (gpio == MPU6050_INT_PIN && (events & GPIO_IRQ_EDGE_FALL)) {
+        atomic_fetch_or_explicit(&i2c_operation_flags, MPU_READ_FLAG, memory_order_relaxed);
+    }
+}
+
+/** @} */ // end of interrupt_handlers
+
+#endif
+
+/** @defgroup callbacks Callbacks
+ *  @brief Used as a fallback if no other implementations are available (USE_FALLBACK macro is true).
+ *  @{
+ */
+
+ #ifdef USE_FALLBACK
+
+ /*!
+ * @brief ADC data read callback.
+ * @param t Timer structure.
+ * @return Always returns true to continue timer.
+ */
+static bool adc_sample_callback(struct repeating_timer* t) {
+    if (HAS_ADC) {
+        atomic_fetch_or_explicit(&i2c_operation_flags, ADC_READ_FLAG, memory_order_relaxed);
+    }
+    
+    return true;
+}
+
+/*!
+ * @brief GY271 data read callback.
+ * @param t Timer structure.
+ * @return true if the callback should continue running.
+ */
+static bool gy271_callback(struct repeating_timer* t) {
+    if (HAS_HMC5883L) {
+        atomic_fetch_or_explicit(&i2c_operation_flags, HMC_READ_FLAG, memory_order_relaxed);
+        return true;
+    }
+
+    else {
+        return false;
+    }
+}
+
+/*!
+ * @brief MPU6050 data read callback.
+ * @param t Timer structure.
+ * @return true if the callback should continue running.
+ */
+static bool mpu6050_callback(struct repeating_timer* t) {
+    if (HAS_MPU6050) {
+        atomic_fetch_or_explicit(&i2c_operation_flags, MPU_READ_FLAG, memory_order_relaxed);
+        return true;
+    }
+
+    else {
+        return false;
+    }
+}
+
+#endif
+
+/*!
+ * @brief Callback allowing for toggling of RGB functionality.
+ * @return Always returns true to continue the timer.
+ */
+static bool blink_callback(struct repeating_timer *t) {
+    if (HAS_RGB) {
+        if (mutex_try_enter(&rgb_conf.rgb_mutex, NULL)) {
+            if(rgb_conf.blink_active) {
+                rgb_conf.blink_state = !rgb_conf.blink_state;
+                
+                if(rgb_conf.blink_state) {
+                    //Restore original color
+                    pwm_set_gpio_level(RGB_RED_PIN, gamma_table[(uint8_t)(rgb_conf.current_r * rgb_conf.current_brightness)]);
+                    pwm_set_gpio_level(RGB_GREEN_PIN, gamma_table[(uint8_t)(rgb_conf.current_g * rgb_conf.current_brightness)]);
+                    pwm_set_gpio_level(RGB_BLUE_PIN, gamma_table[(uint8_t)(rgb_conf.current_b * rgb_conf.current_brightness)]);
+                } else {
+                    //Turn off LEDs
+                    pwm_set_gpio_level(RGB_RED_PIN, 0);
+                    pwm_set_gpio_level(RGB_GREEN_PIN, 0);
+                    pwm_set_gpio_level(RGB_BLUE_PIN, 0);
+                }
+            }
+            mutex_exit(&rgb_conf.rgb_mutex);
+        }
+    }
+    
+    return true;
+}
+
+
+
+/*!
+ * @brief System heartbeat callback.
+ * @param t Pointer to repeating timer structure.
+ * @return Always returns true to continue timer.
+ * @details Toggles onboard LED to indicate system liveliness.
+ */
+static bool heartbeat_callback(struct repeating_timer* t) {
+    static bool led_state = false;
+    
+    #if defined(PICO_BOARD_IS_PICO_W)
+    cyw43_arch_gpio_put(ROBOHAND_LED_PIN, led_state);
+    #else
+    gpio_put(ROBOHAND_LED_PIN, led_state);
+    #endif
+    
+    led_state = !led_state;
+    return true;
+}
+
+/** @} */ // end of callbacks

@@ -21,6 +21,8 @@
 extern "C" {
 #endif
 
+#include <sys/types.h>
+
 //Pico and ROS includes
 #include "pico/stdlib.h"
 #include <rcl/rcl.h>
