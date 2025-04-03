@@ -132,7 +132,7 @@ void process_command(const char* cmd) {
         }
         
         else {
-            printf("Sensor data unavailable\r\n");
+            printf("Sensor data unavailable.\r\n");
         }
     }
 
@@ -151,17 +151,19 @@ void process_command(const char* cmd) {
             status.system_ok ? "OK" : "ERR",
             multicore_fifo_rvalid() ? "OK" : "ERR");
 
-        printf("Load: Core0 %luHz | Core1 %luHz\r\n",
-            status.core0_loops / (STATUS_UPDATE_MS/1000),
-            status.core1_loops / (STATUS_UPDATE_MS/1000));
+        printf("Load: Core0 %luMHz | Core1 %luMHz\r\n",
+            status.core0_loops / status.last_reset_core0,
+            status.core1_loops / status.last_reset_core0);
 
         //Print sensor data
-        if(get_sensor_data(&sensors) && convert_sensor_data(&sensors, &converted)) {
-            printf("\r\nSensors:\r\n");
-            printf(" Accel: X%.2fg Y%.2fg Z%.2fg\r\n", 
-                converted.accel[0], converted.accel[1], converted.accel[2]);
-            printf(" Gyro:  X%.2f°/s Y%.2f°/s Z%.2f°/s\r\n",
-                converted.gyro[0], converted.gyro[1], converted.gyro[2]);
+        if(get_sensor_data(&sensors)) {
+            if (convert_sensor_data(&sensors, &converted)) {
+                printf("\r\nSensors:\r\n");
+                printf(" Accel: X%.2fg Y%.2fg Z%.2fg\r\n", 
+                    converted.accel[0], converted.accel[1], converted.accel[2]);
+                printf(" Gyro:  X%.2f°/s Y%.2f°/s Z%.2f°/s\r\n",
+                    converted.gyro[0], converted.gyro[1], converted.gyro[2]);
+            }
         }
 
         //Retrieve and print servo data
@@ -174,6 +176,6 @@ void process_command(const char* cmd) {
 
     //Unrecognized command
     else {
-        printf("Unknown command\r\n");
+        printf("Unknown command. Type 'help' for more options.\r\n");
     }
 }

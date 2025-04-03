@@ -40,6 +40,11 @@
         "i2c.h": "c",
         "string.h": "c",
         "robohand_advanced.h": "c",
-        "robohand.h": "c"
+        "robohand.h": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c",
+        "span": "c",
+        "cstdint": "c"
     }
 }

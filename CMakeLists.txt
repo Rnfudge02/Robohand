@@ -105,22 +105,24 @@ foreach(TARGET_INFO IN LISTS TARGET_VARIANTS)
     # Common configurations for all targets
     target_compile_definitions(${TARGET_NAME} PRIVATE
         PICO_BOARD_${PICO_BOARD}
-        PICO_DMA_ENABLE=1
-        PICO_USE_DMA_RAM=1
+        PICO_DEFAULT_CPU_CLOCK_KHZ=125000
+        PICO_FLASH_SPI_CLKDIV=4
+        PICO_NO_FLASH=0
     )
 
     # DMA-specific configuration
+
     if(USE_DMA)
         target_compile_definitions(${TARGET_NAME} PRIVATE
-            USE_DMA=1
+        USE_DMA=1
+        PICO_DMA_ALIGN=4
+        PICO_DEFAULT_DMA_MAX_CHANNELS=12
+        PICO_USE_DMA_RAM=1
         )
-        target_sources(${TARGET_NAME} PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/Src/Robohand_advanced.c
+        target_link_libraries(${TARGET_NAME}
+        hardware_dma
         )
-        target_include_directories(${TARGET_NAME} PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/Include
-        )
-    endif()
+endif()
 
     # Continue with other configurations...
     pico_set_program_name(${TARGET_NAME} "${TARGET_NAME}")

@@ -21,8 +21,6 @@
 #include "hardware/i2c.h"
 #include "hardware/pwm.h"
 
-
-
 //Gamma correction table (gamma = 2.8) for brightness smoothing
 const uint8_t gamma_table[256] = {
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
@@ -49,26 +47,17 @@ system_status sys_status;                                           //! Structur
 const uint SERVO_PINS[NUM_SERVOS] = {11, 12, 13, 14, 15};           //! GPIO pins to use for mechanical actuation
 const float VOLTAGE_DIVIDER_RATIO = 1.0f;                           //! Ratio for voltage calculations (Not sure if this is needed anymore)
 
-//Static bools to prevent resource contention of missing components
-static bool ads_written = false;                                    //! Will skip trying to re-acquire and write to sensor mutex if the ADS1115 is disconnected
-static bool hmc5883l_written = false;                               //! Will skip trying to re-acquire and write to sensor mutex if the HMC5883L is disconnected
-static bool mpu6050_written = false;                                //! Will skip trying to re-acquire and write to sensor mutex if the MPU6050 is disconnected
-static bool pico_adc_written = false;                               //! Will skip trying to re-acquire and write to sensor mutex if the Pi Pico ADC is unused
-
 //Global variables - This file only, only initialized once
 static const float PWM_US_TO_LEVEL = 39062.0f / 20000.0f;           //! Constant value used for PWM conversion for servos
 static absolute_time_t prev_update_time;                            //! Used to track the time since last update
 
 //Dedicated hardware mutexes
-static mutex_t i2c_mutex;                                           //! Mutex protecting I2C access
 static mutex_t servo_mutex;                                         //! Mutex protecting Servo access
 
-static struct repeating_timer adc_timer;                            //! Timer for ADC callback (Default 100ms / 10Hz)
 static struct repeating_timer hb_timer;                             //! Timer for ADC callback (Default 500ms / 2Hz)
-static struct repeating_timer mpu_timer;                            //! Timer for ADC callback (Default 50ms / 20Hz)
 static struct repeating_timer blink_timer;                          //! Timer for triggering the blink callback
 static rgb_state rgb_conf;                                          //! Global struct for configuring the Common Cathode RGB
-static sensor_data sensor_readings;                                 //! Mutex protected structure containing sensor information
+
 
 //Forward function declarations
 //Struct interactors
@@ -90,19 +79,12 @@ static void init_servo_pwm(void);
 static void update_servo_positions(void);
 
 //Helper functions
-static float ads_voltage(uint16_t raw);
 static bool i2c_write_with_retry(uint8_t addr, const uint8_t* src, size_t len);
+static bool blink_callback(struct repeating_timer *t);
+static bool heartbeat_callback(struct repeating_timer* t);
 
 //System intitialization functions
 static void init_system_comms(void);
-static void init_watchdog(void);
-
-//Reader functions
-static float read_adc2(void);
-static uint16_t read_ads_channel(uint8_t channel);
-static void read_adc_data(void);
-static void read_hmc5883l_data(void);
-static void read_mpu6050_data(void);
 
 /**
  * 
@@ -131,14 +113,14 @@ bool convert_sensor_data(const sensor_data* raw, sensor_data_physical* converted
         return false;
     }
 
-    //MPU6050 Accelerometer conversion (±2g range: 16384 LSB/g)
+    // MPU6050 Accelerometer conversion (±8g range: 4096 LSB/g)
     for (int i = 0; i < 3; i++) {
-        converted->accel[i] = raw->accel[i] / 16384.0f;
+        converted->accel[i] = raw->accel[i] / 4096.0f;
     }
 
-    //MPU6050 Gyroscope conversion (±250dps range: 131 LSB/dps)
+    // MPU6050 Gyroscope conversion (±500dps range: 65.5 LSB/dps)
     for (int i = 0; i < 3; i++) {
-        converted->gyro[i] = raw->gyro[i] / 131.0f;
+        converted->gyro[i] = raw->gyro[i] / 65.5f;
     }
 
     //HMC5883L Magnetometer conversion (0.92 mGauss/LSB to µT)
@@ -160,9 +142,22 @@ bool convert_sensor_data(const sensor_data* raw, sensor_data_physical* converted
 //! Core 1 main routine
 void core1_entry(void) {
     uint32_t loop_count = 0;
-    absolute_time_t next_report = get_absolute_time();
 
-    init_system_comms();
+    robohand_init_components();
+
+    //Hardware initialization
+    if (HAS_SERVOS) {
+        if (DEBUG) {
+            printf("Initializing Servos.\r\n");
+        }
+
+        init_servo_pwm();
+        mutex_init(&servo_mutex);
+
+        if (DEBUG) {
+            printf("Servo init complete.\r\n");
+        }
+    }
     
     add_repeating_timer_ms(-1000, heartbeat_callback, NULL, &hb_timer); //1Hz - 1s
 
@@ -173,38 +168,27 @@ void core1_entry(void) {
     multicore_fifo_push_blocking(1);
 
     //Initialize watchdog
-    init_watchdog();
+    watchdog_enable(30* 1000, 1); //30s timeout
 
     if (DEBUG) {
         printf("Starting main loop.\r\n");
     }
 
+    static absolute_time_t last_load_update = get_absolute_time();
+
     while(1) {
         loop_count++;
         
-        //Update status
-        mutex_try_enter(&sys_status.status_mutex, NULL);
-        sys_status.core1_loops += loop_count;
-        sys_status.last_watchdog = time_us_32();
-        sys_status.system_ok = !watchdog_caused_reboot();
-        loop_count = 0;
-        mutex_exit(&sys_status.status_mutex);
+        // Update every second
+        if (absolute_time_diff_us(last_load_update, get_absolute_time()) > 1000000) {
+            mutex_enter_blocking(&sys_status.status_mutex);
+            sys_status.core1_load = (sys_status.core1_loops * 100.0f) / (SYS_CLOCK/1000000); 
+            sys_status.core1_loops = 0;
+            last_load_update = get_absolute_time();
+            mutex_exit(&sys_status.status_mutex);
+    }
 
-        //Handle sensor reads via flags
-        if((i2c_operation_flags & MPU_READ_FLAG) && HAS_I2C) {
-            read_mpu6050_data();
-            i2c_operation_flags &= ~MPU_READ_FLAG;
-        }
-        
-        if((i2c_operation_flags & HMC_READ_FLAG) && HAS_I2C) {
-            read_hmc5883l_data();
-            i2c_operation_flags &= ~HMC_READ_FLAG;
-        }
-
-        if((i2c_operation_flags & ADC_READ_FLAG) && HAS_I2C) {
-            read_adc_data();
-            i2c_operation_flags &= ~ADC_READ_FLAG;
-        }
+        robohand_read();
 
         watchdog_update(); //Reset watchdog timer
     }
@@ -256,7 +240,7 @@ void get_system_status(system_status* dest) {
     *dest = sys_status;  //Atomic copy of entire structure
     sys_status.core0_loops = 0; //reset core members
     sys_status.core1_loops = 0;
-    sys_status.last_reset_core0 = time_us_32();
+    sys_status.last_update = time_us_32();
     mutex_exit(&sys_status.status_mutex);
 }
 
@@ -681,14 +665,7 @@ static void update_servo_positions(void) {
  *  @{
  */
 
-/*!
- * @brief Convert raw ADS1115 value to voltage
- * @param raw 16-bit raw ADC value
- * @return Voltage in volts
- */
-static float ads_voltage(uint16_t raw) {
-    return (int16_t)raw * (4.096f / 32768.0); //±4.096V range
-}
+
 
 /*!
  * @brief Write to the I2C port.
@@ -708,298 +685,50 @@ static bool i2c_write_with_retry(uint8_t addr, const uint8_t* src, size_t len) {
     }
 }
 
-/** @} */ // end of misc
-
 /*!
- * @brief Initialize the system configuration.
- * @details Configures PWM frequency to 50Hz (20ms period) for standard servos.
- * @pre The user has the appropriate macros configured for desired system operation.
- * @post The hardware is set-up according to specifications.
+ * @brief Callback allowing for toggling of RGB functionality.
+ * @return Always returns true to continue the timer.
  */
-void init_system_comms() {
-    //Hardware initialization
-    if (HAS_I2C) {
-        if (DEBUG) {
-            printf("Initializing I2C.\r\n");
-        }
-
-        i2c_init(I2C_PORT, 400000);
-        gpio_set_function(SDA_PIN, GPIO_FUNC_I2C);
-        gpio_set_function(SCL_PIN, GPIO_FUNC_I2C);
-        gpio_pull_up(SDA_PIN);
-        gpio_pull_up(SCL_PIN);
-        mutex_init(&i2c_mutex);
-
-        if (DEBUG) {
-            printf("I2C init complete.\r\n");
-        }
-    }
-
-    if (HAS_ADC) {
-        if (DEBUG) {
-            printf("Initializing ADCs.\r\n");
-        }
-
-        if (HAS_PI_ADC) {
-            adc_init();
-            adc_gpio_init(ADC2_PIN);
-        }
-
-        if (USE_INTERRUPTS) {
-            //Configure ALERT pin
-            gpio_init(ADS1115_INT_PIN);
-            gpio_set_dir(ADS1115_INT_PIN, GPIO_IN);
-            gpio_pull_up(ADS1115_INT_PIN);
-            gpio_set_irq_enabled_with_callback(ADS1115_INT_PIN, GPIO_IRQ_EDGE_FALL, true, &ads1115_drdy_handler);
-
-            //Start first conversion
-            uint8_t channel = 0;
-            uint16_t config = ADS1115_BASE_CONFIG | (0x4000 | (channel << 12));
-            uint8_t config_bytes[2] = {config >> 8, config & 0xFF};
-            i2c_write_blocking(I2C_PORT, ADS1115_ADDR, config_bytes, 2, true);
-        }
-
-        if (USE_FALLBACK) {
-            add_repeating_timer_ms(-100, adc_sample_callback, NULL, &adc_timer); //10Hz - 100ms
-        }
-
-        if (DEBUG) {
-            printf("ADC init complete.\r\n");
+static bool blink_callback(struct repeating_timer *t) {
+    if (HAS_RGB) {
+        if (mutex_try_enter(&rgb_conf.rgb_mutex, NULL)) {
+            if(rgb_conf.blink_active) {
+                rgb_conf.blink_state = !rgb_conf.blink_state;
+                
+                if(rgb_conf.blink_state) {
+                    //Restore original color
+                    pwm_set_gpio_level(RGB_RED_PIN, gamma_table[(uint8_t)(rgb_conf.current_r * rgb_conf.current_brightness)]);
+                    pwm_set_gpio_level(RGB_GREEN_PIN, gamma_table[(uint8_t)(rgb_conf.current_g * rgb_conf.current_brightness)]);
+                    pwm_set_gpio_level(RGB_BLUE_PIN, gamma_table[(uint8_t)(rgb_conf.current_b * rgb_conf.current_brightness)]);
+                } else {
+                    //Turn off LEDs
+                    pwm_set_gpio_level(RGB_RED_PIN, 0);
+                    pwm_set_gpio_level(RGB_GREEN_PIN, 0);
+                    pwm_set_gpio_level(RGB_BLUE_PIN, 0);
+                }
+            }
+            mutex_exit(&rgb_conf.rgb_mutex);
         }
     }
-
-    if (HAS_SERVOS) {
-        if (DEBUG) {
-            printf("Initializing Servos.\r\n");
-        }
-
-        init_servo_pwm();
-        mutex_init(&servo_mutex);
-
-        if (DEBUG) {
-            printf("Servo init complete.\r\n");
-        }
-    }
-
-    if (HAS_HMC5883L) {
-        if (DEBUG) {
-            printf("Configuring HMC5883L.\r\n");
-        }
-
-        uint8_t hmc_config[] = {
-            HMC5883L_CONFIG_A, 
-            0x70, // 8 samples averaged, 15Hz, normal mode
-            HMC5883L_CONFIG_B, 
-            0x20, // Gain=1.3Ga (1090 LSB/Gauss)
-            HMC5883L_MODE, 
-            HMC5883L_MODE_CONTINUOUS
-        };
-
-        if (USE_INTERRUPTS) {
-            i2c_write_blocking(I2C_PORT, HMC5883L_ADDR, hmc_config, 6, false);
-
-            //Interrupt setup - Assuming pin will be held low when data ready, could this be confirmed?
-            gpio_init(10);
-            gpio_set_dir(10, GPIO_IN);
-            gpio_pull_up(10);
-            gpio_set_irq_enabled_with_callback(10, GPIO_IRQ_EDGE_FALL, true, &gy271_drdy_handler);
-        }
-
-        if (USE_FALLBACK) {
-            add_repeating_timer_ms(-50, gy271_callback, NULL, &mpu_timer); //20Hz - 50ms
-        }
-
-        if (DEBUG) {
-            printf("HMC5883L configuration successful.\r\n");
-        }
-    }
-
-    if (HAS_MPU6050) {
-        if (DEBUG) {
-            printf("Configuring MPU6050.\r\n");
-        }
-
-        uint8_t mpu_init[] = {0x6B, 0x00};
-        i2c_write_blocking(I2C_PORT, MPU6050_ADDR, mpu_init, 2, false);
-
-        if (USE_INTERRUPTS) {
-            //Enable Data Ready Interrupt
-            uint8_t int_enable[] = {0x38, 0x01}; // INT_ENABLE register
-            i2c_write_blocking(I2C_PORT, MPU6050_ADDR, int_enable, 2, false);
-
-            //Configure GPIO interrupt
-            gpio_init(MPU6050_INT_PIN);
-            gpio_set_dir(MPU6050_INT_PIN, GPIO_IN);
-            gpio_pull_up(MPU6050_INT_PIN);
-            gpio_set_irq_enabled_with_callback(MPU6050_INT_PIN, GPIO_IRQ_EDGE_FALL, true, &mpu6050_drdy_handler);
-        }
-
-        if (USE_FALLBACK) {
-            add_repeating_timer_ms(-50, mpu6050_callback, NULL, &mpu_timer); //20Hz - 50ms
-        }
-
-        if (DEBUG) {
-            printf("Finished configuring MPU6050.\r\n");
-        }
-
-    }
-}
-
-/*!
- * @brief Initializes system watchdog.
- * @details System has to reset watchdog within 30s window.
- * @post If the system does not reset the watchdog within the time frame, the system will reset.
- */
-static void init_watchdog(void) {
-    watchdog_enable(30* 1000, 1); //30s timeout
-    //irq_set_enabled(WATCHDOG_IRQ, false);
-}
-
-
-/*!
- * @brief Read Pico's internal ADC channel 2.
- * @details needed because ADS only has 4 inputs.
- * @return Voltage in volts.
- * @pre HAS_PI_ADC macros is true
- * @post Returns voltage in V, returns -4.096f if error occurs
- */
-static float read_adc2(void) {
-    if (HAS_PI_ADC) {
-        adc_select_input(2);
-        return adc_read() * 3.3f / 4096.0f;
-    }
-
-    return -4.096f;
-}
-
-/*!
- * @brief Reads all ADC's and stores the resultant data in the sensor_readings struct.
- * @post sensor_readings contains updated ADC data.
- */
-static void read_adc_data(void) {
-    static uint8_t current_channel = 0;
-
-    if (HAS_ADS1115) {
-        uint16_t raw = read_ads_channel(current_channel);
-        float voltage = ads_voltage(raw);
-        
-        mutex_enter_blocking(&sensor_readings.data_mutex);
-        sensor_readings.adc_values[current_channel] = voltage;
-        mutex_exit(&sensor_readings.data_mutex);
-
-        current_channel = (current_channel + 1) % 4;
-        
-        // Start next conversion
-        uint16_t config = ADS1115_BASE_CONFIG | (0x4000 | (current_channel << 12));
-        uint8_t config_bytes[2] = {config >> 8, config & 0xFF};
-        i2c_write_blocking(I2C_PORT, ADS1115_ADDR, config_bytes, 2, true);
-    }
-
-    // Read Pico's ADC2 (existing code)
-    if (HAS_PI_ADC) {
-        float adc2_val = read_adc2();
-        mutex_enter_blocking(&sensor_readings.data_mutex);
-        sensor_readings.adc_values[4] = adc2_val;
-        mutex_exit(&sensor_readings.data_mutex);
-    }
-}
-
-/*!
- * @brief Read specified channel from ADS1115 ADC.
- * @param channel ADC channel to read (0-3).
- * @return Raw 16-bit ADC value.
- */
-static uint16_t read_ads_channel(uint8_t channel) {
-    if (HAS_ADS1115) {
-        uint16_t config = ADS1115_BASE_CONFIG | (0x4000 | (channel << 12)); //Set MUX
-        uint8_t config_bytes[2] = {config >> 8, config & 0xFF};
-        i2c_write_blocking(I2C_PORT, ADS1115_ADDR, config_bytes, 2, true);
-        sleep_ms(8); //Wait for conversion
-        uint8_t reg = 0x00; //Conversion register
-        i2c_write_blocking(I2C_PORT, ADS1115_ADDR, &reg, 1, true);
-        uint8_t buffer[2];
-        i2c_read_blocking(I2C_PORT, ADS1115_ADDR, buffer, 2, false);
-        return (buffer[0] << 8) | buffer[1];
-    }
-
-    else {
-        return ~0;
-    }
-}
-
-/*!
- * @brief Function that reads the HMC5883L data.
- * @details Uses I2C bus to get magenetic field measurements.
- * @post The sensor_readings structure contains the latest magnetic field.
- */
-static void read_hmc5883l_data(void) {
-    if (HAS_HMC5883L) {
-        uint8_t buffer[6];
     
-        if(mutex_try_enter(&i2c_mutex, NULL)) {
-            i2c_write_blocking_until(I2C_PORT, HMC5883L_ADDR, (uint8_t[]){HMC5883L_DATA}, 1, true, time_us_64() + 1000);
-            i2c_read_blocking_until(I2C_PORT, HMC5883L_ADDR, buffer, 6, false, time_us_64() + 2000);
-            mutex_exit(&i2c_mutex);
-            mutex_enter_blocking(&sensor_readings.data_mutex);
-            sensor_readings.mag[0] = (buffer[0] << 8) | buffer[1];
-            sensor_readings.mag[1] = (buffer[4] << 8) | buffer[5]; //HMC5883L XYZ order
-            sensor_readings.mag[2] = (buffer[2] << 8) | buffer[3];
-            mutex_exit(&sensor_readings.data_mutex);
-        }
-    }
-
-    else {
-        //Only write the invalid values once
-        if (!hmc5883l_written) {
-            mutex_enter_blocking(&sensor_readings.data_mutex);
-            sensor_readings.mag[0] = ~0;
-            sensor_readings.mag[1] = ~0;
-            sensor_readings.mag[2] = ~0;
-            mutex_exit(&sensor_readings.data_mutex);
-
-            hmc5883l_written = true;
-        }
-    }
-
+    return true;
 }
 
 /*!
- * @brief Function that reads the MPU6050 data.
- * @details Uses the I2C bus to get linear acceleration and angular velocity measurements.
- * @post The sensor_readings structure contains the latest acceleration and rpy values.
+ * @brief System heartbeat callback.
+ * @param t Pointer to repeating timer structure.
+ * @return Always returns true to continue timer.
+ * @details Toggles onboard LED to indicate system liveliness.
  */
-static void read_mpu6050_data(void) {
-    if (HAS_MPU6050) {
-        uint8_t buffer[14];
+static bool heartbeat_callback(struct repeating_timer* t) {
+    static bool led_state = false;
     
-        if(mutex_try_enter(&i2c_mutex, NULL)) {
-            i2c_write_blocking_until(I2C_PORT, MPU6050_ADDR, 
-                               (uint8_t[]){MPU6050_ACCEL_XOUT_H}, 1, false, time_us_64() + 1000);
-            i2c_read_blocking_until(I2C_PORT, MPU6050_ADDR, buffer, 14, false, time_us_64() + 2000);
-            mutex_exit(&i2c_mutex);
-            mutex_enter_blocking(&sensor_readings.data_mutex);
-            sensor_readings.accel[0] = (buffer[0] << 8) | buffer[1];
-            sensor_readings.accel[1] = (buffer[2] << 8) | buffer[3];
-            sensor_readings.accel[2] = (buffer[4] << 8) | buffer[5];
-            sensor_readings.gyro[0] = (buffer[8] << 8) | buffer[9];
-            sensor_readings.gyro[1] = (buffer[10] << 8) | buffer[11];
-            sensor_readings.gyro[2] = (buffer[12] << 8) | buffer[13];
-            mutex_exit(&sensor_readings.data_mutex);
-        }
-    }
-
-    else {
-        if (!mpu6050_written) {
-            mutex_enter_blocking(&sensor_readings.data_mutex);
-            sensor_readings.accel[0] = ~0;
-            sensor_readings.accel[1] = ~0;
-            sensor_readings.accel[2] = ~0;
-            sensor_readings.gyro[0] = ~0;
-            sensor_readings.gyro[1] = ~0;
-            sensor_readings.gyro[2] = ~0;
-            mutex_exit(&sensor_readings.data_mutex);
-
-            mpu6050_written = true;
-        }
-    }
+    #if defined(PICO_BOARD_IS_PICO_W)
+    cyw43_arch_gpio_put(ROBOHAND_LED_PIN, led_state);
+    #else
+    gpio_put(ROBOHAND_LED_PIN, led_state);
+    #endif
+    
+    led_state = !led_state;
+    return true;
 }

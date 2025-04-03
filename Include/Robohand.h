@@ -210,7 +210,9 @@ typedef struct {
 typedef struct {
     uint32_t core0_loops;                                   ///< Counts on core 0 main loop since last status retrieval
     uint32_t core1_loops;                                   ///< Counts on core 1 main loop since last status retrieval
-    uint32_t last_reset_core0;                              ///< Last time the counter was reset on core 0
+    uint32_t last_update;                                   ///< Last time the counter was reset on core 0
+    float core0_load;                                       ///< Approximation of load on core 0
+    float core1_load;                                       ///< Approximation of load on core 1
     uint32_t last_watchdog;                                 ///< Time since last watchdog event
     bool system_ok;                                         ///< Did the watchdog reset the system?
     bool emergency_stop;                                    ///< To be used for automatic servo stoppage

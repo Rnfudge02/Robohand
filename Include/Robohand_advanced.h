@@ -3,6 +3,8 @@
 #define ROBOHAND_ADVANCED_H
 
 #include "pico/stdlib.h"
+#include <stdint.h>
+#include "Robohand.h"
 
 #define DMA_CHANNEL_I2C 0
 #define DMA_CHANNEL_ADC 1
@@ -24,7 +26,7 @@ typedef struct {
 } dma_channel_state;
 
 /*!
- * @brief Structure for stroring system DMA configuration.
+ * @brief Structure for storing system DMA configuration.
  * @details Stores state of all DMA channels
  */
 typedef struct {
@@ -34,23 +36,9 @@ typedef struct {
     dma_channel_state pwm;
 } dma_control;
 
-volatile uint8_t i2c_operation_flags = 0;                    //! Register coordinating I2C accesses, may change at any point
+extern sensor_data sensor_readings;                                        //! Mutex protected structure containing sensor information
 
-void dma_init(void);
-void dma_i2c_read(uint8_t addr, uint8_t reg, uint8_t* buffer, size_t len);
-void dma_i2c_write(uint8_t addr, const uint8_t* data, size_t len);
-void dma_adc_setup(void);
-
-//Interrupt handlers
-void ads1115_drdy_handler(uint gpio, uint32_t events);
-void gy271_drdy_handler(uint gpio, uint32_t events);
-void mpu6050_drdy_handler(uint gpio, uint32_t events);
-
-//Callbacks
-bool adc_sample_callback(struct repeating_timer* t);
-bool blink_callback(struct repeating_timer* t);
-bool gy271_callback(struct repeating_timer* t);
-bool heartbeat_callback(struct repeating_timer* t);
-bool mpu6050_callback(struct repeating_timer* t);
+void robohand_init_components();
+void robohand_read();
 
 #endif
