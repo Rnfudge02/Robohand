@@ -24,7 +24,8 @@
  * \param cmd Pointer to command array for reading.
  * \pre The cmd array should be null-terminated.
  */
-void process_command(const char* cmd);
+static void process_command(const char* cmd);
+static void move_servo(uint8_t servo, uint16_t pos, uint16_t duration);
 
 /*!
  * \brief Core 0 main loop routine - USB Variation.
@@ -65,7 +66,7 @@ int main(void) {
         //Non-blocking command input
         int c = getchar_timeout_us(0);
         if(c != PICO_ERROR_TIMEOUT) {
-            static char cmd_buf[64];
+            static int cmd_buf[64];     //Char is int size?
             static int buf_idx = 0;
 
             printf("%c", c);
@@ -89,8 +90,11 @@ int main(void) {
 }
 
 //! Command processing function
-void process_command(const char* cmd) {
-    int servo, pos, duration;
+static void process_command(const char* cmd) {
+    uint8_t servo;
+    uint16_t pos;
+    uint16_t duration;
+
     sensor_data raw_data;
     sensor_data_physical converted;
 
@@ -104,16 +108,13 @@ void process_command(const char* cmd) {
     }
     
     //If the sent command wanted servo actuation
-    else if ((sscanf(cmd, "SERVO %d %d %d", &servo, &pos, &duration) >= 2) ||
-    (sscanf(cmd, "servo %d %d %d", &servo, &pos, &duration) >= 2)) {
-        if (servo < 0 || servo >= NUM_SERVOS) {
-            printf("Invalid servo\r\n");
-            return;
-        }
+    else if (sscanf(cmd, "SERVO %d %d %d", (int*) &servo, (int*) &pos, (int*) &duration) >= 2) {
+        move_servo(servo, pos, duration);
+    }
 
-        if (duration <= 0) duration = 1000; //Default duration
-        actuate_servo(servo, pos, duration);
-        printf("Moving servo %d to %dμs in %dms\r\n", servo, pos, duration);
+    //If the sent command wanted servo actuation
+    else if (sscanf(cmd, "servo %d %d %d", (int*) &servo, (int*) &pos, (int*) &duration) >= 2) {
+        move_servo(servo, pos, duration);
     }
 
     //If the sent command wishes to view sensor output
@@ -140,8 +141,6 @@ void process_command(const char* cmd) {
     else if (strcasecmp(cmd, "STATUS") == 0) {
         system_status status;
         sensor_data sensors;
-        sensor_data_physical converted;
-        servo_motion_profile profile;
 
         get_system_status(&status);
 
@@ -152,23 +151,23 @@ void process_command(const char* cmd) {
             multicore_fifo_rvalid() ? "OK" : "ERR");
 
         printf("Load: Core0 %luMHz | Core1 %luMHz\r\n",
-            status.core0_loops / status.last_reset_core0,
-            status.core1_loops / status.last_reset_core0);
+            status.core0_loops / ((time_us_32() - status.last_update) * 1000000),
+            status.core1_loops / ((time_us_32() - status.last_update) * 1000000));
 
         //Print sensor data
-        if(get_sensor_data(&sensors)) {
-            if (convert_sensor_data(&sensors, &converted)) {
-                printf("\r\nSensors:\r\n");
-                printf(" Accel: X%.2fg Y%.2fg Z%.2fg\r\n", 
-                    converted.accel[0], converted.accel[1], converted.accel[2]);
-                printf(" Gyro:  X%.2f°/s Y%.2f°/s Z%.2f°/s\r\n",
-                    converted.gyro[0], converted.gyro[1], converted.gyro[2]);
-            }
+        if(get_sensor_data(&sensors) && convert_sensor_data(&sensors, &converted)) {
+            printf("\r\nSensors:\r\n");
+            printf(" Accel: X%.2fg Y%.2fg Z%.2fg\r\n", 
+                converted.accel[0], converted.accel[1], converted.accel[2]);
+            printf(" Gyro:  X%.2f°/s Y%.2f°/s Z%.2f°/s\r\n",
+                converted.gyro[0], converted.gyro[1], converted.gyro[2]);
         }
+
+        servo_motion_profile profile;
 
         //Retrieve and print servo data
         printf("\r\nServos:\r\n");
-        for(int i=0; i<NUM_SERVOS; i++) {
+        for(uint8_t i = 0; i < NUM_SERVOS; i++) {
             get_servo_status(i, &profile);
             printf(" %d: %4dμs %s\r\n", i, profile.current_pw, profile.is_moving ? "MOVING" : "READY");
         }
@@ -178,4 +177,18 @@ void process_command(const char* cmd) {
     else {
         printf("Unknown command. Type 'help' for more options.\r\n");
     }
+}
+
+static void move_servo(uint8_t servo, uint16_t pos, uint16_t duration) {
+    if (servo >= NUM_SERVOS) {
+        printf("Invalid servo\r\n");
+        return;
+    }
+
+    if (duration <= 0) {
+        duration = 1000; //Default duration
+    }
+
+    actuate_servo(servo, pos, duration);
+    printf("Moving servo %d to %dμs in %dms\r\n", servo, pos, duration);
 }

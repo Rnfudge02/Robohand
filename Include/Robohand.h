@@ -7,11 +7,6 @@
  * \copyright Apache 2.0 License
  */
 
-/*! \todo Fix issues present within code, check for correctness.
- *  \todo Ensure code for preventing the running of code on missing components does not break functionality.
- *  \todo Fix issue with HMC5883L always returning 0. (observed behavior when running program with USB driver)
- */
-
 #ifndef ROBOHAND_H
 #define ROBOHAND_H
 
@@ -49,9 +44,10 @@ extern "C" {
 #define DEBUG 1                                                 ///< Enable debug output (0 - Disabled, 1 - Enabled)
 
 #define HAS_ADS1115 false                                       ///< Whether the ADS1115 (ADC) is connected to the I2C bus
-#define HAS_HMC5883L false                                       ///< Whether the HMC5883L (Magnometer) is connected to the i2c bus
+#define HAS_BME280 true                                         ///< Whether the BME280 altitude sensor is connected to the I2C bus
+#define HAS_QMC5883L true                                       ///< Whether the QMC5883L (Magnometer) is connected to the i2c bus
 #define HAS_MPU6050 true                                        ///< Whether the MPU6050 (Accelerometer) is connected to the i2c bus
-#define HAS_I2C (HAS_ADS1115 || HAS_HMC5883L || HAS_MPU6050)    ///< Whether or not I2C initialization is required
+#define HAS_I2C (HAS_ADS1115 || HAS_BME280 || HAS_QMC5883L || HAS_MPU6050)    ///< Whether or not I2C initialization is required
 #define HAS_PI_ADC false                                        ///< Whether a pressure sensor is connected to the pi pico
 #define HAS_ADC (HAS_PI_ADC || HAS_ADS1115)                     ///< Whether or not ADC initalization is required
 #define HAS_RGB true                                            ///< Whether common Cathode RGB LED is connected to the pi pico
@@ -59,10 +55,12 @@ extern "C" {
 
 #define USE_INTERRUPTS false                                    ///< Use interupts for system communication
 #define USE_DMA false                                           ///< Use DMA for system communication
-#define USE_FALLBACK (!(USE_INTERRUPTS || USE_DMA))             ///< Use fallback if other options are not selected
+#define USE_CALLBACKS (!(USE_INTERRUPTS || USE_DMA))             ///< Use fallback if other options are not selected
 
 #define SYS_CLOCK 125000000                                     ///< System operating frequency
 #define I2C_PORT i2c0                                           ///< I2C port used for device connections(i2c0 on pico)
+#define I2C_DMA_TX DREQ_I2C0_TX                                 ///< 
+#define I2C_DMA_RX DREQ_I2C0_RX                                 ///< 
 
 #define NUM_SERVOS 5                                            ///< Number of servos to control
 #define NUM_PRESPNTS 5                                          ///< Number of pressure points to sample
@@ -71,9 +69,10 @@ extern "C" {
 #define SDA_PIN 0                                               ///< GPIO pin for I2C SDA
 #define SCL_PIN 1                                               ///< GPIO pin for I2C SCL
 #define ADC2_PIN 28                                             ///< GPIO pin for Pico's ADC channel 2
-#define MPU6050_INT_PIN 20                                      ///< Data ready pin for the MPU6050 
 #define ADS1115_INT_PIN 21                                      ///< Data ready pin for the ADS1115
-#define HMC5883L_INT_PIN 22                                     ///< Data ready pin for the HMC5883L
+#define BME280_INT_PIN 20                                       ///< Data ready pin for the BME280
+#define MPU6050_INT_PIN 26                                      ///< Data ready pin for the MPU6050 
+#define QMC5883L_INT_PIN 22                                     ///< Data ready pin for the QMC5883L
 #define RGB_RED_PIN 18                                          ///< GPIO pin connected to the red channel
 #define RGB_GREEN_PIN 17                                        ///< GPIO pin connected to the green channel
 #define RGB_BLUE_PIN 16                                         ///< GPIO pin connected to the blue channel
@@ -89,19 +88,19 @@ extern "C" {
 
 //I2C Addresses
 #define ADS1115_ADDR 0x48                                       ///< I2C address of ADS1115 ADC
+#define BME280_ADDR 0x76                                        ///< I2C address of BME280 pressure sensor
 #define MPU6050_ADDR 0x68                                       ///< I2C address of MPU6050 IMU
-#define HMC5883L_ADDR 0x1E                                      ///< I2C address of HMC5883L magnetometer
+#define QMC5883L_ADDR 0x0D                                      ///< I2C address of QMC5883L magnetometer
 
-//MPU6050 Registers
-#define MPU6050_ACCEL_XOUT_H 0x3B                               ///< Accelerometer data register
 
-//HMC5883L Registers
-#define HMC5883L_CONFIG_A 0x00                                  ///< Configuration register A
-#define HMC5883L_CONFIG_B 0x01                                  ///< Configuration register B
-#define HMC5883L_MODE 0x02                                      ///< Mode register
-#define HMC5883L_DATA 0x03                                      ///< Data output register
 
-#define HMC5883L_MODE_CONTINUOUS 0x00                           ///< Continious sampling mode
+//QMC5883L Registers
+#define QMC5883L_CONFIG_A 0x00                                  ///< Configuration register A
+#define QMC5883L_CONFIG_B 0x01                                  ///< Configuration register B
+#define QMC5883L_MODE 0x02                                      ///< Mode register
+#define QMC5883L_DATA 0x03                                      ///< Data output register
+
+#define QMC5883L_MODE_CONTINUOUS 0x00                           ///< Continious sampling mode
 
 //ADS1115 Configuration Macros
 #define ADS1115_OS_SINGLE   0x8000                              ///< Start single-conversion
@@ -121,8 +120,8 @@ extern "C" {
                             ADS1115_DR_128SPS | ADS1115_COMP_MODE | ADS1115_COMP_POL | \
                             ADS1115_COMP_LAT | ADS1115_COMP_QUE)                                    ///< ADS1115 base configuration
 
-//Function macro - inlined
-#define constrain(value, min, max) ((value) < (min) ? (min) : ((value) > (max) ? (max) : (value)))  ///< Macro for constraining
+//MPU6050 Registers
+#define MPU6050_ACCEL_XOUT_H 0x3B                               ///< Accelerometer data register
 
 /** @defgroup system_structs System Structures
  *  @brief Structures used during program execution. Eases development with safe, lockable access to resources.
@@ -154,7 +153,6 @@ typedef struct {
  * @brief Sensor data structure with mutex protection.
  * @details Contains sensor readings from accelerometer, gyroscope, magnetometer, and ADCs.
  * @pre Acquire mutex before performing any read/write on this structure.
- * @todo Implement DMA transfers (explicit padding for int16_t arrays to 32-bit alignment).
  */
 typedef struct {
     int16_t accel[3];                                       ///< Accelerometer readings (X, Y, Z)
@@ -164,6 +162,7 @@ typedef struct {
     int16_t mag[3];                                         ///< Magnetometer readings (X, Y, Z)
     uint8_t __p5[2];                                        ///< Padding for explicit 32-bit alignment
     float adc_values[5];                                    ///< ADC readings (channels 0-3 + internal ADC2)
+    float pressure;                                         ///< Air pressure
     mutex_t data_mutex;                                     ///< Mutex for thread-safe data access
     uint8_t __p6[3];                                        ///< Mutex is struct containing io_rw_32 and bool, maintain 32-bit alignment
 } sensor_data;
@@ -175,14 +174,12 @@ typedef struct {
  */
 typedef struct {
     float accel[3];                                         ///< Accelerometer in g (9.81 m/s²)
-    uint8_t __p7[2];                                        ///< Padding for explicit 32-bit alignment
     float gyro[3];                                          ///< Gyroscope in degrees per second (dps)
-    uint8_t __p8[2];                                        ///< Padding for explicit 32-bit alignment
     float mag[3];                                           ///< Magnetometer in microteslas (µT)
-    uint8_t __p9[2];                                        ///< Padding for explicit 32-bit alignment
     float adc_values[5];                                    ///< ADC readings in volts or converted units
+    float altitude;                                         ///< Altitude estimation
     mutex_t data_mutex;                                     ///< Mutex for thread-safe data access
-    uint8_t __p10[3];                                        ///< Mutex is struct containing io_rw_32 and bool, maintain 32-bit alignment
+    uint8_t __p10[3];                                       ///< Mutex is struct containing io_rw_32 and bool, maintain 32-bit alignment
 } sensor_data_physical;
 
 /*!
@@ -242,6 +239,14 @@ extern const float VOLTAGE_DIVIDER_RATIO;                   ///< Voltage divider
  * @param duration_ms Movement duration in milliseconds.
  */
 void actuate_servo(uint8_t servo, uint16_t pulse_width, uint16_t duration_ms);
+
+/*!
+ * @brief Actuates a servo to a specified position over a given duration.
+ * @param servo Servo index (0 to NUM_SERVOS-1).
+ * @param pulse_width Target pulse width in microseconds (500-2500µs).
+ * @param duration_ms Movement duration in milliseconds.
+ */
+uint16_t constrain_u16(uint16_t value, uint16_t min, uint16_t max);
 
 /*!
  * @brief Converts passed sensor data to physical parameters.

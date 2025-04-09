@@ -36,7 +36,7 @@ static rcl_publisher_t sensor_pub;                          //! Sensor publishin
 static rcl_subscription_t servo_sub;                        //! Servo subcriber component - Allows for servo actuation from host device
 static rcl_timer_t sensor_timer;                            //! Sensor timer component - How often should publishing happen for sensor data
 static rcl_publisher_t imu_pub;                             //! IMU publishing component - Publishes data from the MPU6050
-static rcl_publisher_t mag_pub;                             //! Magnometer publishing component - Publishes data from the HMC5883L
+static rcl_publisher_t mag_pub;                             //! Magnometer publishing component - Publishes data from the QMC5883L
 static rcl_publisher_t adc_pub;                             //! Ananlog-Digital Converter publishing component - Allows user to access voltages at ADC inputs
 static rcl_subscription_t rgb_sub;                          //! RGB Subscriber component - Provides access to RGB LED configuration
 
@@ -129,8 +129,8 @@ void servo_callback(const void* msg_in) {
             if(debug) printf("Moving servo %d to %dµs over %dms\n", 
                     servo, target, duration);
              
-            actuate_servo(servo, constrain(target, SERVO_MIN_PULSE, SERVO_MAX_PULSE),
-                constrain(duration, 0, MAX_MOVE_DURATION_MS));
+            actuate_servo(servo, constrain_u16(target, SERVO_MIN_PULSE, SERVO_MAX_PULSE),
+                constrain_u16(duration, 0, MAX_MOVE_DURATION_MS));
         }
     }
 }

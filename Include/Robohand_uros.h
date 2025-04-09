@@ -9,11 +9,6 @@
  * \copyright Apache 2.0 License
  */
 
-/*! \todo Fix issues present within code, check for correctness.
- *  \todo Ensure code for preventing the running of code on missing components does not break functionality.
- *  \todo Fix issue with HMC5883L always returning 0. (observed behavior when running program with USB driver)
- */
-
 #ifndef ROBOHAND_UROS_H
 #define ROBOHAND_UROS_H
 

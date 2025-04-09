@@ -79,12 +79,8 @@ static void init_servo_pwm(void);
 static void update_servo_positions(void);
 
 //Helper functions
-static bool i2c_write_with_retry(uint8_t addr, const uint8_t* src, size_t len);
-static bool blink_callback(struct repeating_timer *t);
-static bool heartbeat_callback(struct repeating_timer* t);
-
-//System intitialization functions
-static void init_system_comms(void);
+static bool blink_callback(const struct repeating_timer *t);
+static bool heartbeat_callback(const struct repeating_timer* t);
 
 /**
  * 
@@ -98,13 +94,20 @@ void actuate_servo(uint8_t servo, uint16_t pulse_width, uint16_t duration_ms) {
         if(servo >= NUM_SERVOS) return;
     
         //Validate inputs
-        pulse_width = constrain(pulse_width, SERVO_MIN_PULSE, SERVO_MAX_PULSE);
-        duration_ms = constrain(duration_ms, 0, MAX_MOVE_DURATION_MS);
+        pulse_width = constrain_u16(pulse_width, SERVO_MIN_PULSE, SERVO_MAX_PULSE);
+        duration_ms = constrain_u16(duration_ms, 0, MAX_MOVE_DURATION_MS);
 
         //Pack command
         uint32_t command = ((uint32_t)servo << 28) | ((pulse_width & 0xFFF) << 16) | (duration_ms & 0xFFFF);
         multicore_fifo_push_blocking(command);
     }
+}
+
+//!
+uint16_t constrain_u16(uint16_t value, uint16_t min, uint16_t max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
 }
 
 //! Convert data to physical parameters
@@ -123,7 +126,7 @@ bool convert_sensor_data(const sensor_data* raw, sensor_data_physical* converted
         converted->gyro[i] = raw->gyro[i] / 65.5f;
     }
 
-    //HMC5883L Magnetometer conversion (0.92 mGauss/LSB to µT)
+    //QMC5883L Magnetometer conversion (0.92 mGauss/LSB to µT)
     for (int i = 0; i < 3; i++) {
         converted->mag[i] = raw->mag[i] * 0.92f * 0.1f; // 1 mGauss = 0.1 µT
     }
@@ -147,50 +150,49 @@ void core1_entry(void) {
 
     //Hardware initialization
     if (HAS_SERVOS) {
-        if (DEBUG) {
+        if (DEBUG > 0) {
             printf("Initializing Servos.\r\n");
         }
 
         init_servo_pwm();
         mutex_init(&servo_mutex);
 
-        if (DEBUG) {
+        if (DEBUG > 0) {
             printf("Servo init complete.\r\n");
         }
     }
     
-    add_repeating_timer_ms(-1000, heartbeat_callback, NULL, &hb_timer); //1Hz - 1s
-
-    //Initialize status struct
+    add_repeating_timer_ms(-1000, &heartbeat_callback, NULL, &hb_timer); //1Hz - 1s
     init_system_status_struct(&sys_status);
-
-    //Signal readiness
     multicore_fifo_push_blocking(1);
 
     //Initialize watchdog
-    watchdog_enable(30* 1000, 1); //30s timeout
+    watchdog_enable(8* 1000, true); //8s timeout
 
-    if (DEBUG) {
+    if (DEBUG > 0) {
         printf("Starting main loop.\r\n");
     }
 
-    static absolute_time_t last_load_update = get_absolute_time();
+    absolute_time_t last_load_update = get_absolute_time();
 
     while(1) {
         loop_count++;
         
-        // Update every second
+        // Update every second, this is not doing what I want it to
         if (absolute_time_diff_us(last_load_update, get_absolute_time()) > 1000000) {
             mutex_enter_blocking(&sys_status.status_mutex);
-            sys_status.core1_load = (sys_status.core1_loops * 100.0f) / (SYS_CLOCK/1000000); 
-            sys_status.core1_loops = 0;
+            sys_status.core1_loops = loop_count;
             last_load_update = get_absolute_time();
             mutex_exit(&sys_status.status_mutex);
-    }
+            loop_count = 0;
+        }
 
         robohand_read();
+        handle_servo_commands();
+        update_servo_positions();
 
         watchdog_update(); //Reset watchdog timer
+        sleep_ms(50);
     }
 }
 
@@ -201,12 +203,12 @@ bool get_sensor_data(sensor_data* dest) {
     //If user hasn't allocated the array, do it
     if (dest == NULL) {
         init_sensor_data_struct(dest);
-    }
 
-    if(!mutex_enter_timeout_ms(&sensor_readings.data_mutex, 25)) { //25ms
-        memcpy(dest, &sensor_readings, sizeof(sensor_data));
-        mutex_exit(&sensor_readings.data_mutex);
-        return true;
+        if (dest != NULL && !mutex_enter_timeout_ms(&sensor_readings.data_mutex, 25)) { //25ms
+            memcpy(dest, &sensor_readings, sizeof(sensor_data));
+            mutex_exit(&sensor_readings.data_mutex);
+            return true;
+        }
     }
     
     return false;
@@ -298,15 +300,17 @@ void init_robohand_system(void) {
 void rgb_blink(bool enable, uint32_t interval_ms) {
     if (HAS_RGB) {
         mutex_enter_blocking(&rgb_conf.rgb_mutex);
+
+        //(Re)start timer if not active or interval changed
+        if(rgb_conf.blink_active) {
+            cancel_repeating_timer(&blink_timer);
+        }
     
         if (enable) {
             if(!rgb_conf.blink_active || rgb_conf.blink_interval != interval_ms) {
-                //(Re)start timer if not active or interval changed
-                if(rgb_conf.blink_active) cancel_repeating_timer(&blink_timer);
-            
                 rgb_conf.blink_active = true;
                 rgb_conf.blink_interval = interval_ms;
-                add_repeating_timer_ms(-(int32_t)interval_ms, blink_callback, NULL, &blink_timer);
+                add_repeating_timer_ms(-(int32_t)interval_ms, &blink_callback, NULL, &blink_timer);
             }
         }
         
@@ -425,9 +429,9 @@ static void destroy_servo_motion_profile_struct(servo_motion_profile* servo_prof
  * @details Destroys the system status data structure.
  * @param[in] sys_status Populated, valid data structure.
  */
-static void destroy_system_status_struct(system_status* sys_status) {
-    if (sys_status != NULL) {
-        free(sys_status);
+static void destroy_system_status_struct(system_status* system_status) {
+    if (system_status != NULL) {
+        free(system_status);
     }
 }
 
@@ -491,7 +495,7 @@ static void init_sensor_data_struct(sensor_data* sensor_struct) {
  * @param[out] sensor_struct Initialized sensor data structure.
  */
 static void init_sensor_data_physical_struct(sensor_data_physical* sensor_struct) {
-    if (sensor_struct = NULL) {
+    if (sensor_struct == NULL) {
         sensor_struct = (sensor_data_physical*) malloc(1 * sizeof(sensor_data_physical));
     }
 
@@ -523,7 +527,7 @@ static void init_sensor_data_physical_struct(sensor_data_physical* sensor_struct
  * @param[in] pwm_pin Pin to use for PWM signal modulation.
  */
 static void init_servo_motion_profile_struct(servo_motion_profile* servo_profile, uint8_t pwm_pin) {
-    if (servo_profile = NULL) {
+    if (servo_profile == NULL) {
         servo_profile = (servo_motion_profile*) malloc(1 * sizeof(servo_motion_profile));
     }
 
@@ -540,21 +544,21 @@ static void init_servo_motion_profile_struct(servo_motion_profile* servo_profile
 /*!
  * @brief Initialize system status structure.
  * @details Used to hold information for system state/performance metrics.
- * @param[out] sys_status Initialized system status structure.
+ * @param[out] sys_stat Initialized system status structure.
  */
-static void init_system_status_struct(system_status* sys_status) {
-    if (sys_status = NULL) {
-        sys_status = (system_status*) malloc(1 * sizeof(system_status));
+static void init_system_status_struct(system_status* sys_stat) {
+    if (sys_stat == NULL) {
+        sys_stat = (system_status*) malloc(1 * sizeof(system_status));
     }
 
-    sys_status->core0_loops = 0;
-    sys_status->core1_loops = 0;
-    sys_status->last_reset_core0 = time_us_32();
-    sys_status->last_watchdog = time_us_32();
-    sys_status->system_ok = true;
-    sys_status->emergency_stop = false;
+    sys_stat->core0_loops = 0;
+    sys_stat->core1_loops = 0;
+    sys_stat->last_update = time_us_32();
+    sys_stat->last_watchdog = time_us_32();
+    sys_stat->system_ok = true;
+    sys_stat->emergency_stop = false;
 
-    mutex_init(&sys_status->status_mutex);
+    mutex_init(&sys_stat->status_mutex);
 }
 
 /** @} */ // end of struct_interact
@@ -613,45 +617,41 @@ static void init_servo_pwm(void) {
  * @post Servo PWM outputs are updated with new calculated positions.
  */
 static void update_servo_positions(void) {
-    if (HAS_SERVOS) {
-        absolute_time_t now = get_absolute_time();
-        int32_t dt_us = absolute_time_diff_us(prev_update_time, now);
+    absolute_time_t now = get_absolute_time();
+    absolute_time_t dt_us = absolute_time_diff_us(prev_update_time, now);
     
-        if(dt_us <= 0) return;  //Prevent time travel
+    if(dt_us <= 0) {
+        return;  //Prevent time travel
+    }
     
-        for(int i = 0; i < NUM_SERVOS; i++) {
-            if(mutex_try_enter(&servo_mutex, NULL)) {
-                if(!servo_profiles[i].is_moving) {
-                    mutex_exit(&servo_mutex);
-                    continue;
-                }
-
-                uint32_t elapsed = time_us_32() - servo_profiles[i].start_time;
-                float t = (float)elapsed / (servo_profiles[i].duration_ms * 1000);
-            
-                if(t >= 1.0f) {
-                    servo_profiles[i].current_pw = servo_profiles[i].target_pw;
-                    servo_profiles[i].is_moving = false;
-                }
-                
-                else {
-                    //Quintic easing for smoother motion
-                    float eased_t = t * t * t * (t * (6 * t - 15) + 10);
-                    int32_t delta = servo_profiles[i].target_pw - servo_profiles[i].current_pw;
-                    servo_profiles[i].current_pw += (int32_t)(delta * eased_t);
-                    servo_profiles[i].current_pw = constrain(
-                        servo_profiles[i].current_pw, SERVO_MIN_PULSE, SERVO_MAX_PULSE
-                    );
-                }
-
-                //Update PWM (50Hz = 20ms period)
-                uint slice = pwm_gpio_to_slice_num(SERVO_PINS[i]);
-                uint16_t wrap = pwm_hw->slice[slice].top;
-                uint16_t level = (uint16_t)(servo_profiles[i].current_pw * PWM_US_TO_LEVEL);
-                pwm_set_gpio_level(SERVO_PINS[i], level);
-            
+    for(int i = 0; i < NUM_SERVOS; i++) {
+        if(mutex_try_enter(&servo_mutex, NULL)) {
+            if(!servo_profiles[i].is_moving) {
                 mutex_exit(&servo_mutex);
+                continue;
             }
+
+            uint32_t elapsed = time_us_32() - servo_profiles[i].start_time;
+            float t = (float)elapsed / (servo_profiles[i].duration_ms * 1000);
+            
+            if(t >= 1.0f) {
+                servo_profiles[i].current_pw = servo_profiles[i].target_pw;
+                servo_profiles[i].is_moving = false;
+            }
+                
+            else {
+                //Quintic easing for smoother motion
+                float eased_t = t * t * t * (t * (6 * t - 15) + 10);
+                int32_t delta = servo_profiles[i].target_pw - servo_profiles[i].current_pw;
+                servo_profiles[i].current_pw += (uint16_t)((float)delta * eased_t);
+                servo_profiles[i].current_pw = constrain_u16(servo_profiles[i].current_pw, SERVO_MIN_PULSE, SERVO_MAX_PULSE);
+            }
+
+            //Update PWM (50Hz = 20ms period)
+            uint16_t level = (uint16_t)(servo_profiles[i].current_pw * PWM_US_TO_LEVEL);
+            pwm_set_gpio_level(SERVO_PINS[i], level);
+            
+            mutex_exit(&servo_mutex);
         }
 
         prev_update_time = now;
@@ -665,50 +665,31 @@ static void update_servo_positions(void) {
  *  @{
  */
 
-
-
-/*!
- * @brief Write to the I2C port.
- * @details Retries write three times before quitting.
- * @return Whether write was successful or not.
- */
-static bool i2c_write_with_retry(uint8_t addr, const uint8_t* src, size_t len) {
-    if (HAS_I2C) {
-        int retries = 3;
-        while(retries--) {
-            if(i2c_write_blocking(I2C_PORT, addr, src, len, false) == len) 
-                return true;
-            sleep_ms(1);
-        }
-
-        return false;
-    }
-}
-
 /*!
  * @brief Callback allowing for toggling of RGB functionality.
  * @return Always returns true to continue the timer.
  */
-static bool blink_callback(struct repeating_timer *t) {
-    if (HAS_RGB) {
-        if (mutex_try_enter(&rgb_conf.rgb_mutex, NULL)) {
-            if(rgb_conf.blink_active) {
-                rgb_conf.blink_state = !rgb_conf.blink_state;
+static bool blink_callback(const struct repeating_timer *t) {
+    (void)t;
+
+    if (HAS_RGB && mutex_try_enter(&rgb_conf.rgb_mutex, NULL) && rgb_conf.blink_active) {
+        rgb_conf.blink_state = !rgb_conf.blink_state;
                 
-                if(rgb_conf.blink_state) {
-                    //Restore original color
-                    pwm_set_gpio_level(RGB_RED_PIN, gamma_table[(uint8_t)(rgb_conf.current_r * rgb_conf.current_brightness)]);
-                    pwm_set_gpio_level(RGB_GREEN_PIN, gamma_table[(uint8_t)(rgb_conf.current_g * rgb_conf.current_brightness)]);
-                    pwm_set_gpio_level(RGB_BLUE_PIN, gamma_table[(uint8_t)(rgb_conf.current_b * rgb_conf.current_brightness)]);
-                } else {
-                    //Turn off LEDs
-                    pwm_set_gpio_level(RGB_RED_PIN, 0);
-                    pwm_set_gpio_level(RGB_GREEN_PIN, 0);
-                    pwm_set_gpio_level(RGB_BLUE_PIN, 0);
-                }
-            }
-            mutex_exit(&rgb_conf.rgb_mutex);
+        if(rgb_conf.blink_state) {
+            //Restore original color
+            pwm_set_gpio_level(RGB_RED_PIN, gamma_table[(uint8_t)(rgb_conf.current_r * rgb_conf.current_brightness)]);
+            pwm_set_gpio_level(RGB_GREEN_PIN, gamma_table[(uint8_t)(rgb_conf.current_g * rgb_conf.current_brightness)]);
+            pwm_set_gpio_level(RGB_BLUE_PIN, gamma_table[(uint8_t)(rgb_conf.current_b * rgb_conf.current_brightness)]);
         }
+            
+        else {
+            //Turn off LEDs
+            pwm_set_gpio_level(RGB_RED_PIN, 0);
+            pwm_set_gpio_level(RGB_GREEN_PIN, 0);
+            pwm_set_gpio_level(RGB_BLUE_PIN, 0);
+        }
+
+        mutex_exit(&rgb_conf.rgb_mutex);
     }
     
     return true;
@@ -720,9 +701,12 @@ static bool blink_callback(struct repeating_timer *t) {
  * @return Always returns true to continue timer.
  * @details Toggles onboard LED to indicate system liveliness.
  */
-static bool heartbeat_callback(struct repeating_timer* t) {
+static bool heartbeat_callback(const struct repeating_timer* t) {
+    (void)t;
+
     static bool led_state = false;
     
+    //Needs to be macro, because regular Pico target doesnt have these functions
     #if defined(PICO_BOARD_IS_PICO_W)
     cyw43_arch_gpio_put(ROBOHAND_LED_PIN, led_state);
     #else

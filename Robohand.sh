@@ -30,26 +30,22 @@ while getopts "abdhip:s:" options; do
             #Core system information
             echo -e "I am trying to develop a robotic hand using C, the Raspberry Pi Pico SDK, and \n\
 the MicroROS library. I am trying to keep the code lightweight, extensible, and multithreaded. \n\
-The system hardware is structured as follows: The Pi Pico actuates a total of 5 MG996R servos powered \n\
-at 5V, using the PWM functionality, on GPIO 11-15. The Pi Pico also reads a total of 5 thin-film pressure \n\
-sensors, 4 of which are read using an ADS1115 ADC via I2C, and the fifth read using the ADC2 on the Pico. \n\
-The device also contains an MPU6050 accelerometer for retrieval of kinematic data for a local frame of \n\
-reference, and a HMC8553L magnometer to get a rough global frame of reference from magnetic north, both \n\
-connected via I2C. All I2C devices are connected on I2C1 using GPIO 28-29 for the clock and data signal. \n\
+The system hardware is structured as follows: \n\
+- 5 MG996R Servos controlled via PWM on GPIO 11-15 \n\
+- ADS1115 connected to I2C0 Pins 0 & 1 \n\
+- BME280 connected to I2C0 Pins 0 & 1 \n\
+- MPU6050 connected to I2C0 Pins 0 & 1 \n\
+- QMC5883L connected to I2C0 Pins 0 & 1 \n\
 \n\
-The system code is structured as follows: Robohand.c/h contains the \n\
+The system code is structured as follows: Robohand_advanced.c/h contains the \n\
 system hardware implementation, allowing for interaction with the physical hardware \n\
-via the Pico SDK. Robohand_usb.c contains code to provide a minimal terminal experience \n\
+via the Pico SDK, and allows for a variety of backends, callbacks, interrupts, or DMA. \n\
+Robohand_usb.c contains code to provide a minimal terminal experience \n\
 to a client using the Pico SDK, and allow for reading and interacting with the sensors \n\
 using the accessible functions contained in Robohand.h. Robohand_uros.c/h is responsible \n\
 for allowing host devices running the Micro-ROS client to interact with the hand via the \n\
 interface provided by Robohand.c/h. \n\
-\n\
-The system is currently accessing the ADC's and MPU6050 at a fixed rate based on timer callbacks, \n\
-and the HMC8553L informs the system of data readiness using GPIO 10." >> prompt_file.txt
-
-            #Insert user request
-            echo -e $2 >> prompt_file.txt
+" >> prompt_file.txt
 
             #Append file information to end of prompt
             echo -e "The current impelmentation is shown below. Robohand.h header file" >> prompt_file.txt
@@ -72,10 +68,12 @@ and the HMC8553L informs the system of data readiness using GPIO 10." >> prompt_
 
             cat CMakeLists.txt >> prompt_file.txt
 
+            #Insert user request
+            echo -e $2 >> prompt_file.txt
+
             echo -e "Please try not to overcomplicate suggestions. Do not hallucinate Pi Pico SDK \n\
 functions, or MicroROS functions. Consider and provide information regarding the speed versus \n\
 complexity of the problem. Double check all suggestions provided to CMakeLists.txt" >> prompt_file.txt
-
         ;;
 
         #Build - controls building of target container
