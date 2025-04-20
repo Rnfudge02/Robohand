@@ -27,53 +27,29 @@ while getopts "abdhip:s:" options; do
             echo -e "${FG_GREEN}[Robohand Controller]${FG_BLUE} Generating prompt template file"
             rm -rf ./prompt_file.txt
 
-            #Core system information
-            echo -e "I am trying to develop a robotic hand using C, the Raspberry Pi Pico SDK, and \n\
-the MicroROS library. I am trying to keep the code lightweight, extensible, and multithreaded. \n\
-The system hardware is structured as follows: \n\
-- 5 MG996R Servos controlled via PWM on GPIO 11-15 \n\
-- ADS1115 connected to I2C0 Pins 0 & 1 \n\
-- BME280 connected to I2C0 Pins 0 & 1 \n\
-- MPU6050 connected to I2C0 Pins 0 & 1 \n\
-- QMC5883L connected to I2C0 Pins 0 & 1 \n\
-\n\
-The system code is structured as follows: Robohand_advanced.c/h contains the \n\
-system hardware implementation, allowing for interaction with the physical hardware \n\
-via the Pico SDK, and allows for a variety of backends, callbacks, interrupts, or DMA. \n\
-Robohand_usb.c contains code to provide a minimal terminal experience \n\
-to a client using the Pico SDK, and allow for reading and interacting with the sensors \n\
-using the accessible functions contained in Robohand.h. Robohand_uros.c/h is responsible \n\
-for allowing host devices running the Micro-ROS client to interact with the hand via the \n\
-interface provided by Robohand.c/h. \n\
-" >> prompt_file.txt
+            cat ./README.md >> prompt_file.txt
 
-            #Append file information to end of prompt
-            echo -e "The current impelmentation is shown below. Robohand.h header file" >> prompt_file.txt
-
-            cat ./Include/Robohand.h >> prompt_file.txt
-
-            echo -e "Robohand.h header file end, begin Robohand.c source file"  >> prompt_file.txt
-
-            cat ./Src/Robohand.c >> prompt_file.txt
-
-            echo -e "Robohand.c header file end, begin Robohand_advanced.h" >> prompt_file.txt
-
-            cat ./Include/Robohand_advanced.h >> prompt_file.txt
-
-            echo -e "End Robohand_advanced.h, begin Robohand_advanced.c" >> prompt_file.txt
-
-            cat ./Src/Robohand_advanced.c >> prompt_file.txt
             
-            echo -e "End Robohand_advanced.c, begin CMakelists.txt" >> prompt_file.txt
-
-            cat CMakeLists.txt >> prompt_file.txt
+            #Show tree representation
+            echo -e "The projects tree representation is given below.\n" >> prompt_file.txt
+            tree ./Include ./Src >> prompt_file.txt
 
             #Insert user request
             echo -e $2 >> prompt_file.txt
+            
+            #Add project file context
+            for FILE in ./Include/*; do cat $FILE >> prompt_file.txt; done
 
+            for FILE in ./Src/Core/*; do cat $FILE >> prompt_file.txt; done
+
+            for FILE in ./Src/Robohand_*; do cat $FILE >> prompt_file.txt; done
+
+            cat CMakeLists.txt >> prompt_file.txt
+
+            #Additional instructions
             echo -e "Please try not to overcomplicate suggestions. Do not hallucinate Pi Pico SDK \n\
-functions, or MicroROS functions. Consider and provide information regarding the speed versus \n\
-complexity of the problem. Double check all suggestions provided to CMakeLists.txt" >> prompt_file.txt
+functions, or MicroROS functions. Consider and provide information regarding the speed of solutions. \n\
+Double check all suggestions provided to CMakeLists.txt" >> prompt_file.txt
         ;;
 
         #Build - controls building of target container

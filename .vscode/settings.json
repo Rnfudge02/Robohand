@@ -46,7 +46,13 @@
         "string_view": "c",
         "span": "c",
         "cstdint": "c",
-        "atomic": "c"
+        "atomic": "c",
+        "gpio.h": "c",
+        "stdint.h": "c",
+        "mutex.h": "c",
+        "multicore.h": "c",
+        "watchdog.h": "c"
     },
+    "C_Cpp.errorSquiggles": "disabled",
     "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json"
 }
