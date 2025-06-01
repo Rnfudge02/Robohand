@@ -1,0 +1,138 @@
+\hypertarget{structsystem__status}{}\doxysection{system\+\_\+status Struct Reference}
+\label{structsystem__status}\index{system\_status@{system\_status}}
+
+
+Status data structure.  
+
+
+
+
+{\ttfamily \#include $<$Robohand.\+h$>$}
+
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t \mbox{\hyperlink{structsystem__status_a3c993342a051dafb6d069378e2a3d550_a3c993342a051dafb6d069378e2a3d550}{core0\+\_\+loops}}
+\begin{DoxyCompactList}\small\item\em Counts on core 0 main loop since last status retrieval. \end{DoxyCompactList}\item 
+uint32\+\_\+t \mbox{\hyperlink{structsystem__status_a07a304d1ac62502515988344ae6daa4d_a07a304d1ac62502515988344ae6daa4d}{core1\+\_\+loops}}
+\begin{DoxyCompactList}\small\item\em Counts on core 1 main loop since last status retrieval. \end{DoxyCompactList}\item 
+uint32\+\_\+t \mbox{\hyperlink{structsystem__status_a39d3196f8b8451ff5ffc98d81fbb9929_a39d3196f8b8451ff5ffc98d81fbb9929}{last\+\_\+reset\+\_\+core0}}
+\begin{DoxyCompactList}\small\item\em Last time the counter was reset on core 0. \end{DoxyCompactList}\item 
+uint32\+\_\+t \mbox{\hyperlink{structsystem__status_af3bf3faf0780f0d3580cc1edb0be974f_af3bf3faf0780f0d3580cc1edb0be974f}{last\+\_\+watchdog}}
+\begin{DoxyCompactList}\small\item\em Time since last watchdog event. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{structsystem__status_a81e50147476d5dea472d5abf41673ad3_a81e50147476d5dea472d5abf41673ad3}{system\+\_\+ok}}
+\begin{DoxyCompactList}\small\item\em Did the watchdog reset the system? \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{structsystem__status_ae5192c4ece332b135b105f7e21014704_ae5192c4ece332b135b105f7e21014704}{emergency\+\_\+stop}}
+\begin{DoxyCompactList}\small\item\em To be used for automatic servo stoppage. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structsystem__status_ae94b56e3e2d429e97fced5ae6e5f9834_ae94b56e3e2d429e97fced5ae6e5f9834}{\+\_\+\+\_\+p12}} \mbox{[}2\mbox{]}
+\begin{DoxyCompactList}\small\item\em Make sure io\+\_\+rw\+\_\+32 access is on 32-\/bit boundary. \end{DoxyCompactList}\item 
+mutex\+\_\+t \mbox{\hyperlink{structsystem__status_a349d6044f96596202fc36270a2eb39c3_a349d6044f96596202fc36270a2eb39c3}{status\+\_\+mutex}}
+\begin{DoxyCompactList}\small\item\em Mutex to protect access to internal members. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structsystem__status_ae8af66b8c66974c87825c405f28f165c_ae8af66b8c66974c87825c405f28f165c}{\+\_\+\+\_\+p13}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Mutex is struct containing io\+\_\+rw\+\_\+32 and bool, maintain 32-\/bit alignment. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Status data structure. 
+
+Contains information about system health. \begin{DoxyPrecond}{Precondition}
+acquire mutex before performing any read/write on this structure. 
+\end{DoxyPrecond}
+
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{structsystem__status_ae94b56e3e2d429e97fced5ae6e5f9834_ae94b56e3e2d429e97fced5ae6e5f9834}\label{structsystem__status_ae94b56e3e2d429e97fced5ae6e5f9834_ae94b56e3e2d429e97fced5ae6e5f9834}} 
+\index{system\_status@{system\_status}!\_\_p12@{\_\_p12}}
+\index{\_\_p12@{\_\_p12}!system\_status@{system\_status}}
+\doxysubsubsection{\texorpdfstring{\_\_p12}{\_\_p12}}
+{\footnotesize\ttfamily uint8\+\_\+t system\+\_\+status\+::\+\_\+\+\_\+p12\mbox{[}2\mbox{]}}
+
+
+
+Make sure io\+\_\+rw\+\_\+32 access is on 32-\/bit boundary. 
+
+\mbox{\Hypertarget{structsystem__status_ae8af66b8c66974c87825c405f28f165c_ae8af66b8c66974c87825c405f28f165c}\label{structsystem__status_ae8af66b8c66974c87825c405f28f165c_ae8af66b8c66974c87825c405f28f165c}} 
+\index{system\_status@{system\_status}!\_\_p13@{\_\_p13}}
+\index{\_\_p13@{\_\_p13}!system\_status@{system\_status}}
+\doxysubsubsection{\texorpdfstring{\_\_p13}{\_\_p13}}
+{\footnotesize\ttfamily uint8\+\_\+t system\+\_\+status\+::\+\_\+\+\_\+p13\mbox{[}3\mbox{]}}
+
+
+
+Mutex is struct containing io\+\_\+rw\+\_\+32 and bool, maintain 32-\/bit alignment. 
+
+\mbox{\Hypertarget{structsystem__status_a3c993342a051dafb6d069378e2a3d550_a3c993342a051dafb6d069378e2a3d550}\label{structsystem__status_a3c993342a051dafb6d069378e2a3d550_a3c993342a051dafb6d069378e2a3d550}} 
+\index{system\_status@{system\_status}!core0\_loops@{core0\_loops}}
+\index{core0\_loops@{core0\_loops}!system\_status@{system\_status}}
+\doxysubsubsection{\texorpdfstring{core0\_loops}{core0\_loops}}
+{\footnotesize\ttfamily uint32\+\_\+t system\+\_\+status\+::core0\+\_\+loops}
+
+
+
+Counts on core 0 main loop since last status retrieval. 
+
+\mbox{\Hypertarget{structsystem__status_a07a304d1ac62502515988344ae6daa4d_a07a304d1ac62502515988344ae6daa4d}\label{structsystem__status_a07a304d1ac62502515988344ae6daa4d_a07a304d1ac62502515988344ae6daa4d}} 
+\index{system\_status@{system\_status}!core1\_loops@{core1\_loops}}
+\index{core1\_loops@{core1\_loops}!system\_status@{system\_status}}
+\doxysubsubsection{\texorpdfstring{core1\_loops}{core1\_loops}}
+{\footnotesize\ttfamily uint32\+\_\+t system\+\_\+status\+::core1\+\_\+loops}
+
+
+
+Counts on core 1 main loop since last status retrieval. 
+
+\mbox{\Hypertarget{structsystem__status_ae5192c4ece332b135b105f7e21014704_ae5192c4ece332b135b105f7e21014704}\label{structsystem__status_ae5192c4ece332b135b105f7e21014704_ae5192c4ece332b135b105f7e21014704}} 
+\index{system\_status@{system\_status}!emergency\_stop@{emergency\_stop}}
+\index{emergency\_stop@{emergency\_stop}!system\_status@{system\_status}}
+\doxysubsubsection{\texorpdfstring{emergency\_stop}{emergency\_stop}}
+{\footnotesize\ttfamily bool system\+\_\+status\+::emergency\+\_\+stop}
+
+
+
+To be used for automatic servo stoppage. 
+
+\mbox{\Hypertarget{structsystem__status_a39d3196f8b8451ff5ffc98d81fbb9929_a39d3196f8b8451ff5ffc98d81fbb9929}\label{structsystem__status_a39d3196f8b8451ff5ffc98d81fbb9929_a39d3196f8b8451ff5ffc98d81fbb9929}} 
+\index{system\_status@{system\_status}!last\_reset\_core0@{last\_reset\_core0}}
+\index{last\_reset\_core0@{last\_reset\_core0}!system\_status@{system\_status}}
+\doxysubsubsection{\texorpdfstring{last\_reset\_core0}{last\_reset\_core0}}
+{\footnotesize\ttfamily uint32\+\_\+t system\+\_\+status\+::last\+\_\+reset\+\_\+core0}
+
+
+
+Last time the counter was reset on core 0. 
+
+\mbox{\Hypertarget{structsystem__status_af3bf3faf0780f0d3580cc1edb0be974f_af3bf3faf0780f0d3580cc1edb0be974f}\label{structsystem__status_af3bf3faf0780f0d3580cc1edb0be974f_af3bf3faf0780f0d3580cc1edb0be974f}} 
+\index{system\_status@{system\_status}!last\_watchdog@{last\_watchdog}}
+\index{last\_watchdog@{last\_watchdog}!system\_status@{system\_status}}
+\doxysubsubsection{\texorpdfstring{last\_watchdog}{last\_watchdog}}
+{\footnotesize\ttfamily uint32\+\_\+t system\+\_\+status\+::last\+\_\+watchdog}
+
+
+
+Time since last watchdog event. 
+
+\mbox{\Hypertarget{structsystem__status_a349d6044f96596202fc36270a2eb39c3_a349d6044f96596202fc36270a2eb39c3}\label{structsystem__status_a349d6044f96596202fc36270a2eb39c3_a349d6044f96596202fc36270a2eb39c3}} 
+\index{system\_status@{system\_status}!status\_mutex@{status\_mutex}}
+\index{status\_mutex@{status\_mutex}!system\_status@{system\_status}}
+\doxysubsubsection{\texorpdfstring{status\_mutex}{status\_mutex}}
+{\footnotesize\ttfamily mutex\+\_\+t system\+\_\+status\+::status\+\_\+mutex}
+
+
+
+Mutex to protect access to internal members. 
+
+\mbox{\Hypertarget{structsystem__status_a81e50147476d5dea472d5abf41673ad3_a81e50147476d5dea472d5abf41673ad3}\label{structsystem__status_a81e50147476d5dea472d5abf41673ad3_a81e50147476d5dea472d5abf41673ad3}} 
+\index{system\_status@{system\_status}!system\_ok@{system\_ok}}
+\index{system\_ok@{system\_ok}!system\_status@{system\_status}}
+\doxysubsubsection{\texorpdfstring{system\_ok}{system\_ok}}
+{\footnotesize\ttfamily bool system\+\_\+status\+::system\+\_\+ok}
+
+
+
+Did the watchdog reset the system? 
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Include/\mbox{\hyperlink{Robohand_8h}{Robohand.\+h}}\end{DoxyCompactItemize}

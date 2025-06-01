@@ -1,0 +1,254 @@
+\hypertarget{group__user__facing}{}\doxysection{User Facing Functions}
+\label{group__user__facing}\index{User Facing Functions@{User Facing Functions}}
+
+
+Functions designed to be used in other source code. Allows for hardware interaction.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group__user__facing_ga6ff6126a0906c10b85405b6e7f642419_ga6ff6126a0906c10b85405b6e7f642419}{actuate\+\_\+servo}} (uint8\+\_\+t servo, uint16\+\_\+t pulse\+\_\+width, uint16\+\_\+t duration\+\_\+ms)
+\begin{DoxyCompactList}\small\item\em Actuates a servo to a specified position over a given duration. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__user__facing_ga256c6af47832d1d3cd38d8633bc91d79_ga256c6af47832d1d3cd38d8633bc91d79}{convert\+\_\+sensor\+\_\+data}} (const \mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} $\ast$raw, \mbox{\hyperlink{structsensor__data__physical}{sensor\+\_\+data\+\_\+physical}} $\ast$converted)
+\begin{DoxyCompactList}\small\item\em Converts passed sensor data to physical parameters. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_ga677531d0ec7a1f4b9b9d8ebb4b3d4521_ga677531d0ec7a1f4b9b9d8ebb4b3d4521}{core1\+\_\+entry}} (void)
+\begin{DoxyCompactList}\small\item\em Core 1 main execution loop. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__user__facing_gadf9b8d3e6af2e27ec0d4ff22385763b0_gadf9b8d3e6af2e27ec0d4ff22385763b0}{get\+\_\+sensor\+\_\+data}} (\mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} $\ast$dest)
+\begin{DoxyCompactList}\small\item\em Retrieves current sensor data in a thread-\/safe manner. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__user__facing_ga5806875532f40fd013132a0bde396102_ga5806875532f40fd013132a0bde396102}{get\+\_\+servo\+\_\+status}} (uint8\+\_\+t servo, \mbox{\hyperlink{structservo__motion__profile}{servo\+\_\+motion\+\_\+profile}} $\ast$dest)
+\begin{DoxyCompactList}\small\item\em Retrieves the current status of a servo. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_ga6c4baa6e0f3129e683d99dcfeb50d7a8_ga6c4baa6e0f3129e683d99dcfeb50d7a8}{get\+\_\+system\+\_\+status}} (\mbox{\hyperlink{structsystem__status}{system\+\_\+status}} $\ast$dest)
+\begin{DoxyCompactList}\small\item\em Retrieves the current status of the system. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_ga0bd257db3fb98bba6461790c9be316d7_ga0bd257db3fb98bba6461790c9be316d7}{init\+\_\+rgb}} (void)
+\begin{DoxyCompactList}\small\item\em Initializes the RGB LED subsystem. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_gacd4f5679386691fb5594833e6464e4e6_gacd4f5679386691fb5594833e6464e4e6}{init\+\_\+robohand\+\_\+system}} (void)
+\begin{DoxyCompactList}\small\item\em Initializes the robotic hand system and launches Core 1. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_gaeb13944903e95d893183e13611de5980_gaeb13944903e95d893183e13611de5980}{rgb\+\_\+blink}} (bool enable, uint32\+\_\+t interval\+\_\+ms)
+\begin{DoxyCompactList}\small\item\em Configures the RGB to blink at a specified interval. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_ga97c22cab147a306a16b9926a813f8e11_ga97c22cab147a306a16b9926a813f8e11}{rgb\+\_\+set\+\_\+brightness}} (float brightness)
+\begin{DoxyCompactList}\small\item\em Initializes the robotic hand system and launches Core 1. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_gac8f53af3cb41054a3cd27280dbd64a33_gac8f53af3cb41054a3cd27280dbd64a33}{rgb\+\_\+set\+\_\+color}} (uint8\+\_\+t r, uint8\+\_\+t g, uint8\+\_\+t b)
+\begin{DoxyCompactList}\small\item\em Sets the RGB LED color. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Functions designed to be used in other source code. Allows for hardware interaction. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group__user__facing_ga6ff6126a0906c10b85405b6e7f642419_ga6ff6126a0906c10b85405b6e7f642419}\label{group__user__facing_ga6ff6126a0906c10b85405b6e7f642419_ga6ff6126a0906c10b85405b6e7f642419}} 
+\index{User Facing Functions@{User Facing Functions}!actuate\_servo@{actuate\_servo}}
+\index{actuate\_servo@{actuate\_servo}!User Facing Functions@{User Facing Functions}}
+\doxysubsubsection{\texorpdfstring{actuate\_servo()}{actuate\_servo()}}
+{\footnotesize\ttfamily void actuate\+\_\+servo (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{servo,  }\item[{uint16\+\_\+t}]{pulse\+\_\+width,  }\item[{uint16\+\_\+t}]{duration\+\_\+ms }\end{DoxyParamCaption})}
+
+
+
+Actuates a servo to a specified position over a given duration. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em servo} & Servo index (0 to NUM\+\_\+\+SERVOS-\/1). \\
+\hline
+{\em pulse\+\_\+width} & Target pulse width in microseconds (500-\/2500µs). \\
+\hline
+{\em duration\+\_\+ms} & Movement duration in milliseconds.\\
+\hline
+\end{DoxyParams}
+Actuates a servo to a specified position over a given duration. \mbox{\Hypertarget{group__user__facing_ga256c6af47832d1d3cd38d8633bc91d79_ga256c6af47832d1d3cd38d8633bc91d79}\label{group__user__facing_ga256c6af47832d1d3cd38d8633bc91d79_ga256c6af47832d1d3cd38d8633bc91d79}} 
+\index{User Facing Functions@{User Facing Functions}!convert\_sensor\_data@{convert\_sensor\_data}}
+\index{convert\_sensor\_data@{convert\_sensor\_data}!User Facing Functions@{User Facing Functions}}
+\doxysubsubsection{\texorpdfstring{convert\_sensor\_data()}{convert\_sensor\_data()}}
+{\footnotesize\ttfamily bool convert\+\_\+sensor\+\_\+data (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} $\ast$}]{raw,  }\item[{\mbox{\hyperlink{structsensor__data__physical}{sensor\+\_\+data\+\_\+physical}} $\ast$}]{converted }\end{DoxyParamCaption})}
+
+
+
+Converts passed sensor data to physical parameters. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em raw} & Pointer to \mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} structure to containing unconverted values. \\
+\hline
+\mbox{\texttt{ out}}  & {\em converted} & Pointer to \mbox{\hyperlink{structsensor__data__physical}{sensor\+\_\+data\+\_\+physical}} structure to receive readings as physical parameters. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if data copied successfully, false if mutex was busy. 
+\end{DoxyReturn}
+\begin{DoxyWarning}{Warning}
+Caller must allocate destination buffer. Data valid until next update.
+\end{DoxyWarning}
+Converts passed sensor data to physical parameters. \mbox{\Hypertarget{group__user__facing_ga677531d0ec7a1f4b9b9d8ebb4b3d4521_ga677531d0ec7a1f4b9b9d8ebb4b3d4521}\label{group__user__facing_ga677531d0ec7a1f4b9b9d8ebb4b3d4521_ga677531d0ec7a1f4b9b9d8ebb4b3d4521}} 
+\index{User Facing Functions@{User Facing Functions}!core1\_entry@{core1\_entry}}
+\index{core1\_entry@{core1\_entry}!User Facing Functions@{User Facing Functions}}
+\doxysubsubsection{\texorpdfstring{core1\_entry()}{core1\_entry()}}
+{\footnotesize\ttfamily void core1\+\_\+entry (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Core 1 main execution loop. 
+
+Handles all hardware-\/related operations\+:
+\begin{DoxyItemize}
+\item Sensor polling (accelerometer, gyroscope, magnetometer)
+\item ADC sampling
+\item Servo control
+\item System status monitoring \begin{DoxyPrecond}{Precondition}
+The system has been initialized. 
+\end{DoxyPrecond}
+\begin{DoxyNote}{Note}
+Runs indefinitely after system initialization.
+\end{DoxyNote}
+Core 1 main execution loop. 
+\end{DoxyItemize}\mbox{\Hypertarget{group__user__facing_gadf9b8d3e6af2e27ec0d4ff22385763b0_gadf9b8d3e6af2e27ec0d4ff22385763b0}\label{group__user__facing_gadf9b8d3e6af2e27ec0d4ff22385763b0_gadf9b8d3e6af2e27ec0d4ff22385763b0}} 
+\index{User Facing Functions@{User Facing Functions}!get\_sensor\_data@{get\_sensor\_data}}
+\index{get\_sensor\_data@{get\_sensor\_data}!User Facing Functions@{User Facing Functions}}
+\doxysubsubsection{\texorpdfstring{get\_sensor\_data()}{get\_sensor\_data()}}
+{\footnotesize\ttfamily bool get\+\_\+sensor\+\_\+data (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} $\ast$}]{dest }\end{DoxyParamCaption})}
+
+
+
+Retrieves current sensor data in a thread-\/safe manner. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em dest} & Pointer to \mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} structure to receive readings. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if data copied successfully, false if mutex was busy. 
+\end{DoxyReturn}
+\begin{DoxyPrecond}{Precondition}
+dest points to a valid \mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} object. 
+\end{DoxyPrecond}
+\begin{DoxyWarning}{Warning}
+Caller must allocate destination buffer. Data valid until next update.
+\end{DoxyWarning}
+Retrieves current sensor data in a thread-\/safe manner. \mbox{\Hypertarget{group__user__facing_ga5806875532f40fd013132a0bde396102_ga5806875532f40fd013132a0bde396102}\label{group__user__facing_ga5806875532f40fd013132a0bde396102_ga5806875532f40fd013132a0bde396102}} 
+\index{User Facing Functions@{User Facing Functions}!get\_servo\_status@{get\_servo\_status}}
+\index{get\_servo\_status@{get\_servo\_status}!User Facing Functions@{User Facing Functions}}
+\doxysubsubsection{\texorpdfstring{get\_servo\_status()}{get\_servo\_status()}}
+{\footnotesize\ttfamily bool get\+\_\+servo\+\_\+status (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{servo,  }\item[{\mbox{\hyperlink{structservo__motion__profile}{servo\+\_\+motion\+\_\+profile}} $\ast$}]{dest }\end{DoxyParamCaption})}
+
+
+
+Retrieves the current status of a servo. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em servo} & Servo index (0 to NUM\+\_\+\+SERVOS-\/1). \\
+\hline
+\mbox{\texttt{ out}}  & {\em dest} & Pointer to \mbox{\hyperlink{structservo__motion__profile}{servo\+\_\+motion\+\_\+profile}} to populate. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if successfully acquired, false if error. 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+An error in this case could simply be that the mutexes could not be acquired
+\end{DoxyNote}
+Retrieves the current status of a servo. \mbox{\Hypertarget{group__user__facing_ga6c4baa6e0f3129e683d99dcfeb50d7a8_ga6c4baa6e0f3129e683d99dcfeb50d7a8}\label{group__user__facing_ga6c4baa6e0f3129e683d99dcfeb50d7a8_ga6c4baa6e0f3129e683d99dcfeb50d7a8}} 
+\index{User Facing Functions@{User Facing Functions}!get\_system\_status@{get\_system\_status}}
+\index{get\_system\_status@{get\_system\_status}!User Facing Functions@{User Facing Functions}}
+\doxysubsubsection{\texorpdfstring{get\_system\_status()}{get\_system\_status()}}
+{\footnotesize\ttfamily void get\+\_\+system\+\_\+status (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structsystem__status}{system\+\_\+status}} $\ast$}]{dest }\end{DoxyParamCaption})}
+
+
+
+Retrieves the current status of the system. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em dest} & Pointer to \mbox{\hyperlink{structsystem__status}{system\+\_\+status}} structure to populate.\\
+\hline
+\end{DoxyParams}
+Retrieves the current status of the system. \mbox{\Hypertarget{group__user__facing_ga0bd257db3fb98bba6461790c9be316d7_ga0bd257db3fb98bba6461790c9be316d7}\label{group__user__facing_ga0bd257db3fb98bba6461790c9be316d7_ga0bd257db3fb98bba6461790c9be316d7}} 
+\index{User Facing Functions@{User Facing Functions}!init\_rgb@{init\_rgb}}
+\index{init\_rgb@{init\_rgb}!User Facing Functions@{User Facing Functions}}
+\doxysubsubsection{\texorpdfstring{init\_rgb()}{init\_rgb()}}
+{\footnotesize\ttfamily void init\+\_\+rgb (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Initializes the RGB LED subsystem. 
+
+Configures PWM hardware and initializes mutexes.
+
+Initializes the RGB LED subsystem. \mbox{\Hypertarget{group__user__facing_gacd4f5679386691fb5594833e6464e4e6_gacd4f5679386691fb5594833e6464e4e6}\label{group__user__facing_gacd4f5679386691fb5594833e6464e4e6_gacd4f5679386691fb5594833e6464e4e6}} 
+\index{User Facing Functions@{User Facing Functions}!init\_robohand\_system@{init\_robohand\_system}}
+\index{init\_robohand\_system@{init\_robohand\_system}!User Facing Functions@{User Facing Functions}}
+\doxysubsubsection{\texorpdfstring{init\_robohand\_system()}{init\_robohand\_system()}}
+{\footnotesize\ttfamily void init\+\_\+robohand\+\_\+system (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Initializes the robotic hand system and launches Core 1. 
+
+Performs critical system initialization including\+:
+\begin{DoxyItemize}
+\item Mutex initialization for shared data
+\item Core 1 launch for hardware I/O operations \begin{DoxyPrecond}{Precondition}
+This should be run from core 0. 
+\end{DoxyPrecond}
+\begin{DoxyPostcond}{Postcondition}
+Core 1 handles sensor polling, servo control, and system monitoring.
+\end{DoxyPostcond}
+Initializes the robotic hand system and launches Core 1. 
+\end{DoxyItemize}\mbox{\Hypertarget{group__user__facing_gaeb13944903e95d893183e13611de5980_gaeb13944903e95d893183e13611de5980}\label{group__user__facing_gaeb13944903e95d893183e13611de5980_gaeb13944903e95d893183e13611de5980}} 
+\index{User Facing Functions@{User Facing Functions}!rgb\_blink@{rgb\_blink}}
+\index{rgb\_blink@{rgb\_blink}!User Facing Functions@{User Facing Functions}}
+\doxysubsubsection{\texorpdfstring{rgb\_blink()}{rgb\_blink()}}
+{\footnotesize\ttfamily void rgb\+\_\+blink (\begin{DoxyParamCaption}\item[{bool}]{enable,  }\item[{uint32\+\_\+t}]{interval\+\_\+ms }\end{DoxyParamCaption})}
+
+
+
+Configures the RGB to blink at a specified interval. 
+
+Uses a repeating timer callback to achieve blinking functionality. \begin{DoxyPrecond}{Precondition}
+This should be run from core 0. 
+\end{DoxyPrecond}
+\begin{DoxyPostcond}{Postcondition}
+Core 1 handles sensor polling, servo control, and system monitoring.
+\end{DoxyPostcond}
+Configures the RGB to blink at a specified interval. \mbox{\Hypertarget{group__user__facing_ga97c22cab147a306a16b9926a813f8e11_ga97c22cab147a306a16b9926a813f8e11}\label{group__user__facing_ga97c22cab147a306a16b9926a813f8e11_ga97c22cab147a306a16b9926a813f8e11}} 
+\index{User Facing Functions@{User Facing Functions}!rgb\_set\_brightness@{rgb\_set\_brightness}}
+\index{rgb\_set\_brightness@{rgb\_set\_brightness}!User Facing Functions@{User Facing Functions}}
+\doxysubsubsection{\texorpdfstring{rgb\_set\_brightness()}{rgb\_set\_brightness()}}
+{\footnotesize\ttfamily void rgb\+\_\+set\+\_\+brightness (\begin{DoxyParamCaption}\item[{float}]{brightness }\end{DoxyParamCaption})}
+
+
+
+Initializes the robotic hand system and launches Core 1. 
+
+Performs critical system initialization including\+:
+\begin{DoxyItemize}
+\item Mutex initialization for shared data
+\item Core 1 launch for hardware I/O operations \begin{DoxyPrecond}{Precondition}
+This should be run from core 0. 
+\end{DoxyPrecond}
+\begin{DoxyPostcond}{Postcondition}
+Core 1 handles sensor polling, servo control, and system monitoring.
+\end{DoxyPostcond}
+Initializes the robotic hand system and launches Core 1. 
+\end{DoxyItemize}\mbox{\Hypertarget{group__user__facing_gac8f53af3cb41054a3cd27280dbd64a33_gac8f53af3cb41054a3cd27280dbd64a33}\label{group__user__facing_gac8f53af3cb41054a3cd27280dbd64a33_gac8f53af3cb41054a3cd27280dbd64a33}} 
+\index{User Facing Functions@{User Facing Functions}!rgb\_set\_color@{rgb\_set\_color}}
+\index{rgb\_set\_color@{rgb\_set\_color}!User Facing Functions@{User Facing Functions}}
+\doxysubsubsection{\texorpdfstring{rgb\_set\_color()}{rgb\_set\_color()}}
+{\footnotesize\ttfamily void rgb\+\_\+set\+\_\+color (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{r,  }\item[{uint8\+\_\+t}]{g,  }\item[{uint8\+\_\+t}]{b }\end{DoxyParamCaption})}
+
+
+
+Sets the RGB LED color. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em r} & Red component (0-\/255). \\
+\hline
+\mbox{\texttt{ in}}  & {\em g} & Green component (0-\/255). \\
+\hline
+\mbox{\texttt{ in}}  & {\em b} & Blue component (0-\/255).\\
+\hline
+\end{DoxyParams}
+Sets the RGB LED color. 

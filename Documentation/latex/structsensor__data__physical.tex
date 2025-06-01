@@ -1,0 +1,138 @@
+\hypertarget{structsensor__data__physical}{}\doxysection{sensor\+\_\+data\+\_\+physical Struct Reference}
+\label{structsensor__data__physical}\index{sensor\_data\_physical@{sensor\_data\_physical}}
+
+
+Physical sensor data structure.  
+
+
+
+
+{\ttfamily \#include $<$Robohand.\+h$>$}
+
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{structsensor__data__physical_aca1b53398f596ed6c268d0afa1d8a453_aca1b53398f596ed6c268d0afa1d8a453}{accel}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Accelerometer in g (9.\+81 m/s²) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structsensor__data__physical_a68268ed97ad3b99580b8179f505d4058_a68268ed97ad3b99580b8179f505d4058}{\+\_\+\+\_\+p7}} \mbox{[}2\mbox{]}
+\begin{DoxyCompactList}\small\item\em Padding for explicit 32-\/bit alignment. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{structsensor__data__physical_a6a1ec8c4db4035c9e04ceb361f14ae2b_a6a1ec8c4db4035c9e04ceb361f14ae2b}{gyro}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Gyroscope in degrees per second (dps) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structsensor__data__physical_ab91fcf4b9c31171d12ef7a270aba8f8f_ab91fcf4b9c31171d12ef7a270aba8f8f}{\+\_\+\+\_\+p8}} \mbox{[}2\mbox{]}
+\begin{DoxyCompactList}\small\item\em Padding for explicit 32-\/bit alignment. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{structsensor__data__physical_a51bef371638b39f6c3eb20c02564fe88_a51bef371638b39f6c3eb20c02564fe88}{mag}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Magnetometer in microteslas (µT) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structsensor__data__physical_ad2754f6105f209c155c043d7816adf1c_ad2754f6105f209c155c043d7816adf1c}{\+\_\+\+\_\+p9}} \mbox{[}2\mbox{]}
+\begin{DoxyCompactList}\small\item\em Padding for explicit 32-\/bit alignment. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{structsensor__data__physical_ab77b2b16c84623e96c8dab04347f3454_ab77b2b16c84623e96c8dab04347f3454}{adc\+\_\+values}} \mbox{[}5\mbox{]}
+\begin{DoxyCompactList}\small\item\em ADC readings in volts or converted units. \end{DoxyCompactList}\item 
+mutex\+\_\+t \mbox{\hyperlink{structsensor__data__physical_ab9409bb7a7b2cc250c0ac5c2f47596b1_ab9409bb7a7b2cc250c0ac5c2f47596b1}{data\+\_\+mutex}}
+\begin{DoxyCompactList}\small\item\em Mutex for thread-\/safe data access. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structsensor__data__physical_a1cdeea88a996eeed0baced64c7798516_a1cdeea88a996eeed0baced64c7798516}{\+\_\+\+\_\+p10}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Mutex is struct containing io\+\_\+rw\+\_\+32 and bool, maintain 32-\/bit alignment. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Physical sensor data structure. 
+
+Contains converted sensor readings in physical units. \begin{DoxyNote}{Note}
+Doesn\textquotesingle{}t need to be used on core 1, technically doesn\textquotesingle{}t need mutex, also not involved with any callbacks. 
+\end{DoxyNote}
+
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{structsensor__data__physical_a1cdeea88a996eeed0baced64c7798516_a1cdeea88a996eeed0baced64c7798516}\label{structsensor__data__physical_a1cdeea88a996eeed0baced64c7798516_a1cdeea88a996eeed0baced64c7798516}} 
+\index{sensor\_data\_physical@{sensor\_data\_physical}!\_\_p10@{\_\_p10}}
+\index{\_\_p10@{\_\_p10}!sensor\_data\_physical@{sensor\_data\_physical}}
+\doxysubsubsection{\texorpdfstring{\_\_p10}{\_\_p10}}
+{\footnotesize\ttfamily uint8\+\_\+t sensor\+\_\+data\+\_\+physical\+::\+\_\+\+\_\+p10\mbox{[}3\mbox{]}}
+
+
+
+Mutex is struct containing io\+\_\+rw\+\_\+32 and bool, maintain 32-\/bit alignment. 
+
+\mbox{\Hypertarget{structsensor__data__physical_a68268ed97ad3b99580b8179f505d4058_a68268ed97ad3b99580b8179f505d4058}\label{structsensor__data__physical_a68268ed97ad3b99580b8179f505d4058_a68268ed97ad3b99580b8179f505d4058}} 
+\index{sensor\_data\_physical@{sensor\_data\_physical}!\_\_p7@{\_\_p7}}
+\index{\_\_p7@{\_\_p7}!sensor\_data\_physical@{sensor\_data\_physical}}
+\doxysubsubsection{\texorpdfstring{\_\_p7}{\_\_p7}}
+{\footnotesize\ttfamily uint8\+\_\+t sensor\+\_\+data\+\_\+physical\+::\+\_\+\+\_\+p7\mbox{[}2\mbox{]}}
+
+
+
+Padding for explicit 32-\/bit alignment. 
+
+\mbox{\Hypertarget{structsensor__data__physical_ab91fcf4b9c31171d12ef7a270aba8f8f_ab91fcf4b9c31171d12ef7a270aba8f8f}\label{structsensor__data__physical_ab91fcf4b9c31171d12ef7a270aba8f8f_ab91fcf4b9c31171d12ef7a270aba8f8f}} 
+\index{sensor\_data\_physical@{sensor\_data\_physical}!\_\_p8@{\_\_p8}}
+\index{\_\_p8@{\_\_p8}!sensor\_data\_physical@{sensor\_data\_physical}}
+\doxysubsubsection{\texorpdfstring{\_\_p8}{\_\_p8}}
+{\footnotesize\ttfamily uint8\+\_\+t sensor\+\_\+data\+\_\+physical\+::\+\_\+\+\_\+p8\mbox{[}2\mbox{]}}
+
+
+
+Padding for explicit 32-\/bit alignment. 
+
+\mbox{\Hypertarget{structsensor__data__physical_ad2754f6105f209c155c043d7816adf1c_ad2754f6105f209c155c043d7816adf1c}\label{structsensor__data__physical_ad2754f6105f209c155c043d7816adf1c_ad2754f6105f209c155c043d7816adf1c}} 
+\index{sensor\_data\_physical@{sensor\_data\_physical}!\_\_p9@{\_\_p9}}
+\index{\_\_p9@{\_\_p9}!sensor\_data\_physical@{sensor\_data\_physical}}
+\doxysubsubsection{\texorpdfstring{\_\_p9}{\_\_p9}}
+{\footnotesize\ttfamily uint8\+\_\+t sensor\+\_\+data\+\_\+physical\+::\+\_\+\+\_\+p9\mbox{[}2\mbox{]}}
+
+
+
+Padding for explicit 32-\/bit alignment. 
+
+\mbox{\Hypertarget{structsensor__data__physical_aca1b53398f596ed6c268d0afa1d8a453_aca1b53398f596ed6c268d0afa1d8a453}\label{structsensor__data__physical_aca1b53398f596ed6c268d0afa1d8a453_aca1b53398f596ed6c268d0afa1d8a453}} 
+\index{sensor\_data\_physical@{sensor\_data\_physical}!accel@{accel}}
+\index{accel@{accel}!sensor\_data\_physical@{sensor\_data\_physical}}
+\doxysubsubsection{\texorpdfstring{accel}{accel}}
+{\footnotesize\ttfamily float sensor\+\_\+data\+\_\+physical\+::accel\mbox{[}3\mbox{]}}
+
+
+
+Accelerometer in g (9.\+81 m/s²) 
+
+\mbox{\Hypertarget{structsensor__data__physical_ab77b2b16c84623e96c8dab04347f3454_ab77b2b16c84623e96c8dab04347f3454}\label{structsensor__data__physical_ab77b2b16c84623e96c8dab04347f3454_ab77b2b16c84623e96c8dab04347f3454}} 
+\index{sensor\_data\_physical@{sensor\_data\_physical}!adc\_values@{adc\_values}}
+\index{adc\_values@{adc\_values}!sensor\_data\_physical@{sensor\_data\_physical}}
+\doxysubsubsection{\texorpdfstring{adc\_values}{adc\_values}}
+{\footnotesize\ttfamily float sensor\+\_\+data\+\_\+physical\+::adc\+\_\+values\mbox{[}5\mbox{]}}
+
+
+
+ADC readings in volts or converted units. 
+
+\mbox{\Hypertarget{structsensor__data__physical_ab9409bb7a7b2cc250c0ac5c2f47596b1_ab9409bb7a7b2cc250c0ac5c2f47596b1}\label{structsensor__data__physical_ab9409bb7a7b2cc250c0ac5c2f47596b1_ab9409bb7a7b2cc250c0ac5c2f47596b1}} 
+\index{sensor\_data\_physical@{sensor\_data\_physical}!data\_mutex@{data\_mutex}}
+\index{data\_mutex@{data\_mutex}!sensor\_data\_physical@{sensor\_data\_physical}}
+\doxysubsubsection{\texorpdfstring{data\_mutex}{data\_mutex}}
+{\footnotesize\ttfamily mutex\+\_\+t sensor\+\_\+data\+\_\+physical\+::data\+\_\+mutex}
+
+
+
+Mutex for thread-\/safe data access. 
+
+\mbox{\Hypertarget{structsensor__data__physical_a6a1ec8c4db4035c9e04ceb361f14ae2b_a6a1ec8c4db4035c9e04ceb361f14ae2b}\label{structsensor__data__physical_a6a1ec8c4db4035c9e04ceb361f14ae2b_a6a1ec8c4db4035c9e04ceb361f14ae2b}} 
+\index{sensor\_data\_physical@{sensor\_data\_physical}!gyro@{gyro}}
+\index{gyro@{gyro}!sensor\_data\_physical@{sensor\_data\_physical}}
+\doxysubsubsection{\texorpdfstring{gyro}{gyro}}
+{\footnotesize\ttfamily float sensor\+\_\+data\+\_\+physical\+::gyro\mbox{[}3\mbox{]}}
+
+
+
+Gyroscope in degrees per second (dps) 
+
+\mbox{\Hypertarget{structsensor__data__physical_a51bef371638b39f6c3eb20c02564fe88_a51bef371638b39f6c3eb20c02564fe88}\label{structsensor__data__physical_a51bef371638b39f6c3eb20c02564fe88_a51bef371638b39f6c3eb20c02564fe88}} 
+\index{sensor\_data\_physical@{sensor\_data\_physical}!mag@{mag}}
+\index{mag@{mag}!sensor\_data\_physical@{sensor\_data\_physical}}
+\doxysubsubsection{\texorpdfstring{mag}{mag}}
+{\footnotesize\ttfamily float sensor\+\_\+data\+\_\+physical\+::mag\mbox{[}3\mbox{]}}
+
+
+
+Magnetometer in microteslas (µT) 
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Include/\mbox{\hyperlink{Robohand_8h}{Robohand.\+h}}\end{DoxyCompactItemize}

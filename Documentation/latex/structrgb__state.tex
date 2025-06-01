@@ -1,0 +1,183 @@
+\hypertarget{structrgb__state}{}\doxysection{rgb\+\_\+state Struct Reference}
+\label{structrgb__state}\index{rgb\_state@{rgb\_state}}
+
+
+Structure for RGB LED configuration and state.  
+
+
+
+
+{\ttfamily \#include $<$Robohand.\+h$>$}
+
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{structrgb__state_ad1d82b1f5704dd3a9c5d20013d16c88c_ad1d82b1f5704dd3a9c5d20013d16c88c}{blink\+\_\+active}}
+\begin{DoxyCompactList}\small\item\em Whether blinking is active. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{structrgb__state_ad6d3646e254a14c328547f026a8ae01b_ad6d3646e254a14c328547f026a8ae01b}{blink\+\_\+state}}
+\begin{DoxyCompactList}\small\item\em Current state of the blink (on/off) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structrgb__state_af37e2189b58552f096a0d686c06ce299_af37e2189b58552f096a0d686c06ce299}{current\+\_\+r}}
+\begin{DoxyCompactList}\small\item\em Current red value (0-\/255) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structrgb__state_a6d337873186d29d349303d7d068b9e82_a6d337873186d29d349303d7d068b9e82}{current\+\_\+g}}
+\begin{DoxyCompactList}\small\item\em Current green value (0-\/255) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structrgb__state_a0e95a559474ec72687b9770fb5605798_a0e95a559474ec72687b9770fb5605798}{current\+\_\+b}}
+\begin{DoxyCompactList}\small\item\em Current blue value (0-\/255) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structrgb__state_af54f7665afab863dffe9cb674fab632c_af54f7665afab863dffe9cb674fab632c}{\+\_\+\+\_\+p0}}
+\begin{DoxyCompactList}\small\item\em Maintaining alignment for next uint16\+\_\+t access. \end{DoxyCompactList}\item 
+uint16\+\_\+t \mbox{\hyperlink{structrgb__state_a291d04e883a4d51d91e6290cfb485488_a291d04e883a4d51d91e6290cfb485488}{pwm\+\_\+wrap}}
+\begin{DoxyCompactList}\small\item\em PWM wrap value for frequency control. \end{DoxyCompactList}\item 
+uint32\+\_\+t \mbox{\hyperlink{structrgb__state_abca5270cf1dc1d68a0effb86ccbee4d6_abca5270cf1dc1d68a0effb86ccbee4d6}{blink\+\_\+interval}}
+\begin{DoxyCompactList}\small\item\em Blink interval in milliseconds. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{structrgb__state_a96e624114aec6525bb1c2a1f27787c35_a96e624114aec6525bb1c2a1f27787c35}{current\+\_\+brightness}}
+\begin{DoxyCompactList}\small\item\em Current brightness (0.\+0-\/1.\+0) \end{DoxyCompactList}\item 
+mutex\+\_\+t \mbox{\hyperlink{structrgb__state_a402e937eaf97eb03de9ee515f29c7b26_a402e937eaf97eb03de9ee515f29c7b26}{rgb\+\_\+mutex}}
+\begin{DoxyCompactList}\small\item\em Mutex for color/brightness access. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structrgb__state_a300c320f4fd4ef300bfc2d2045a432a6_a300c320f4fd4ef300bfc2d2045a432a6}{\+\_\+\+\_\+p1}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Mutex is struct containing io\+\_\+rw\+\_\+32 and bool, maintain 32-\/bit alignment. \end{DoxyCompactList}\item 
+mutex\+\_\+t \mbox{\hyperlink{structrgb__state_abc9cebb925753f36c255610cec3f0f81_abc9cebb925753f36c255610cec3f0f81}{pwm\+\_\+mutex}}
+\begin{DoxyCompactList}\small\item\em Mutex for PWM hardware access, unaligned access to io\+\_\+rw\+\_\+32 will cause a fault. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structrgb__state_acab699743a0c6f31d749f2b342c2fb8a_acab699743a0c6f31d749f2b342c2fb8a}{\+\_\+\+\_\+p2}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Mutex is struct containing io\+\_\+rw\+\_\+32 and bool, maintain 32-\/bit alignment. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Structure for RGB LED configuration and state. 
+
+Stores current color, brightness, and synchronization primitives. 
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{structrgb__state_af54f7665afab863dffe9cb674fab632c_af54f7665afab863dffe9cb674fab632c}\label{structrgb__state_af54f7665afab863dffe9cb674fab632c_af54f7665afab863dffe9cb674fab632c}} 
+\index{rgb\_state@{rgb\_state}!\_\_p0@{\_\_p0}}
+\index{\_\_p0@{\_\_p0}!rgb\_state@{rgb\_state}}
+\doxysubsubsection{\texorpdfstring{\_\_p0}{\_\_p0}}
+{\footnotesize\ttfamily uint8\+\_\+t rgb\+\_\+state\+::\+\_\+\+\_\+p0}
+
+
+
+Maintaining alignment for next uint16\+\_\+t access. 
+
+\mbox{\Hypertarget{structrgb__state_a300c320f4fd4ef300bfc2d2045a432a6_a300c320f4fd4ef300bfc2d2045a432a6}\label{structrgb__state_a300c320f4fd4ef300bfc2d2045a432a6_a300c320f4fd4ef300bfc2d2045a432a6}} 
+\index{rgb\_state@{rgb\_state}!\_\_p1@{\_\_p1}}
+\index{\_\_p1@{\_\_p1}!rgb\_state@{rgb\_state}}
+\doxysubsubsection{\texorpdfstring{\_\_p1}{\_\_p1}}
+{\footnotesize\ttfamily uint8\+\_\+t rgb\+\_\+state\+::\+\_\+\+\_\+p1\mbox{[}3\mbox{]}}
+
+
+
+Mutex is struct containing io\+\_\+rw\+\_\+32 and bool, maintain 32-\/bit alignment. 
+
+\mbox{\Hypertarget{structrgb__state_acab699743a0c6f31d749f2b342c2fb8a_acab699743a0c6f31d749f2b342c2fb8a}\label{structrgb__state_acab699743a0c6f31d749f2b342c2fb8a_acab699743a0c6f31d749f2b342c2fb8a}} 
+\index{rgb\_state@{rgb\_state}!\_\_p2@{\_\_p2}}
+\index{\_\_p2@{\_\_p2}!rgb\_state@{rgb\_state}}
+\doxysubsubsection{\texorpdfstring{\_\_p2}{\_\_p2}}
+{\footnotesize\ttfamily uint8\+\_\+t rgb\+\_\+state\+::\+\_\+\+\_\+p2\mbox{[}3\mbox{]}}
+
+
+
+Mutex is struct containing io\+\_\+rw\+\_\+32 and bool, maintain 32-\/bit alignment. 
+
+\mbox{\Hypertarget{structrgb__state_ad1d82b1f5704dd3a9c5d20013d16c88c_ad1d82b1f5704dd3a9c5d20013d16c88c}\label{structrgb__state_ad1d82b1f5704dd3a9c5d20013d16c88c_ad1d82b1f5704dd3a9c5d20013d16c88c}} 
+\index{rgb\_state@{rgb\_state}!blink\_active@{blink\_active}}
+\index{blink\_active@{blink\_active}!rgb\_state@{rgb\_state}}
+\doxysubsubsection{\texorpdfstring{blink\_active}{blink\_active}}
+{\footnotesize\ttfamily bool rgb\+\_\+state\+::blink\+\_\+active}
+
+
+
+Whether blinking is active. 
+
+\mbox{\Hypertarget{structrgb__state_abca5270cf1dc1d68a0effb86ccbee4d6_abca5270cf1dc1d68a0effb86ccbee4d6}\label{structrgb__state_abca5270cf1dc1d68a0effb86ccbee4d6_abca5270cf1dc1d68a0effb86ccbee4d6}} 
+\index{rgb\_state@{rgb\_state}!blink\_interval@{blink\_interval}}
+\index{blink\_interval@{blink\_interval}!rgb\_state@{rgb\_state}}
+\doxysubsubsection{\texorpdfstring{blink\_interval}{blink\_interval}}
+{\footnotesize\ttfamily uint32\+\_\+t rgb\+\_\+state\+::blink\+\_\+interval}
+
+
+
+Blink interval in milliseconds. 
+
+\mbox{\Hypertarget{structrgb__state_ad6d3646e254a14c328547f026a8ae01b_ad6d3646e254a14c328547f026a8ae01b}\label{structrgb__state_ad6d3646e254a14c328547f026a8ae01b_ad6d3646e254a14c328547f026a8ae01b}} 
+\index{rgb\_state@{rgb\_state}!blink\_state@{blink\_state}}
+\index{blink\_state@{blink\_state}!rgb\_state@{rgb\_state}}
+\doxysubsubsection{\texorpdfstring{blink\_state}{blink\_state}}
+{\footnotesize\ttfamily bool rgb\+\_\+state\+::blink\+\_\+state}
+
+
+
+Current state of the blink (on/off) 
+
+\mbox{\Hypertarget{structrgb__state_a0e95a559474ec72687b9770fb5605798_a0e95a559474ec72687b9770fb5605798}\label{structrgb__state_a0e95a559474ec72687b9770fb5605798_a0e95a559474ec72687b9770fb5605798}} 
+\index{rgb\_state@{rgb\_state}!current\_b@{current\_b}}
+\index{current\_b@{current\_b}!rgb\_state@{rgb\_state}}
+\doxysubsubsection{\texorpdfstring{current\_b}{current\_b}}
+{\footnotesize\ttfamily uint8\+\_\+t rgb\+\_\+state\+::current\+\_\+b}
+
+
+
+Current blue value (0-\/255) 
+
+\mbox{\Hypertarget{structrgb__state_a96e624114aec6525bb1c2a1f27787c35_a96e624114aec6525bb1c2a1f27787c35}\label{structrgb__state_a96e624114aec6525bb1c2a1f27787c35_a96e624114aec6525bb1c2a1f27787c35}} 
+\index{rgb\_state@{rgb\_state}!current\_brightness@{current\_brightness}}
+\index{current\_brightness@{current\_brightness}!rgb\_state@{rgb\_state}}
+\doxysubsubsection{\texorpdfstring{current\_brightness}{current\_brightness}}
+{\footnotesize\ttfamily float rgb\+\_\+state\+::current\+\_\+brightness}
+
+
+
+Current brightness (0.\+0-\/1.\+0) 
+
+\mbox{\Hypertarget{structrgb__state_a6d337873186d29d349303d7d068b9e82_a6d337873186d29d349303d7d068b9e82}\label{structrgb__state_a6d337873186d29d349303d7d068b9e82_a6d337873186d29d349303d7d068b9e82}} 
+\index{rgb\_state@{rgb\_state}!current\_g@{current\_g}}
+\index{current\_g@{current\_g}!rgb\_state@{rgb\_state}}
+\doxysubsubsection{\texorpdfstring{current\_g}{current\_g}}
+{\footnotesize\ttfamily uint8\+\_\+t rgb\+\_\+state\+::current\+\_\+g}
+
+
+
+Current green value (0-\/255) 
+
+\mbox{\Hypertarget{structrgb__state_af37e2189b58552f096a0d686c06ce299_af37e2189b58552f096a0d686c06ce299}\label{structrgb__state_af37e2189b58552f096a0d686c06ce299_af37e2189b58552f096a0d686c06ce299}} 
+\index{rgb\_state@{rgb\_state}!current\_r@{current\_r}}
+\index{current\_r@{current\_r}!rgb\_state@{rgb\_state}}
+\doxysubsubsection{\texorpdfstring{current\_r}{current\_r}}
+{\footnotesize\ttfamily uint8\+\_\+t rgb\+\_\+state\+::current\+\_\+r}
+
+
+
+Current red value (0-\/255) 
+
+\mbox{\Hypertarget{structrgb__state_abc9cebb925753f36c255610cec3f0f81_abc9cebb925753f36c255610cec3f0f81}\label{structrgb__state_abc9cebb925753f36c255610cec3f0f81_abc9cebb925753f36c255610cec3f0f81}} 
+\index{rgb\_state@{rgb\_state}!pwm\_mutex@{pwm\_mutex}}
+\index{pwm\_mutex@{pwm\_mutex}!rgb\_state@{rgb\_state}}
+\doxysubsubsection{\texorpdfstring{pwm\_mutex}{pwm\_mutex}}
+{\footnotesize\ttfamily mutex\+\_\+t rgb\+\_\+state\+::pwm\+\_\+mutex}
+
+
+
+Mutex for PWM hardware access, unaligned access to io\+\_\+rw\+\_\+32 will cause a fault. 
+
+\mbox{\Hypertarget{structrgb__state_a291d04e883a4d51d91e6290cfb485488_a291d04e883a4d51d91e6290cfb485488}\label{structrgb__state_a291d04e883a4d51d91e6290cfb485488_a291d04e883a4d51d91e6290cfb485488}} 
+\index{rgb\_state@{rgb\_state}!pwm\_wrap@{pwm\_wrap}}
+\index{pwm\_wrap@{pwm\_wrap}!rgb\_state@{rgb\_state}}
+\doxysubsubsection{\texorpdfstring{pwm\_wrap}{pwm\_wrap}}
+{\footnotesize\ttfamily uint16\+\_\+t rgb\+\_\+state\+::pwm\+\_\+wrap}
+
+
+
+PWM wrap value for frequency control. 
+
+\mbox{\Hypertarget{structrgb__state_a402e937eaf97eb03de9ee515f29c7b26_a402e937eaf97eb03de9ee515f29c7b26}\label{structrgb__state_a402e937eaf97eb03de9ee515f29c7b26_a402e937eaf97eb03de9ee515f29c7b26}} 
+\index{rgb\_state@{rgb\_state}!rgb\_mutex@{rgb\_mutex}}
+\index{rgb\_mutex@{rgb\_mutex}!rgb\_state@{rgb\_state}}
+\doxysubsubsection{\texorpdfstring{rgb\_mutex}{rgb\_mutex}}
+{\footnotesize\ttfamily mutex\+\_\+t rgb\+\_\+state\+::rgb\+\_\+mutex}
+
+
+
+Mutex for color/brightness access. 
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Include/\mbox{\hyperlink{Robohand_8h}{Robohand.\+h}}\end{DoxyCompactItemize}

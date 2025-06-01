@@ -1,0 +1,28 @@
+\hypertarget{group__system__structs}{}\doxysection{System Structures}
+\label{group__system__structs}\index{System Structures@{System Structures}}
+
+
+Structures used during program execution. Eases development with safe, lockable access to resources.  
+
+
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structrgb__state}{rgb\+\_\+state}}
+\begin{DoxyCompactList}\small\item\em Structure for RGB LED configuration and state. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}}
+\begin{DoxyCompactList}\small\item\em Sensor data structure with mutex protection. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structsensor__data__physical}{sensor\+\_\+data\+\_\+physical}}
+\begin{DoxyCompactList}\small\item\em Physical sensor data structure. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structservo__motion__profile}{servo\+\_\+motion\+\_\+profile}}
+\begin{DoxyCompactList}\small\item\em Servo motion profile structure. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structsystem__status}{system\+\_\+status}}
+\begin{DoxyCompactList}\small\item\em Status data structure. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Structures used during program execution. Eases development with safe, lockable access to resources. 
+
+\begin{DoxyNote}{Note}
+Mutexes contain spinlock (type io\+\_\+rw\+\_\+32) and bool (uint8\+\_\+t), to be safe insert 3-\/bytes padding at the end. 
+\end{DoxyNote}

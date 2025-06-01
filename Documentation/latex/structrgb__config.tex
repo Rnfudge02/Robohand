@@ -1,0 +1,147 @@
+\hypertarget{structrgb__config}{}\doxysection{rgb\+\_\+config Struct Reference}
+\label{structrgb__config}\index{rgb\_config@{rgb\_config}}
+
+
+Structure for RGB LED configuration and state.  
+
+
+
+
+{\ttfamily \#include $<$Robohand.\+h$>$}
+
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{structrgb__config_a8ca1373e8cb0d93ba9d91f8c042bba78_a8ca1373e8cb0d93ba9d91f8c042bba78}{blink\+\_\+active}}
+\begin{DoxyCompactList}\small\item\em Whether blinking is active. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{structrgb__config_aae3e2ba754be8ab59aa8ce6906f4dee5_aae3e2ba754be8ab59aa8ce6906f4dee5}{blink\+\_\+state}}
+\begin{DoxyCompactList}\small\item\em Current state of the blink (on/off) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structrgb__config_a6844dd9c51cdae895aac4c8534a1005f_a6844dd9c51cdae895aac4c8534a1005f}{current\+\_\+r}}
+\begin{DoxyCompactList}\small\item\em Current red value (0-\/255) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structrgb__config_a19fe7384b9cfbe46308ab2878f5ed7cb_a19fe7384b9cfbe46308ab2878f5ed7cb}{current\+\_\+g}}
+\begin{DoxyCompactList}\small\item\em Current green value (0-\/255) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structrgb__config_a07c955e8d95bb60617aee1c860c028a9_a07c955e8d95bb60617aee1c860c028a9}{current\+\_\+b}}
+\begin{DoxyCompactList}\small\item\em Current blue value (0-\/255) \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{structrgb__config_aa19365f4c9ecd0f84c493501534d8e1d_aa19365f4c9ecd0f84c493501534d8e1d}{current\+\_\+brightness}}
+\begin{DoxyCompactList}\small\item\em Current brightness (0.\+0-\/1.\+0) \end{DoxyCompactList}\item 
+uint16\+\_\+t \mbox{\hyperlink{structrgb__config_a107968041b739f1f116d389ac7912c2b_a107968041b739f1f116d389ac7912c2b}{pwm\+\_\+wrap}}
+\begin{DoxyCompactList}\small\item\em PWM wrap value for frequency control. \end{DoxyCompactList}\item 
+uint32\+\_\+t \mbox{\hyperlink{structrgb__config_a20a1e691a16b5e4d5afba064cab54ffd_a20a1e691a16b5e4d5afba064cab54ffd}{blink\+\_\+interval}}
+\begin{DoxyCompactList}\small\item\em Blink interval in milliseconds. \end{DoxyCompactList}\item 
+mutex\+\_\+t \mbox{\hyperlink{structrgb__config_a211593ad05e70d8690094a7efcb0c2c8_a211593ad05e70d8690094a7efcb0c2c8}{rgb\+\_\+mutex}}
+\begin{DoxyCompactList}\small\item\em Mutex for color/brightness access. \end{DoxyCompactList}\item 
+mutex\+\_\+t \mbox{\hyperlink{structrgb__config_a2f718dfd9d6818567104706b4f6f033d_a2f718dfd9d6818567104706b4f6f033d}{pwm\+\_\+mutex}}
+\begin{DoxyCompactList}\small\item\em Mutex for PWM hardware access. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Structure for RGB LED configuration and state. 
+
+Stores current color, brightness, and synchronization primitives. 
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{structrgb__config_a8ca1373e8cb0d93ba9d91f8c042bba78_a8ca1373e8cb0d93ba9d91f8c042bba78}\label{structrgb__config_a8ca1373e8cb0d93ba9d91f8c042bba78_a8ca1373e8cb0d93ba9d91f8c042bba78}} 
+\index{rgb\_config@{rgb\_config}!blink\_active@{blink\_active}}
+\index{blink\_active@{blink\_active}!rgb\_config@{rgb\_config}}
+\doxysubsubsection{\texorpdfstring{blink\_active}{blink\_active}}
+{\footnotesize\ttfamily bool rgb\+\_\+config\+::blink\+\_\+active}
+
+
+
+Whether blinking is active. 
+
+\mbox{\Hypertarget{structrgb__config_a20a1e691a16b5e4d5afba064cab54ffd_a20a1e691a16b5e4d5afba064cab54ffd}\label{structrgb__config_a20a1e691a16b5e4d5afba064cab54ffd_a20a1e691a16b5e4d5afba064cab54ffd}} 
+\index{rgb\_config@{rgb\_config}!blink\_interval@{blink\_interval}}
+\index{blink\_interval@{blink\_interval}!rgb\_config@{rgb\_config}}
+\doxysubsubsection{\texorpdfstring{blink\_interval}{blink\_interval}}
+{\footnotesize\ttfamily uint32\+\_\+t rgb\+\_\+config\+::blink\+\_\+interval}
+
+
+
+Blink interval in milliseconds. 
+
+\mbox{\Hypertarget{structrgb__config_aae3e2ba754be8ab59aa8ce6906f4dee5_aae3e2ba754be8ab59aa8ce6906f4dee5}\label{structrgb__config_aae3e2ba754be8ab59aa8ce6906f4dee5_aae3e2ba754be8ab59aa8ce6906f4dee5}} 
+\index{rgb\_config@{rgb\_config}!blink\_state@{blink\_state}}
+\index{blink\_state@{blink\_state}!rgb\_config@{rgb\_config}}
+\doxysubsubsection{\texorpdfstring{blink\_state}{blink\_state}}
+{\footnotesize\ttfamily bool rgb\+\_\+config\+::blink\+\_\+state}
+
+
+
+Current state of the blink (on/off) 
+
+\mbox{\Hypertarget{structrgb__config_a07c955e8d95bb60617aee1c860c028a9_a07c955e8d95bb60617aee1c860c028a9}\label{structrgb__config_a07c955e8d95bb60617aee1c860c028a9_a07c955e8d95bb60617aee1c860c028a9}} 
+\index{rgb\_config@{rgb\_config}!current\_b@{current\_b}}
+\index{current\_b@{current\_b}!rgb\_config@{rgb\_config}}
+\doxysubsubsection{\texorpdfstring{current\_b}{current\_b}}
+{\footnotesize\ttfamily uint8\+\_\+t rgb\+\_\+config\+::current\+\_\+b}
+
+
+
+Current blue value (0-\/255) 
+
+\mbox{\Hypertarget{structrgb__config_aa19365f4c9ecd0f84c493501534d8e1d_aa19365f4c9ecd0f84c493501534d8e1d}\label{structrgb__config_aa19365f4c9ecd0f84c493501534d8e1d_aa19365f4c9ecd0f84c493501534d8e1d}} 
+\index{rgb\_config@{rgb\_config}!current\_brightness@{current\_brightness}}
+\index{current\_brightness@{current\_brightness}!rgb\_config@{rgb\_config}}
+\doxysubsubsection{\texorpdfstring{current\_brightness}{current\_brightness}}
+{\footnotesize\ttfamily float rgb\+\_\+config\+::current\+\_\+brightness}
+
+
+
+Current brightness (0.\+0-\/1.\+0) 
+
+\mbox{\Hypertarget{structrgb__config_a19fe7384b9cfbe46308ab2878f5ed7cb_a19fe7384b9cfbe46308ab2878f5ed7cb}\label{structrgb__config_a19fe7384b9cfbe46308ab2878f5ed7cb_a19fe7384b9cfbe46308ab2878f5ed7cb}} 
+\index{rgb\_config@{rgb\_config}!current\_g@{current\_g}}
+\index{current\_g@{current\_g}!rgb\_config@{rgb\_config}}
+\doxysubsubsection{\texorpdfstring{current\_g}{current\_g}}
+{\footnotesize\ttfamily uint8\+\_\+t rgb\+\_\+config\+::current\+\_\+g}
+
+
+
+Current green value (0-\/255) 
+
+\mbox{\Hypertarget{structrgb__config_a6844dd9c51cdae895aac4c8534a1005f_a6844dd9c51cdae895aac4c8534a1005f}\label{structrgb__config_a6844dd9c51cdae895aac4c8534a1005f_a6844dd9c51cdae895aac4c8534a1005f}} 
+\index{rgb\_config@{rgb\_config}!current\_r@{current\_r}}
+\index{current\_r@{current\_r}!rgb\_config@{rgb\_config}}
+\doxysubsubsection{\texorpdfstring{current\_r}{current\_r}}
+{\footnotesize\ttfamily uint8\+\_\+t rgb\+\_\+config\+::current\+\_\+r}
+
+
+
+Current red value (0-\/255) 
+
+\mbox{\Hypertarget{structrgb__config_a2f718dfd9d6818567104706b4f6f033d_a2f718dfd9d6818567104706b4f6f033d}\label{structrgb__config_a2f718dfd9d6818567104706b4f6f033d_a2f718dfd9d6818567104706b4f6f033d}} 
+\index{rgb\_config@{rgb\_config}!pwm\_mutex@{pwm\_mutex}}
+\index{pwm\_mutex@{pwm\_mutex}!rgb\_config@{rgb\_config}}
+\doxysubsubsection{\texorpdfstring{pwm\_mutex}{pwm\_mutex}}
+{\footnotesize\ttfamily mutex\+\_\+t rgb\+\_\+config\+::pwm\+\_\+mutex}
+
+
+
+Mutex for PWM hardware access. 
+
+\mbox{\Hypertarget{structrgb__config_a107968041b739f1f116d389ac7912c2b_a107968041b739f1f116d389ac7912c2b}\label{structrgb__config_a107968041b739f1f116d389ac7912c2b_a107968041b739f1f116d389ac7912c2b}} 
+\index{rgb\_config@{rgb\_config}!pwm\_wrap@{pwm\_wrap}}
+\index{pwm\_wrap@{pwm\_wrap}!rgb\_config@{rgb\_config}}
+\doxysubsubsection{\texorpdfstring{pwm\_wrap}{pwm\_wrap}}
+{\footnotesize\ttfamily uint16\+\_\+t rgb\+\_\+config\+::pwm\+\_\+wrap}
+
+
+
+PWM wrap value for frequency control. 
+
+\mbox{\Hypertarget{structrgb__config_a211593ad05e70d8690094a7efcb0c2c8_a211593ad05e70d8690094a7efcb0c2c8}\label{structrgb__config_a211593ad05e70d8690094a7efcb0c2c8_a211593ad05e70d8690094a7efcb0c2c8}} 
+\index{rgb\_config@{rgb\_config}!rgb\_mutex@{rgb\_mutex}}
+\index{rgb\_mutex@{rgb\_mutex}!rgb\_config@{rgb\_config}}
+\doxysubsubsection{\texorpdfstring{rgb\_mutex}{rgb\_mutex}}
+{\footnotesize\ttfamily mutex\+\_\+t rgb\+\_\+config\+::rgb\+\_\+mutex}
+
+
+
+Mutex for color/brightness access. 
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Include/\mbox{\hyperlink{Robohand_8h}{Robohand.\+h}}\end{DoxyCompactItemize}

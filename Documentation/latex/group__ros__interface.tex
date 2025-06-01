@@ -1,0 +1,66 @@
+\hypertarget{group__ros__interface}{}\doxysection{ROS Message Handling.}
+\label{group__ros__interface}\index{ROS Message Handling.@{ROS Message Handling.}}
+
+
+Functions for managing ROS communication and data conversion.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group__ros__interface_ga27bbb1de4a2b8f5c34ad2c2453445b53_ga27bbb1de4a2b8f5c34ad2c2453445b53}{servo\+\_\+callback}} (const void $\ast$msg\+\_\+in)
+\begin{DoxyCompactList}\small\item\em Callback for servo command messages. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__ros__interface_gad3c5aead99c558bb4b03da37d4820a4d_gad3c5aead99c558bb4b03da37d4820a4d}{sensor\+\_\+timer\+\_\+callback}} (rcl\+\_\+timer\+\_\+t $\ast$timer, int64\+\_\+t last\+\_\+call\+\_\+time)
+\begin{DoxyCompactList}\small\item\em Timer callback for sensor data publishing. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Functions for managing ROS communication and data conversion. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group__ros__interface_gad3c5aead99c558bb4b03da37d4820a4d_gad3c5aead99c558bb4b03da37d4820a4d}\label{group__ros__interface_gad3c5aead99c558bb4b03da37d4820a4d_gad3c5aead99c558bb4b03da37d4820a4d}} 
+\index{ROS Message Handling.@{ROS Message Handling.}!sensor\_timer\_callback@{sensor\_timer\_callback}}
+\index{sensor\_timer\_callback@{sensor\_timer\_callback}!ROS Message Handling.@{ROS Message Handling.}}
+\doxysubsubsection{\texorpdfstring{sensor\_timer\_callback()}{sensor\_timer\_callback()}}
+{\footnotesize\ttfamily void sensor\+\_\+timer\+\_\+callback (\begin{DoxyParamCaption}\item[{rcl\+\_\+timer\+\_\+t $\ast$}]{timer,  }\item[{int64\+\_\+t}]{last\+\_\+call\+\_\+time }\end{DoxyParamCaption})}
+
+
+
+Timer callback for sensor data publishing. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em timer} & Timer object reference. \\
+\hline
+\mbox{\texttt{ in}}  & {\em last\+\_\+call\+\_\+time} & Timestamp of last invocation (unused).\\
+\hline
+\end{DoxyParams}
+Publishes combined sensor data at 10Hz rate\+:
+\begin{DoxyItemize}
+\item Accelerometer (3 axes, m/s²)
+\item Gyroscope (3 axes, rad/s)
+\item Magnetometer (3 axes, μT)
+\item Analog sensors (5 channels, volts)
+\end{DoxyItemize}
+
+Timer callback for sensor data publishing. \mbox{\Hypertarget{group__ros__interface_ga27bbb1de4a2b8f5c34ad2c2453445b53_ga27bbb1de4a2b8f5c34ad2c2453445b53}\label{group__ros__interface_ga27bbb1de4a2b8f5c34ad2c2453445b53_ga27bbb1de4a2b8f5c34ad2c2453445b53}} 
+\index{ROS Message Handling.@{ROS Message Handling.}!servo\_callback@{servo\_callback}}
+\index{servo\_callback@{servo\_callback}!ROS Message Handling.@{ROS Message Handling.}}
+\doxysubsubsection{\texorpdfstring{servo\_callback()}{servo\_callback()}}
+{\footnotesize\ttfamily void servo\+\_\+callback (\begin{DoxyParamCaption}\item[{const void $\ast$}]{msg\+\_\+in }\end{DoxyParamCaption})}
+
+
+
+Callback for servo command messages. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em msg\+\_\+in} & Received Int32\+Multi\+Array message pointer.\\
+\hline
+\end{DoxyParams}
+Expects message data in triplets\+: \mbox{[}servo\+\_\+num, target\+\_\+pw, duration\+\_\+ms\mbox{]}. \begin{DoxyNote}{Note}
+Servo numbers are validated against NUM\+\_\+\+SERVOS constant.
+\end{DoxyNote}
+Callback for servo command messages. 

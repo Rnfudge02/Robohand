@@ -1,0 +1,140 @@
+\hypertarget{structsensor__data}{}\doxysection{sensor\+\_\+data Struct Reference}
+\label{structsensor__data}\index{sensor\_data@{sensor\_data}}
+
+
+Sensor data structure with mutex protection.  
+
+
+
+
+{\ttfamily \#include $<$Robohand.\+h$>$}
+
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+int16\+\_\+t \mbox{\hyperlink{structsensor__data_a9083c55eb6cb93d7f3bb95c2aee2a6b8_a9083c55eb6cb93d7f3bb95c2aee2a6b8}{accel}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Accelerometer readings (X, Y, Z) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structsensor__data_aed02c7c01bb99977819ccd45576c2dc0_aed02c7c01bb99977819ccd45576c2dc0}{\+\_\+\+\_\+p3}} \mbox{[}2\mbox{]}
+\begin{DoxyCompactList}\small\item\em Padding for explicit 32-\/bit alignment (DMA) \end{DoxyCompactList}\item 
+int16\+\_\+t \mbox{\hyperlink{structsensor__data_a036e7b3563592bcca476882f518a2024_a036e7b3563592bcca476882f518a2024}{gyro}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Gyroscope readings (X, Y, Z) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structsensor__data_a5eda453b8347aea383dea7eafe8cb5f4_a5eda453b8347aea383dea7eafe8cb5f4}{\+\_\+\+\_\+p4}} \mbox{[}2\mbox{]}
+\begin{DoxyCompactList}\small\item\em Padding for explicit 32-\/bit alignment (DMA) \end{DoxyCompactList}\item 
+int16\+\_\+t \mbox{\hyperlink{structsensor__data_a078dcba6dbae92db9ed0b257d03e128b_a078dcba6dbae92db9ed0b257d03e128b}{mag}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Magnetometer readings (X, Y, Z) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structsensor__data_a02308845ad36e7f02ccefb133db26663_a02308845ad36e7f02ccefb133db26663}{\+\_\+\+\_\+p5}} \mbox{[}2\mbox{]}
+\begin{DoxyCompactList}\small\item\em Padding for explicit 32-\/bit alignment. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{structsensor__data_a12ce0faab78458c1dd82e0f22b282d5d_a12ce0faab78458c1dd82e0f22b282d5d}{adc\+\_\+values}} \mbox{[}5\mbox{]}
+\begin{DoxyCompactList}\small\item\em ADC readings (channels 0-\/3 + internal ADC2) \end{DoxyCompactList}\item 
+mutex\+\_\+t \mbox{\hyperlink{structsensor__data_a6d731c1627b00450959ddd382d006e5b_a6d731c1627b00450959ddd382d006e5b}{data\+\_\+mutex}}
+\begin{DoxyCompactList}\small\item\em Mutex for thread-\/safe data access. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structsensor__data_a958a302e7c64139d6c2c67dac55a5940_a958a302e7c64139d6c2c67dac55a5940}{\+\_\+\+\_\+p6}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Mutex is struct containing io\+\_\+rw\+\_\+32 and bool, maintain 32-\/bit alignment. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Sensor data structure with mutex protection. 
+
+Contains sensor readings from accelerometer, gyroscope, magnetometer, and ADCs. \begin{DoxyPrecond}{Precondition}
+Acquire mutex before performing any read/write on this structure. 
+\end{DoxyPrecond}
+\begin{DoxyRefDesc}{Todo}
+\item[\mbox{\hyperlink{todo__todo000003}{Todo}}]Implement DMA transfers (explicit padding for int16\+\_\+t arrays to 32-\/bit alignment). \end{DoxyRefDesc}
+
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{structsensor__data_aed02c7c01bb99977819ccd45576c2dc0_aed02c7c01bb99977819ccd45576c2dc0}\label{structsensor__data_aed02c7c01bb99977819ccd45576c2dc0_aed02c7c01bb99977819ccd45576c2dc0}} 
+\index{sensor\_data@{sensor\_data}!\_\_p3@{\_\_p3}}
+\index{\_\_p3@{\_\_p3}!sensor\_data@{sensor\_data}}
+\doxysubsubsection{\texorpdfstring{\_\_p3}{\_\_p3}}
+{\footnotesize\ttfamily uint8\+\_\+t sensor\+\_\+data\+::\+\_\+\+\_\+p3\mbox{[}2\mbox{]}}
+
+
+
+Padding for explicit 32-\/bit alignment (DMA) 
+
+\mbox{\Hypertarget{structsensor__data_a5eda453b8347aea383dea7eafe8cb5f4_a5eda453b8347aea383dea7eafe8cb5f4}\label{structsensor__data_a5eda453b8347aea383dea7eafe8cb5f4_a5eda453b8347aea383dea7eafe8cb5f4}} 
+\index{sensor\_data@{sensor\_data}!\_\_p4@{\_\_p4}}
+\index{\_\_p4@{\_\_p4}!sensor\_data@{sensor\_data}}
+\doxysubsubsection{\texorpdfstring{\_\_p4}{\_\_p4}}
+{\footnotesize\ttfamily uint8\+\_\+t sensor\+\_\+data\+::\+\_\+\+\_\+p4\mbox{[}2\mbox{]}}
+
+
+
+Padding for explicit 32-\/bit alignment (DMA) 
+
+\mbox{\Hypertarget{structsensor__data_a02308845ad36e7f02ccefb133db26663_a02308845ad36e7f02ccefb133db26663}\label{structsensor__data_a02308845ad36e7f02ccefb133db26663_a02308845ad36e7f02ccefb133db26663}} 
+\index{sensor\_data@{sensor\_data}!\_\_p5@{\_\_p5}}
+\index{\_\_p5@{\_\_p5}!sensor\_data@{sensor\_data}}
+\doxysubsubsection{\texorpdfstring{\_\_p5}{\_\_p5}}
+{\footnotesize\ttfamily uint8\+\_\+t sensor\+\_\+data\+::\+\_\+\+\_\+p5\mbox{[}2\mbox{]}}
+
+
+
+Padding for explicit 32-\/bit alignment. 
+
+\mbox{\Hypertarget{structsensor__data_a958a302e7c64139d6c2c67dac55a5940_a958a302e7c64139d6c2c67dac55a5940}\label{structsensor__data_a958a302e7c64139d6c2c67dac55a5940_a958a302e7c64139d6c2c67dac55a5940}} 
+\index{sensor\_data@{sensor\_data}!\_\_p6@{\_\_p6}}
+\index{\_\_p6@{\_\_p6}!sensor\_data@{sensor\_data}}
+\doxysubsubsection{\texorpdfstring{\_\_p6}{\_\_p6}}
+{\footnotesize\ttfamily uint8\+\_\+t sensor\+\_\+data\+::\+\_\+\+\_\+p6\mbox{[}3\mbox{]}}
+
+
+
+Mutex is struct containing io\+\_\+rw\+\_\+32 and bool, maintain 32-\/bit alignment. 
+
+\mbox{\Hypertarget{structsensor__data_a9083c55eb6cb93d7f3bb95c2aee2a6b8_a9083c55eb6cb93d7f3bb95c2aee2a6b8}\label{structsensor__data_a9083c55eb6cb93d7f3bb95c2aee2a6b8_a9083c55eb6cb93d7f3bb95c2aee2a6b8}} 
+\index{sensor\_data@{sensor\_data}!accel@{accel}}
+\index{accel@{accel}!sensor\_data@{sensor\_data}}
+\doxysubsubsection{\texorpdfstring{accel}{accel}}
+{\footnotesize\ttfamily int16\+\_\+t sensor\+\_\+data\+::accel\mbox{[}3\mbox{]}}
+
+
+
+Accelerometer readings (X, Y, Z) 
+
+\mbox{\Hypertarget{structsensor__data_a12ce0faab78458c1dd82e0f22b282d5d_a12ce0faab78458c1dd82e0f22b282d5d}\label{structsensor__data_a12ce0faab78458c1dd82e0f22b282d5d_a12ce0faab78458c1dd82e0f22b282d5d}} 
+\index{sensor\_data@{sensor\_data}!adc\_values@{adc\_values}}
+\index{adc\_values@{adc\_values}!sensor\_data@{sensor\_data}}
+\doxysubsubsection{\texorpdfstring{adc\_values}{adc\_values}}
+{\footnotesize\ttfamily float sensor\+\_\+data\+::adc\+\_\+values\mbox{[}5\mbox{]}}
+
+
+
+ADC readings (channels 0-\/3 + internal ADC2) 
+
+\mbox{\Hypertarget{structsensor__data_a6d731c1627b00450959ddd382d006e5b_a6d731c1627b00450959ddd382d006e5b}\label{structsensor__data_a6d731c1627b00450959ddd382d006e5b_a6d731c1627b00450959ddd382d006e5b}} 
+\index{sensor\_data@{sensor\_data}!data\_mutex@{data\_mutex}}
+\index{data\_mutex@{data\_mutex}!sensor\_data@{sensor\_data}}
+\doxysubsubsection{\texorpdfstring{data\_mutex}{data\_mutex}}
+{\footnotesize\ttfamily mutex\+\_\+t sensor\+\_\+data\+::data\+\_\+mutex}
+
+
+
+Mutex for thread-\/safe data access. 
+
+\mbox{\Hypertarget{structsensor__data_a036e7b3563592bcca476882f518a2024_a036e7b3563592bcca476882f518a2024}\label{structsensor__data_a036e7b3563592bcca476882f518a2024_a036e7b3563592bcca476882f518a2024}} 
+\index{sensor\_data@{sensor\_data}!gyro@{gyro}}
+\index{gyro@{gyro}!sensor\_data@{sensor\_data}}
+\doxysubsubsection{\texorpdfstring{gyro}{gyro}}
+{\footnotesize\ttfamily int16\+\_\+t sensor\+\_\+data\+::gyro\mbox{[}3\mbox{]}}
+
+
+
+Gyroscope readings (X, Y, Z) 
+
+\mbox{\Hypertarget{structsensor__data_a078dcba6dbae92db9ed0b257d03e128b_a078dcba6dbae92db9ed0b257d03e128b}\label{structsensor__data_a078dcba6dbae92db9ed0b257d03e128b_a078dcba6dbae92db9ed0b257d03e128b}} 
+\index{sensor\_data@{sensor\_data}!mag@{mag}}
+\index{mag@{mag}!sensor\_data@{sensor\_data}}
+\doxysubsubsection{\texorpdfstring{mag}{mag}}
+{\footnotesize\ttfamily int16\+\_\+t sensor\+\_\+data\+::mag\mbox{[}3\mbox{]}}
+
+
+
+Magnetometer readings (X, Y, Z) 
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Include/\mbox{\hyperlink{Robohand_8h}{Robohand.\+h}}\end{DoxyCompactItemize}

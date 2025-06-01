@@ -67,7 +67,7 @@ static void process_adc_samples(const uint16_t* samples);
 static void __isr dma_adc_handler(void);
 static bool read_mpu6050_data_dma(void);
 static void start_adc_dma_sampling(void);
-static uint16_t read_ads1115_dma(uint8_t channel);
+static uint16_t read_ads1115_dma(int channel);
 /** @} */
 
 /**
@@ -336,7 +336,7 @@ static void start_adc_dma_sampling(void) {
  * @param channel ADS1115 channel to read (0-3)
  * @return Raw 16-bit ADC value
  */
-static uint16_t read_ads1115_dma(uint8_t channel) {
+static uint16_t read_ads1115_dma(int channel) {
     if (!HAS_ADS1115 || !USE_DMA) {
         return 0xFFFF;
     }

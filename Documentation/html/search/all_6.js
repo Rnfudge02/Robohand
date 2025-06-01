@@ -1,0 +1,9 @@
+var searchData=
+[
+  ['gamma_5ftable_71',['gamma_table',['../Robohand_8c_af3a89c094634c5d0df87c443ba4e8604.html#af3a89c094634c5d0df87c443ba4e8604',1,'gamma_table():&#160;Robohand.c'],['../Robohand_8h_af3a89c094634c5d0df87c443ba4e8604.html#af3a89c094634c5d0df87c443ba4e8604',1,'gamma_table():&#160;Robohand.c']]],
+  ['get_5fsensor_5fdata_72',['get_sensor_data',['../group__user__facing_gadf9b8d3e6af2e27ec0d4ff22385763b0.html#gadf9b8d3e6af2e27ec0d4ff22385763b0',1,'get_sensor_data(sensor_data *dest):&#160;Robohand.c'],['../group__user__facing_gadf9b8d3e6af2e27ec0d4ff22385763b0.html#gadf9b8d3e6af2e27ec0d4ff22385763b0',1,'get_sensor_data(sensor_data *dest):&#160;Robohand.c']]],
+  ['get_5fservo_5fstatus_73',['get_servo_status',['../group__user__facing_ga5806875532f40fd013132a0bde396102.html#ga5806875532f40fd013132a0bde396102',1,'get_servo_status(uint8_t servo, servo_motion_profile *dest):&#160;Robohand.c'],['../group__user__facing_ga5806875532f40fd013132a0bde396102.html#ga5806875532f40fd013132a0bde396102',1,'get_servo_status(uint8_t servo, servo_motion_profile *dest):&#160;Robohand.c']]],
+  ['get_5fsystem_5fstatus_74',['get_system_status',['../group__user__facing_ga6c4baa6e0f3129e683d99dcfeb50d7a8.html#ga6c4baa6e0f3129e683d99dcfeb50d7a8',1,'get_system_status(system_status *dest):&#160;Robohand.c'],['../group__user__facing_ga6c4baa6e0f3129e683d99dcfeb50d7a8.html#ga6c4baa6e0f3129e683d99dcfeb50d7a8',1,'get_system_status(system_status *dest):&#160;Robohand.c']]],
+  ['gy271_5fdrdy_5fhandler_75',['gy271_drdy_handler',['../group__static_gaa3476258b694af7315dd3a9ef83e61f4.html#gaa3476258b694af7315dd3a9ef83e61f4',1,'Robohand.c']]],
+  ['gyro_76',['gyro',['../structsensor__data_a036e7b3563592bcca476882f518a2024.html#a036e7b3563592bcca476882f518a2024',1,'sensor_data::gyro()'],['../structsensor__data__physical_a6a1ec8c4db4035c9e04ceb361f14ae2b.html#a6a1ec8c4db4035c9e04ceb361f14ae2b',1,'sensor_data_physical::gyro()']]]
+];

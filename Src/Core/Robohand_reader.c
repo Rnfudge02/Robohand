@@ -94,8 +94,7 @@ void read_bme280_calibration(void) {
             mutex_exit(&i2c_mutex);
         }
         
-        if (!success) {
-            if (DEBUG > 0) {
+        if (!success && if DEBUG > 0) {
                 printf("Failed to read BME280 calibration data (H)\r\n");
             }
             // Continue anyway - we can still read temperature and pressure
@@ -216,22 +215,17 @@ bool read_qmc5883l_data(void) {
     if (mutex_enter_timeout_ms(&i2c_mutex, 50)) {
         // Check if data is ready
         i2c_write_with_retry(QMC5883L_ADDR, &status_reg, 1, true, 100000);
-        if (i2c_read_blocking(I2C_PORT, QMC5883L_ADDR, &status, 1, false) == 1) {
-            if (status & 0x01) { // Data ready bit (DRDY)
-                // Read data registers (0x00-0x05)
-                uint8_t data_reg = 0x00;
-                i2c_write_with_retry(QMC5883L_ADDR, &data_reg, 1, true, 100000);
-                if (i2c_read_blocking(I2C_PORT, QMC5883L_ADDR, buffer, 6, false) == 6) {
-                    // Update sensor data
-                    if (mutex_enter_timeout_ms(&sensor_readings.data_mutex, 50)) {
-                        // Data is in X, Y, Z order, each axis is 16-bit little-endian
-                        sensor_readings.mag[0] = (int16_t)(buffer[0] | (buffer[1] << 8));
-                        sensor_readings.mag[1] = (int16_t)(buffer[2] | (buffer[3] << 8));
-                        sensor_readings.mag[2] = (int16_t)(buffer[4] | (buffer[5] << 8));
-                        mutex_exit(&sensor_readings.data_mutex);
-                        success = true;
-                    }
-                }
+        if (i2c_read_blocking(I2C_PORT, QMC5883L_ADDR, &status, 1, false) == 1 && status & 0x01) { // Data ready bit (DRDY)
+            // Read data registers (0x00-0x05)
+            uint8_t data_reg = 0x00;
+            i2c_write_with_retry(QMC5883L_ADDR, &data_reg, 1, true, 100000);
+            if (i2c_read_blocking(I2C_PORT, QMC5883L_ADDR, buffer, 6, false) == 6 && mutex_enter_timeout_ms(&sensor_readings.data_mutex, 50)) {
+                    // Data is in X, Y, Z order, each axis is 16-bit little-endian
+                    sensor_readings.mag[0] = (int16_t)(buffer[0] | (buffer[1] << 8));
+                    sensor_readings.mag[1] = (int16_t)(buffer[2] | (buffer[3] << 8));
+                    sensor_readings.mag[2] = (int16_t)(buffer[4] | (buffer[5] << 8));
+                    mutex_exit(&sensor_readings.data_mutex);
+                    success = true;
             }
         }
         mutex_exit(&i2c_mutex);

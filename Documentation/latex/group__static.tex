@@ -1,0 +1,291 @@
+\hypertarget{group__static}{}\doxysection{Static Hardware Functions}
+\label{group__static}\index{Static Hardware Functions@{Static Hardware Functions}}
+
+
+These functions are designed solely to work in this source file. Trying to use any of these from another source file will give a compiler error.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static bool \mbox{\hyperlink{group__static_gae5ea58cd9a2980df64bd136f0eea9538_gae5ea58cd9a2980df64bd136f0eea9538}{adc\+\_\+sample\+\_\+callback}} (struct repeating\+\_\+timer $\ast$t)
+\begin{DoxyCompactList}\small\item\em Register coordinating I2C accesses, may change at any point. \end{DoxyCompactList}\item 
+static float \mbox{\hyperlink{group__static_ga179b375060d990f8311f3a68c0d79182_ga179b375060d990f8311f3a68c0d79182}{ads\+\_\+voltage}} (uint16\+\_\+t raw)
+\begin{DoxyCompactList}\small\item\em Convert raw ADS1115 value to voltage. \end{DoxyCompactList}\item 
+static bool \mbox{\hyperlink{group__static_ga753e20d8573f0f86c66ae0f21df8ed26_ga753e20d8573f0f86c66ae0f21df8ed26}{blink\+\_\+callback}} (struct repeating\+\_\+timer $\ast$t)
+\begin{DoxyCompactList}\small\item\em Callback allowing for toggling of RGB functionality. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{group__static_gaa3476258b694af7315dd3a9ef83e61f4_gaa3476258b694af7315dd3a9ef83e61f4}{gy271\+\_\+drdy\+\_\+handler}} (uint gpio, uint32\+\_\+t events)
+\begin{DoxyCompactList}\small\item\em GY271 data read handler (responds to physical interrupt). \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{group__static_ga85b3d924610e4d521c203c8a6bc57fcd_ga85b3d924610e4d521c203c8a6bc57fcd}{handle\+\_\+servo\+\_\+commands}} (void)
+\begin{DoxyCompactList}\small\item\em Function that unpacks commands sent from other modules. \end{DoxyCompactList}\item 
+static bool \mbox{\hyperlink{group__static_gac2d1417e2068c9c81ab31216e76f9243_gac2d1417e2068c9c81ab31216e76f9243}{heartbeat\+\_\+callback}} (struct repeating\+\_\+timer $\ast$t)
+\begin{DoxyCompactList}\small\item\em System heartbeat callback. \end{DoxyCompactList}\item 
+static bool \mbox{\hyperlink{group__static_ga70d0f01785f8d3a36c49f4d368f19574_ga70d0f01785f8d3a36c49f4d368f19574}{i2c\+\_\+write\+\_\+with\+\_\+retry}} (uint8\+\_\+t addr, const uint8\+\_\+t $\ast$src, size\+\_\+t len)
+\begin{DoxyCompactList}\small\item\em Write to the I2C port. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{group__static_ga82154025a2fd165a8bc1d18a088152de_ga82154025a2fd165a8bc1d18a088152de}{init\+\_\+servo\+\_\+pwm}} (void)
+\begin{DoxyCompactList}\small\item\em Initialize PWM for servo control. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{group__static_ga9c8d00ae787b22c31f77c6a60b1ecc9e_ga9c8d00ae787b22c31f77c6a60b1ecc9e}{init\+\_\+watchdog}} (void)
+\begin{DoxyCompactList}\small\item\em Initializes system watchdog. \end{DoxyCompactList}\item 
+static bool \mbox{\hyperlink{group__static_gaf17c80496dee49d4482e674e6c76256a_gaf17c80496dee49d4482e674e6c76256a}{mpu6050\+\_\+callback}} (struct repeating\+\_\+timer $\ast$t)
+\begin{DoxyCompactList}\small\item\em MPU6050 data read callback. \end{DoxyCompactList}\item 
+static float \mbox{\hyperlink{group__static_gad3b5c8557d7b93c8bce9c87e77125657_gad3b5c8557d7b93c8bce9c87e77125657}{read\+\_\+adc2}} (void)
+\begin{DoxyCompactList}\small\item\em Read Pico\textquotesingle{}s internal ADC channel 2. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{group__static_ga330073f155b01849a3530f75bb95bde7_ga330073f155b01849a3530f75bb95bde7}{read\+\_\+adc\+\_\+data}} (void)
+\begin{DoxyCompactList}\small\item\em Reads all ADC\textquotesingle{}s and stores the resultant data in the sensor\+\_\+readings struct. \end{DoxyCompactList}\item 
+static uint16\+\_\+t \mbox{\hyperlink{group__static_gaa6275bfcee7e450507f080076a51da44_gaa6275bfcee7e450507f080076a51da44}{read\+\_\+ads\+\_\+channel}} (uint8\+\_\+t channel)
+\begin{DoxyCompactList}\small\item\em Read specified channel from ADS1115 ADC. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{group__static_ga757fab6c4f40c2ce31c5f871c0bb20f7_ga757fab6c4f40c2ce31c5f871c0bb20f7}{read\+\_\+hmc5883l\+\_\+data}} (void)
+\begin{DoxyCompactList}\small\item\em Function that reads the HMC5883L data. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{group__static_ga6936c98e4a4f41704d37ae88cdffda5f_ga6936c98e4a4f41704d37ae88cdffda5f}{read\+\_\+mpu6050\+\_\+data}} (void)
+\begin{DoxyCompactList}\small\item\em Function that reads the MPU6050 data. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{group__static_ga752f1250d480cb161b2bd304623f7b09_ga752f1250d480cb161b2bd304623f7b09}{update\+\_\+servo\+\_\+positions}} (void)
+\begin{DoxyCompactList}\small\item\em Update servo positions using motion profiles. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+These functions are designed solely to work in this source file. Trying to use any of these from another source file will give a compiler error. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group__static_gae5ea58cd9a2980df64bd136f0eea9538_gae5ea58cd9a2980df64bd136f0eea9538}\label{group__static_gae5ea58cd9a2980df64bd136f0eea9538_gae5ea58cd9a2980df64bd136f0eea9538}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!adc\_sample\_callback@{adc\_sample\_callback}}
+\index{adc\_sample\_callback@{adc\_sample\_callback}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{adc\_sample\_callback()}{adc\_sample\_callback()}}
+{\footnotesize\ttfamily static bool adc\+\_\+sample\+\_\+callback (\begin{DoxyParamCaption}\item[{struct repeating\+\_\+timer $\ast$}]{t }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Register coordinating I2C accesses, may change at any point. 
+
+ADC data read callback.
+
+Static function prototypes
+
+
+\begin{DoxyParams}{Parameters}
+{\em t} & Timer structure. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Always returns true to continue timer. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{group__static_ga179b375060d990f8311f3a68c0d79182_ga179b375060d990f8311f3a68c0d79182}\label{group__static_ga179b375060d990f8311f3a68c0d79182_ga179b375060d990f8311f3a68c0d79182}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!ads\_voltage@{ads\_voltage}}
+\index{ads\_voltage@{ads\_voltage}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{ads\_voltage()}{ads\_voltage()}}
+{\footnotesize\ttfamily static float ads\+\_\+voltage (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{raw }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Convert raw ADS1115 value to voltage. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em raw} & 16-\/bit raw ADC value \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Voltage in volts 
+\end{DoxyReturn}
+\mbox{\Hypertarget{group__static_ga753e20d8573f0f86c66ae0f21df8ed26_ga753e20d8573f0f86c66ae0f21df8ed26}\label{group__static_ga753e20d8573f0f86c66ae0f21df8ed26_ga753e20d8573f0f86c66ae0f21df8ed26}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!blink\_callback@{blink\_callback}}
+\index{blink\_callback@{blink\_callback}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{blink\_callback()}{blink\_callback()}}
+{\footnotesize\ttfamily static bool blink\+\_\+callback (\begin{DoxyParamCaption}\item[{struct repeating\+\_\+timer $\ast$}]{t }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Callback allowing for toggling of RGB functionality. 
+
+\begin{DoxyReturn}{Returns}
+Always returns true to continue the timer. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{group__static_gaa3476258b694af7315dd3a9ef83e61f4_gaa3476258b694af7315dd3a9ef83e61f4}\label{group__static_gaa3476258b694af7315dd3a9ef83e61f4_gaa3476258b694af7315dd3a9ef83e61f4}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!gy271\_drdy\_handler@{gy271\_drdy\_handler}}
+\index{gy271\_drdy\_handler@{gy271\_drdy\_handler}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{gy271\_drdy\_handler()}{gy271\_drdy\_handler()}}
+{\footnotesize\ttfamily static void gy271\+\_\+drdy\+\_\+handler (\begin{DoxyParamCaption}\item[{uint}]{gpio,  }\item[{uint32\+\_\+t}]{events }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+GY271 data read handler (responds to physical interrupt). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gpio} & GPIO pin number. \\
+\hline
+{\em events} & Triggering events. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group__static_ga85b3d924610e4d521c203c8a6bc57fcd_ga85b3d924610e4d521c203c8a6bc57fcd}\label{group__static_ga85b3d924610e4d521c203c8a6bc57fcd_ga85b3d924610e4d521c203c8a6bc57fcd}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!handle\_servo\_commands@{handle\_servo\_commands}}
+\index{handle\_servo\_commands@{handle\_servo\_commands}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{handle\_servo\_commands()}{handle\_servo\_commands()}}
+{\footnotesize\ttfamily static void handle\+\_\+servo\+\_\+commands (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Function that unpacks commands sent from other modules. 
+
+Reads from the FIFO and parses servo commands. \begin{DoxyPostcond}{Postcondition}
+The appropriate servo profile is updated. 
+\end{DoxyPostcond}
+\mbox{\Hypertarget{group__static_gac2d1417e2068c9c81ab31216e76f9243_gac2d1417e2068c9c81ab31216e76f9243}\label{group__static_gac2d1417e2068c9c81ab31216e76f9243_gac2d1417e2068c9c81ab31216e76f9243}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!heartbeat\_callback@{heartbeat\_callback}}
+\index{heartbeat\_callback@{heartbeat\_callback}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{heartbeat\_callback()}{heartbeat\_callback()}}
+{\footnotesize\ttfamily static bool heartbeat\+\_\+callback (\begin{DoxyParamCaption}\item[{struct repeating\+\_\+timer $\ast$}]{t }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+System heartbeat callback. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em t} & Pointer to repeating timer structure. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Always returns true to continue timer.
+\end{DoxyReturn}
+Toggles onboard LED to indicate system liveliness. \mbox{\Hypertarget{group__static_ga70d0f01785f8d3a36c49f4d368f19574_ga70d0f01785f8d3a36c49f4d368f19574}\label{group__static_ga70d0f01785f8d3a36c49f4d368f19574_ga70d0f01785f8d3a36c49f4d368f19574}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!i2c\_write\_with\_retry@{i2c\_write\_with\_retry}}
+\index{i2c\_write\_with\_retry@{i2c\_write\_with\_retry}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{i2c\_write\_with\_retry()}{i2c\_write\_with\_retry()}}
+{\footnotesize\ttfamily static bool i2c\+\_\+write\+\_\+with\+\_\+retry (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{addr,  }\item[{const uint8\+\_\+t $\ast$}]{src,  }\item[{size\+\_\+t}]{len }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Write to the I2C port. 
+
+Retries write three times before quitting. \begin{DoxyReturn}{Returns}
+Whether write was successful or not. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{group__static_ga82154025a2fd165a8bc1d18a088152de_ga82154025a2fd165a8bc1d18a088152de}\label{group__static_ga82154025a2fd165a8bc1d18a088152de_ga82154025a2fd165a8bc1d18a088152de}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!init\_servo\_pwm@{init\_servo\_pwm}}
+\index{init\_servo\_pwm@{init\_servo\_pwm}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{init\_servo\_pwm()}{init\_servo\_pwm()}}
+{\footnotesize\ttfamily static void init\+\_\+servo\+\_\+pwm (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Initialize PWM for servo control. 
+
+Configures PWM frequency to 50Hz (20ms period) for standard servos. \begin{DoxyPostcond}{Postcondition}
+All servo pins are configured with correct PWM settings. 
+\end{DoxyPostcond}
+\mbox{\Hypertarget{group__static_ga9c8d00ae787b22c31f77c6a60b1ecc9e_ga9c8d00ae787b22c31f77c6a60b1ecc9e}\label{group__static_ga9c8d00ae787b22c31f77c6a60b1ecc9e_ga9c8d00ae787b22c31f77c6a60b1ecc9e}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!init\_watchdog@{init\_watchdog}}
+\index{init\_watchdog@{init\_watchdog}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{init\_watchdog()}{init\_watchdog()}}
+{\footnotesize\ttfamily static void init\+\_\+watchdog (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Initializes system watchdog. 
+
+System has to reset watchdog within 3s window. \begin{DoxyPostcond}{Postcondition}
+If the system does not reset the watchdog within the time frame, the system will reset. 
+\end{DoxyPostcond}
+\mbox{\Hypertarget{group__static_gaf17c80496dee49d4482e674e6c76256a_gaf17c80496dee49d4482e674e6c76256a}\label{group__static_gaf17c80496dee49d4482e674e6c76256a_gaf17c80496dee49d4482e674e6c76256a}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!mpu6050\_callback@{mpu6050\_callback}}
+\index{mpu6050\_callback@{mpu6050\_callback}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{mpu6050\_callback()}{mpu6050\_callback()}}
+{\footnotesize\ttfamily static bool mpu6050\+\_\+callback (\begin{DoxyParamCaption}\item[{struct repeating\+\_\+timer $\ast$}]{t }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+MPU6050 data read callback. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em t} & Timer structure. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Always returns true to continue timer. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{group__static_gad3b5c8557d7b93c8bce9c87e77125657_gad3b5c8557d7b93c8bce9c87e77125657}\label{group__static_gad3b5c8557d7b93c8bce9c87e77125657_gad3b5c8557d7b93c8bce9c87e77125657}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!read\_adc2@{read\_adc2}}
+\index{read\_adc2@{read\_adc2}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{read\_adc2()}{read\_adc2()}}
+{\footnotesize\ttfamily static float read\+\_\+adc2 (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Read Pico\textquotesingle{}s internal ADC channel 2. 
+
+needed because ADS only has 4 inputs. \begin{DoxyReturn}{Returns}
+Voltage in volts. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{group__static_ga330073f155b01849a3530f75bb95bde7_ga330073f155b01849a3530f75bb95bde7}\label{group__static_ga330073f155b01849a3530f75bb95bde7_ga330073f155b01849a3530f75bb95bde7}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!read\_adc\_data@{read\_adc\_data}}
+\index{read\_adc\_data@{read\_adc\_data}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{read\_adc\_data()}{read\_adc\_data()}}
+{\footnotesize\ttfamily static void read\+\_\+adc\+\_\+data (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Reads all ADC\textquotesingle{}s and stores the resultant data in the sensor\+\_\+readings struct. 
+
+\begin{DoxyPostcond}{Postcondition}
+sensor\+\_\+readings contains updated ADC data. 
+\end{DoxyPostcond}
+\mbox{\Hypertarget{group__static_gaa6275bfcee7e450507f080076a51da44_gaa6275bfcee7e450507f080076a51da44}\label{group__static_gaa6275bfcee7e450507f080076a51da44_gaa6275bfcee7e450507f080076a51da44}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!read\_ads\_channel@{read\_ads\_channel}}
+\index{read\_ads\_channel@{read\_ads\_channel}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{read\_ads\_channel()}{read\_ads\_channel()}}
+{\footnotesize\ttfamily static uint16\+\_\+t read\+\_\+ads\+\_\+channel (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{channel }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Read specified channel from ADS1115 ADC. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em channel} & ADC channel to read (0-\/3). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Raw 16-\/bit ADC value. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{group__static_ga757fab6c4f40c2ce31c5f871c0bb20f7_ga757fab6c4f40c2ce31c5f871c0bb20f7}\label{group__static_ga757fab6c4f40c2ce31c5f871c0bb20f7_ga757fab6c4f40c2ce31c5f871c0bb20f7}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!read\_hmc5883l\_data@{read\_hmc5883l\_data}}
+\index{read\_hmc5883l\_data@{read\_hmc5883l\_data}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{read\_hmc5883l\_data()}{read\_hmc5883l\_data()}}
+{\footnotesize\ttfamily static void read\+\_\+hmc5883l\+\_\+data (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Function that reads the HMC5883L data. 
+
+Uses I2C bus to get magenetic field measurements. \begin{DoxyPostcond}{Postcondition}
+The sensor\+\_\+readings structure contains the latest magnetic field. 
+\end{DoxyPostcond}
+\mbox{\Hypertarget{group__static_ga6936c98e4a4f41704d37ae88cdffda5f_ga6936c98e4a4f41704d37ae88cdffda5f}\label{group__static_ga6936c98e4a4f41704d37ae88cdffda5f_ga6936c98e4a4f41704d37ae88cdffda5f}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!read\_mpu6050\_data@{read\_mpu6050\_data}}
+\index{read\_mpu6050\_data@{read\_mpu6050\_data}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{read\_mpu6050\_data()}{read\_mpu6050\_data()}}
+{\footnotesize\ttfamily static void read\+\_\+mpu6050\+\_\+data (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Function that reads the MPU6050 data. 
+
+Uses the I2C bus to get linear acceleration and angular velocity measurements. \begin{DoxyPostcond}{Postcondition}
+The sensor\+\_\+readings structure contains the latest acceleration and rpy values. 
+\end{DoxyPostcond}
+\mbox{\Hypertarget{group__static_ga752f1250d480cb161b2bd304623f7b09_ga752f1250d480cb161b2bd304623f7b09}\label{group__static_ga752f1250d480cb161b2bd304623f7b09_ga752f1250d480cb161b2bd304623f7b09}} 
+\index{Static Hardware Functions@{Static Hardware Functions}!update\_servo\_positions@{update\_servo\_positions}}
+\index{update\_servo\_positions@{update\_servo\_positions}!Static Hardware Functions@{Static Hardware Functions}}
+\doxysubsubsection{\texorpdfstring{update\_servo\_positions()}{update\_servo\_positions()}}
+{\footnotesize\ttfamily static void update\+\_\+servo\+\_\+positions (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Update servo positions using motion profiles. 
+
+Calculates smooth transitions between current and target positions. \begin{DoxyPostcond}{Postcondition}
+Servo PWM outputs are updated with new calculated positions. 
+\end{DoxyPostcond}

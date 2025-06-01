@@ -1,0 +1,1067 @@
+\hypertarget{Robohand_8h}{}\doxysection{Include/\+Robohand.h File Reference}
+\label{Robohand_8h}\index{Include/Robohand.h@{Include/Robohand.h}}
+
+
+Robotic hand control hardware interface.  
+
+
+{\ttfamily \#include \char`\"{}pico/stdlib.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}pico/multicore.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}pico/mutex.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hardware/watchdog.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hardware/regs/watchdog.\+h\char`\"{}}\newline
+Include dependency graph for Robohand.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{Robohand_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{Robohand_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structrgb__state}{rgb\+\_\+state}}
+\begin{DoxyCompactList}\small\item\em Structure for RGB LED configuration and state. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}}
+\begin{DoxyCompactList}\small\item\em Sensor data structure with mutex protection. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structsensor__data__physical}{sensor\+\_\+data\+\_\+physical}}
+\begin{DoxyCompactList}\small\item\em Physical sensor data structure. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structservo__motion__profile}{servo\+\_\+motion\+\_\+profile}}
+\begin{DoxyCompactList}\small\item\em Servo motion profile structure. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structsystem__status}{system\+\_\+status}}
+\begin{DoxyCompactList}\small\item\em Status data structure. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{Robohand_8h_a0bf8a969b88323b8d2b7559f1c984aad_a0bf8a969b88323b8d2b7559f1c984aad}{ROBOHAND\+\_\+\+LED\+\_\+\+PIN}}~25
+\begin{DoxyCompactList}\small\item\em Pin to use for heartbeat callback ~\newline
+ \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ac072c1de6ff73f80e2060b1431219935_ac072c1de6ff73f80e2060b1431219935}{WATCHDOG\+\_\+\+IRQ}}~1
+\begin{DoxyCompactList}\small\item\em Needed for watchdog intervention. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ad72dbcf6d0153db1b8d8a58001feed83_ad72dbcf6d0153db1b8d8a58001feed83}{DEBUG}}~1
+\begin{DoxyCompactList}\small\item\em Enable debug output (0 -\/ Disabled, 1 -\/ Enabled) \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_aa4a1deb992fe6228b78dc7c06188bd87_aa4a1deb992fe6228b78dc7c06188bd87}{HAS\+\_\+\+ADS1115}}~false
+\begin{DoxyCompactList}\small\item\em Whether the ADS1115 (ADC) is connected to the I2C bus. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a90c97a383865dea7c8273b9fea4ee04d_a90c97a383865dea7c8273b9fea4ee04d}{HAS\+\_\+\+HMC5883L}}~true
+\begin{DoxyCompactList}\small\item\em Whether the HMC5883L (Magnometer) is connected to the i2c bus. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a6f65ff425a34f722a5a490d8bce32c04_a6f65ff425a34f722a5a490d8bce32c04}{HAS\+\_\+\+MPU6050}}~true
+\begin{DoxyCompactList}\small\item\em Whether the MPU6050 (Accelerometer) is connected to the i2c bus. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_adfd7d8557f1c222f987ad3d5eb1e55a9_adfd7d8557f1c222f987ad3d5eb1e55a9}{HAS\+\_\+\+I2C}}~(\mbox{\hyperlink{Robohand_8h_aa4a1deb992fe6228b78dc7c06188bd87_aa4a1deb992fe6228b78dc7c06188bd87}{HAS\+\_\+\+ADS1115}} $\vert$$\vert$ \mbox{\hyperlink{Robohand_8h_a90c97a383865dea7c8273b9fea4ee04d_a90c97a383865dea7c8273b9fea4ee04d}{HAS\+\_\+\+HMC5883L}} $\vert$$\vert$ \mbox{\hyperlink{Robohand_8h_a6f65ff425a34f722a5a490d8bce32c04_a6f65ff425a34f722a5a490d8bce32c04}{HAS\+\_\+\+MPU6050}})
+\begin{DoxyCompactList}\small\item\em Whether or not I2C initialization is required. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a11c897a53daf3a72a81433e78af9a944_a11c897a53daf3a72a81433e78af9a944}{HAS\+\_\+\+PI\+\_\+\+ADC}}~false
+\begin{DoxyCompactList}\small\item\em Whether a pressure sensor is connected to the pi pico. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_af119b4868adcc173dd7122077d40ac4b_af119b4868adcc173dd7122077d40ac4b}{HAS\+\_\+\+ADC}}~(\mbox{\hyperlink{Robohand_8h_a11c897a53daf3a72a81433e78af9a944_a11c897a53daf3a72a81433e78af9a944}{HAS\+\_\+\+PI\+\_\+\+ADC}} $\vert$$\vert$ \mbox{\hyperlink{Robohand_8h_aa4a1deb992fe6228b78dc7c06188bd87_aa4a1deb992fe6228b78dc7c06188bd87}{HAS\+\_\+\+ADS1115}})
+\begin{DoxyCompactList}\small\item\em Whether or not ADC initalization is required. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a57b2243265b02ebca4b921fea515f43e_a57b2243265b02ebca4b921fea515f43e}{HAS\+\_\+\+RGB}}~true
+\begin{DoxyCompactList}\small\item\em Whether common Cathode RGB LED is connected to the pi pico. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a147c0cd6f4aad08c7cb5f3bb14f4712a_a147c0cd6f4aad08c7cb5f3bb14f4712a}{HAS\+\_\+\+SERVOS}}~false
+\begin{DoxyCompactList}\small\item\em Whether servos are connected to the device. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a63845246be374d0a4099237f399ba51a_a63845246be374d0a4099237f399ba51a}{USE\+\_\+\+INTERRUPTS}}~false
+\begin{DoxyCompactList}\small\item\em Use interupts for system communication. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a95dc25e71503f6c12eeda9e8e09810d3_a95dc25e71503f6c12eeda9e8e09810d3}{USE\+\_\+\+DMA}}~false
+\begin{DoxyCompactList}\small\item\em Use DMA for system communication. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a37739a3dd14f14e5c80b59682a5b154e_a37739a3dd14f14e5c80b59682a5b154e}{USE\+\_\+\+FALLBACK}}~(!(\mbox{\hyperlink{Robohand_8h_a63845246be374d0a4099237f399ba51a_a63845246be374d0a4099237f399ba51a}{USE\+\_\+\+INTERRUPTS}} $\vert$$\vert$ \mbox{\hyperlink{Robohand_8h_a95dc25e71503f6c12eeda9e8e09810d3_a95dc25e71503f6c12eeda9e8e09810d3}{USE\+\_\+\+DMA}}))
+\begin{DoxyCompactList}\small\item\em Use fallback if other options are not selected. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a847e43fc2212c2865906a764aa01ec74_a847e43fc2212c2865906a764aa01ec74}{SYS\+\_\+\+CLOCK}}~125000000
+\begin{DoxyCompactList}\small\item\em System operating frequency. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ad9ecf80e1eac083d16ec47f9d3aeb39f_ad9ecf80e1eac083d16ec47f9d3aeb39f}{I2\+C\+\_\+\+PORT}}~i2c1
+\begin{DoxyCompactList}\small\item\em I2C port used for device connections(i2c1 on pico) \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a526d580d324bce60a3e964066fae77e3_a526d580d324bce60a3e964066fae77e3}{SDA\+\_\+\+PIN}}~0
+\begin{DoxyCompactList}\small\item\em GPIO pin for I2C SDA. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a06c967e78bcedcee909a70764f879433_a06c967e78bcedcee909a70764f879433}{SCL\+\_\+\+PIN}}~1
+\begin{DoxyCompactList}\small\item\em GPIO pin for I2C SCL. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_afb2f4f2a136b1a0dd1f1926defbae195_afb2f4f2a136b1a0dd1f1926defbae195}{ADC2\+\_\+\+PIN}}~28
+\begin{DoxyCompactList}\small\item\em GPIO pin for Pico\textquotesingle{}s ADC channel 2. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a4ad670f00edea29150a5303b470c5385_a4ad670f00edea29150a5303b470c5385}{NUM\+\_\+\+SERVOS}}~5
+\begin{DoxyCompactList}\small\item\em Number of servos to control. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a29f2d140921f7fd4bb29699b9f301452_a29f2d140921f7fd4bb29699b9f301452}{NUM\+\_\+\+PRESPNTS}}~5
+\begin{DoxyCompactList}\small\item\em Number of pressure points to sample. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_abc0b4573a3ee76a93b8595f346d36066_abc0b4573a3ee76a93b8595f346d36066}{MPU6050\+\_\+\+INT\+\_\+\+PIN}}~20
+\begin{DoxyCompactList}\small\item\em Data ready pin for the MPU6050. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_afc6501330db362d3744a0494b15d67ee_afc6501330db362d3744a0494b15d67ee}{ADS1115\+\_\+\+INT\+\_\+\+PIN}}~21
+\begin{DoxyCompactList}\small\item\em Data ready pin for the ADS1115. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ad3436a0f6a5e31193c89c44551738d10_ad3436a0f6a5e31193c89c44551738d10}{HMC5883\+L\+\_\+\+INT\+\_\+\+PIN}}~22
+\begin{DoxyCompactList}\small\item\em Data ready pin for the HMC5883L. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a674fcfb292e527072f6912335ab5f7eb_a674fcfb292e527072f6912335ab5f7eb}{RGB\+\_\+\+RED\+\_\+\+PIN}}~18
+\begin{DoxyCompactList}\small\item\em GPIO pin connected to the red channel. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ae575a1e42e15f26660fa41c50771e05e_ae575a1e42e15f26660fa41c50771e05e}{RGB\+\_\+\+GREEN\+\_\+\+PIN}}~17
+\begin{DoxyCompactList}\small\item\em GPIO pin connected to the green channel. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a6cc9d696e520a31363325c1553c6fecb_a6cc9d696e520a31363325c1553c6fecb}{RGB\+\_\+\+BLUE\+\_\+\+PIN}}~16
+\begin{DoxyCompactList}\small\item\em GPIO pin connected to the blue channel. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_aaee3e47827f209f898338b76dfb1866b_aaee3e47827f209f898338b76dfb1866b}{SERVO\+\_\+\+MIN\+\_\+\+PULSE}}~500
+\begin{DoxyCompactList}\small\item\em Lower threshold for pulse time. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a0ffde0a9cfa57775eef67831f0a6da54_a0ffde0a9cfa57775eef67831f0a6da54}{SERVO\+\_\+\+MAX\+\_\+\+PULSE}}~2500
+\begin{DoxyCompactList}\small\item\em Upper threshold for pulse time. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a98cfbf806e9c6d29c9b7b0b93f5704c2_a98cfbf806e9c6d29c9b7b0b93f5704c2}{MAX\+\_\+\+MOVE\+\_\+\+DURATION\+\_\+\+MS}}~15000
+\begin{DoxyCompactList}\small\item\em Max amount of time the motor is allowed to move over before timeout. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a0eb250599505bd3600d26b6bad6a415f_a0eb250599505bd3600d26b6bad6a415f}{SERVO\+\_\+\+PWM\+\_\+\+FREQ}}~50
+\begin{DoxyCompactList}\small\item\em Desired frequency for PWM response. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ac9be9d353e7467e5f6cd20f68bd912dc_ac9be9d353e7467e5f6cd20f68bd912dc}{CLK\+\_\+\+DIV}}~64.f
+\begin{DoxyCompactList}\small\item\em Clock divisor used for PWM. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a2df66581a18d065737b723286b47f0c9_a2df66581a18d065737b723286b47f0c9}{WRAP\+\_\+\+VAL}}~((\mbox{\hyperlink{Robohand_8h_a847e43fc2212c2865906a764aa01ec74_a847e43fc2212c2865906a764aa01ec74}{SYS\+\_\+\+CLOCK}} / (\mbox{\hyperlink{Robohand_8h_a0eb250599505bd3600d26b6bad6a415f_a0eb250599505bd3600d26b6bad6a415f}{SERVO\+\_\+\+PWM\+\_\+\+FREQ}} $\ast$ \mbox{\hyperlink{Robohand_8h_ac9be9d353e7467e5f6cd20f68bd912dc_ac9be9d353e7467e5f6cd20f68bd912dc}{CLK\+\_\+\+DIV}})) -\/ 1)
+\begin{DoxyCompactList}\small\item\em 125MHz divided by the clock divider and the desired frequency. Will loop from 0 -\/ calculated value \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a1f8e37c6538458d5b81022040324a211_a1f8e37c6538458d5b81022040324a211}{MAX\+\_\+\+SERVO\+\_\+\+ACCEL}}~2500
+\begin{DoxyCompactList}\small\item\em µs/s² (adjust for servo dynamics) \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a43399318a1e1436f9f3e44e3e76c57cf_a43399318a1e1436f9f3e44e3e76c57cf}{ADS1115\+\_\+\+ADDR}}~0x48
+\begin{DoxyCompactList}\small\item\em I2C address of ADS1115 ADC. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ad4d6255d8f7e5dc770e773b787977508_ad4d6255d8f7e5dc770e773b787977508}{MPU6050\+\_\+\+ADDR}}~0x68
+\begin{DoxyCompactList}\small\item\em I2C address of MPU6050 IMU. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_af476bf33d389e5fc597d87cac399088d_af476bf33d389e5fc597d87cac399088d}{HMC5883\+L\+\_\+\+ADDR}}~0x1E
+\begin{DoxyCompactList}\small\item\em I2C address of HMC5883L magnetometer. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a444ee693cac934a19d2cd4821f4dd7ea_a444ee693cac934a19d2cd4821f4dd7ea}{MPU6050\+\_\+\+ACCEL\+\_\+\+XOUT\+\_\+H}}~0x3B
+\begin{DoxyCompactList}\small\item\em Accelerometer data register. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_afe68cba5c46e009c0706ea39d98ad306_afe68cba5c46e009c0706ea39d98ad306}{HMC5883\+L\+\_\+\+CONFIG\+\_\+A}}~0x00
+\begin{DoxyCompactList}\small\item\em Configuration register A. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ae72bf49f0c3c48e17071fe0ca2719c30_ae72bf49f0c3c48e17071fe0ca2719c30}{HMC5883\+L\+\_\+\+CONFIG\+\_\+B}}~0x01
+\begin{DoxyCompactList}\small\item\em Configuration register B. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a0e32eeb11f0b893996d2ab33b8a1267d_a0e32eeb11f0b893996d2ab33b8a1267d}{HMC5883\+L\+\_\+\+MODE}}~0x02
+\begin{DoxyCompactList}\small\item\em Mode register. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a32b275676d95c201467d6163c43ae06c_a32b275676d95c201467d6163c43ae06c}{HMC5883\+L\+\_\+\+DATA}}~0x03
+\begin{DoxyCompactList}\small\item\em Data output register. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a5a00872ffa302c326df93fcbae704d7f_a5a00872ffa302c326df93fcbae704d7f}{HMC5883\+L\+\_\+\+MODE\+\_\+\+CONTINUOUS}}~0x00
+\begin{DoxyCompactList}\small\item\em Continious sampling mode. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_af573ec619021cd56f4379c1753dbff3e_af573ec619021cd56f4379c1753dbff3e}{ADS1115\+\_\+\+OS\+\_\+\+SINGLE}}~0x8000
+\begin{DoxyCompactList}\small\item\em Start single-\/conversion. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ad76dbdc476c07b26c8c1d7ecb157adaf_ad76dbdc476c07b26c8c1d7ecb157adaf}{ADS1115\+\_\+\+MUX\+\_\+\+AIN0}}~0x4000
+\begin{DoxyCompactList}\small\item\em AIN0 vs GND. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a084841df97af4a166cb4e431b29bd7a9_a084841df97af4a166cb4e431b29bd7a9}{ADS1115\+\_\+\+MUX\+\_\+\+AIN1}}~0x5000
+\begin{DoxyCompactList}\small\item\em AIN1 vs GND. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a069ff0c9cbfbc8e0509253ba75418ce8_a069ff0c9cbfbc8e0509253ba75418ce8}{ADS1115\+\_\+\+MUX\+\_\+\+AIN2}}~0x6000
+\begin{DoxyCompactList}\small\item\em AIN2 vs GND. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a900c8e7e834d55e7b8fb6548c81883f3_a900c8e7e834d55e7b8fb6548c81883f3}{ADS1115\+\_\+\+MUX\+\_\+\+AIN3}}~0x7000
+\begin{DoxyCompactList}\small\item\em AIN3 vs GND. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a9977c1764f651e77f5e38741656de7ca_a9977c1764f651e77f5e38741656de7ca}{ADS1115\+\_\+\+FSR\+\_\+4\+V096}}~0x0200
+\begin{DoxyCompactList}\small\item\em ±4.096V range. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ac9dbd94549bb902dfdfcc1c238cadbe0_ac9dbd94549bb902dfdfcc1c238cadbe0}{ADS1115\+\_\+\+MODE\+\_\+\+SINGLE}}~0x0100
+\begin{DoxyCompactList}\small\item\em Single-\/shot mode. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a7312912eceac133da7688cfb74b8f9c1_a7312912eceac133da7688cfb74b8f9c1}{ADS1115\+\_\+\+DR\+\_\+128\+SPS}}~0x0080
+\begin{DoxyCompactList}\small\item\em 128 samples/sec \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ad722e16431305ce92a4efc7c061ddc7b_ad722e16431305ce92a4efc7c061ddc7b}{ADS1115\+\_\+\+COMP\+\_\+\+MODE}}~0x0000
+\begin{DoxyCompactList}\small\item\em Traditional comparator. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ad2232b30ece1a1f5bfbf8a55217e3e2c_ad2232b30ece1a1f5bfbf8a55217e3e2c}{ADS1115\+\_\+\+COMP\+\_\+\+POL}}~0x0000
+\begin{DoxyCompactList}\small\item\em Active low. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ad6439a5f36449ef355a3a1220b726946_ad6439a5f36449ef355a3a1220b726946}{ADS1115\+\_\+\+COMP\+\_\+\+LAT}}~0x0000
+\begin{DoxyCompactList}\small\item\em Non-\/latching. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_a4f20b25599f011f334267ec0be2e2e63_a4f20b25599f011f334267ec0be2e2e63}{ADS1115\+\_\+\+COMP\+\_\+\+QUE}}~0x0003
+\begin{DoxyCompactList}\small\item\em Disable comparator. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_aa28000ceada503faaffe22f8f4e4c29b_aa28000ceada503faaffe22f8f4e4c29b}{ADS1115\+\_\+\+BASE\+\_\+\+CONFIG}}
+\begin{DoxyCompactList}\small\item\em ADS1115 base configuration. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand_8h_ae534547361f20b9a2207606251572301_ae534547361f20b9a2207606251572301}{constrain}}(value,  min,  max)~((value) $<$ (min) ? (min) \+: ((value) $>$ (max) ? (max) \+: (value)))
+\begin{DoxyCompactList}\small\item\em Macro for constraining. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group__user__facing_ga6ff6126a0906c10b85405b6e7f642419_ga6ff6126a0906c10b85405b6e7f642419}{actuate\+\_\+servo}} (uint8\+\_\+t servo, uint16\+\_\+t pulse\+\_\+width, uint16\+\_\+t duration\+\_\+ms)
+\begin{DoxyCompactList}\small\item\em Actuates a servo to a specified position over a given duration. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__user__facing_ga256c6af47832d1d3cd38d8633bc91d79_ga256c6af47832d1d3cd38d8633bc91d79}{convert\+\_\+sensor\+\_\+data}} (const \mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} $\ast$raw, \mbox{\hyperlink{structsensor__data__physical}{sensor\+\_\+data\+\_\+physical}} $\ast$converted)
+\begin{DoxyCompactList}\small\item\em Converts passed sensor data to physical parameters. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_ga677531d0ec7a1f4b9b9d8ebb4b3d4521_ga677531d0ec7a1f4b9b9d8ebb4b3d4521}{core1\+\_\+entry}} (void)
+\begin{DoxyCompactList}\small\item\em Core 1 main execution loop. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__user__facing_gadf9b8d3e6af2e27ec0d4ff22385763b0_gadf9b8d3e6af2e27ec0d4ff22385763b0}{get\+\_\+sensor\+\_\+data}} (\mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} $\ast$dest)
+\begin{DoxyCompactList}\small\item\em Retrieves current sensor data in a thread-\/safe manner. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__user__facing_ga5806875532f40fd013132a0bde396102_ga5806875532f40fd013132a0bde396102}{get\+\_\+servo\+\_\+status}} (uint8\+\_\+t servo, \mbox{\hyperlink{structservo__motion__profile}{servo\+\_\+motion\+\_\+profile}} $\ast$dest)
+\begin{DoxyCompactList}\small\item\em Retrieves the current status of a servo. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_ga6c4baa6e0f3129e683d99dcfeb50d7a8_ga6c4baa6e0f3129e683d99dcfeb50d7a8}{get\+\_\+system\+\_\+status}} (\mbox{\hyperlink{structsystem__status}{system\+\_\+status}} $\ast$dest)
+\begin{DoxyCompactList}\small\item\em Retrieves the current status of the system. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_ga0bd257db3fb98bba6461790c9be316d7_ga0bd257db3fb98bba6461790c9be316d7}{init\+\_\+rgb}} (void)
+\begin{DoxyCompactList}\small\item\em Initializes the RGB LED subsystem. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_gacd4f5679386691fb5594833e6464e4e6_gacd4f5679386691fb5594833e6464e4e6}{init\+\_\+robohand\+\_\+system}} (void)
+\begin{DoxyCompactList}\small\item\em Initializes the robotic hand system and launches Core 1. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_gaeb13944903e95d893183e13611de5980_gaeb13944903e95d893183e13611de5980}{rgb\+\_\+blink}} (bool enable, uint32\+\_\+t interval\+\_\+ms)
+\begin{DoxyCompactList}\small\item\em Configures the RGB to blink at a specified interval. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_ga97c22cab147a306a16b9926a813f8e11_ga97c22cab147a306a16b9926a813f8e11}{rgb\+\_\+set\+\_\+brightness}} (float brightness)
+\begin{DoxyCompactList}\small\item\em Initializes the robotic hand system and launches Core 1. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__user__facing_gac8f53af3cb41054a3cd27280dbd64a33_gac8f53af3cb41054a3cd27280dbd64a33}{rgb\+\_\+set\+\_\+color}} (uint8\+\_\+t r, uint8\+\_\+t g, uint8\+\_\+t b)
+\begin{DoxyCompactList}\small\item\em Sets the RGB LED color. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const uint8\+\_\+t \mbox{\hyperlink{Robohand_8h_af3a89c094634c5d0df87c443ba4e8604_af3a89c094634c5d0df87c443ba4e8604}{gamma\+\_\+table}} \mbox{[}256\mbox{]}
+\begin{DoxyCompactList}\small\item\em Gamma table for brightness scaling. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structservo__motion__profile}{servo\+\_\+motion\+\_\+profile}} \mbox{\hyperlink{Robohand_8h_adb94a381a8d01ef3cdb4dbb672b1a19f_adb94a381a8d01ef3cdb4dbb672b1a19f}{servo\+\_\+profiles}} \mbox{[}\mbox{\hyperlink{Robohand_8h_a4ad670f00edea29150a5303b470c5385_a4ad670f00edea29150a5303b470c5385}{NUM\+\_\+\+SERVOS}}\mbox{]}
+\begin{DoxyCompactList}\small\item\em Data structure array for holding servo profiles. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structsystem__status}{system\+\_\+status}} \mbox{\hyperlink{Robohand_8h_a4f603fe07a300e25158c4ee749247e9b_a4f603fe07a300e25158c4ee749247e9b}{sys\+\_\+status}}
+\begin{DoxyCompactList}\small\item\em System status data structure instance. \end{DoxyCompactList}\item 
+const uint \mbox{\hyperlink{Robohand_8h_a10d1fb5584744ca218c65e6762c62256_a10d1fb5584744ca218c65e6762c62256}{SERVO\+\_\+\+PINS}} \mbox{[}\mbox{\hyperlink{Robohand_8h_a4ad670f00edea29150a5303b470c5385_a4ad670f00edea29150a5303b470c5385}{NUM\+\_\+\+SERVOS}}\mbox{]}
+\begin{DoxyCompactList}\small\item\em Servo control pins. \end{DoxyCompactList}\item 
+const float \mbox{\hyperlink{Robohand_8h_a756eb5d7f77a0a56516b9a41828801ec_a756eb5d7f77a0a56516b9a41828801ec}{VOLTAGE\+\_\+\+DIVIDER\+\_\+\+RATIO}}
+\begin{DoxyCompactList}\small\item\em Voltage divider ratio (1\+:1) \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Robotic hand control hardware interface. 
+
+Used for other robohand modules, which each handle different methods of connection. \begin{DoxyAuthor}{Author}
+Robert Fudge \href{mailto:rnfudge@mun.ca}{\texttt{ rnfudge@mun.\+ca}} 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2025 
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Apache 2.\+0 License 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{Robohand_8h_afb2f4f2a136b1a0dd1f1926defbae195_afb2f4f2a136b1a0dd1f1926defbae195}\label{Robohand_8h_afb2f4f2a136b1a0dd1f1926defbae195_afb2f4f2a136b1a0dd1f1926defbae195}} 
+\index{Robohand.h@{Robohand.h}!ADC2\_PIN@{ADC2\_PIN}}
+\index{ADC2\_PIN@{ADC2\_PIN}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADC2\_PIN}{ADC2\_PIN}}
+{\footnotesize\ttfamily \#define ADC2\+\_\+\+PIN~28}
+
+
+
+GPIO pin for Pico\textquotesingle{}s ADC channel 2. 
+
+\mbox{\Hypertarget{Robohand_8h_a43399318a1e1436f9f3e44e3e76c57cf_a43399318a1e1436f9f3e44e3e76c57cf}\label{Robohand_8h_a43399318a1e1436f9f3e44e3e76c57cf_a43399318a1e1436f9f3e44e3e76c57cf}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_ADDR@{ADS1115\_ADDR}}
+\index{ADS1115\_ADDR@{ADS1115\_ADDR}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_ADDR}{ADS1115\_ADDR}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+ADDR~0x48}
+
+
+
+I2C address of ADS1115 ADC. 
+
+\mbox{\Hypertarget{Robohand_8h_aa28000ceada503faaffe22f8f4e4c29b_aa28000ceada503faaffe22f8f4e4c29b}\label{Robohand_8h_aa28000ceada503faaffe22f8f4e4c29b_aa28000ceada503faaffe22f8f4e4c29b}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_BASE\_CONFIG@{ADS1115\_BASE\_CONFIG}}
+\index{ADS1115\_BASE\_CONFIG@{ADS1115\_BASE\_CONFIG}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_BASE\_CONFIG}{ADS1115\_BASE\_CONFIG}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+BASE\+\_\+\+CONFIG}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{                            (\mbox{\hyperlink{Robohand_8h_af573ec619021cd56f4379c1753dbff3e_af573ec619021cd56f4379c1753dbff3e}{ADS1115\_OS\_SINGLE}} | \mbox{\hyperlink{Robohand_8h_a9977c1764f651e77f5e38741656de7ca_a9977c1764f651e77f5e38741656de7ca}{ADS1115\_FSR\_4V096}} | \mbox{\hyperlink{Robohand_8h_ac9dbd94549bb902dfdfcc1c238cadbe0_ac9dbd94549bb902dfdfcc1c238cadbe0}{ADS1115\_MODE\_SINGLE}} | \(\backslash\)}
+\DoxyCodeLine{                            ADS1115\_DR\_128SPS | \mbox{\hyperlink{Robohand_8h_ad722e16431305ce92a4efc7c061ddc7b_ad722e16431305ce92a4efc7c061ddc7b}{ADS1115\_COMP\_MODE}} | \mbox{\hyperlink{Robohand_8h_ad2232b30ece1a1f5bfbf8a55217e3e2c_ad2232b30ece1a1f5bfbf8a55217e3e2c}{ADS1115\_COMP\_POL}} | \(\backslash\)}
+\DoxyCodeLine{                            ADS1115\_COMP\_LAT | \mbox{\hyperlink{Robohand_8h_a4f20b25599f011f334267ec0be2e2e63_a4f20b25599f011f334267ec0be2e2e63}{ADS1115\_COMP\_QUE}})}
+
+\end{DoxyCode}
+
+
+ADS1115 base configuration. 
+
+\mbox{\Hypertarget{Robohand_8h_ad6439a5f36449ef355a3a1220b726946_ad6439a5f36449ef355a3a1220b726946}\label{Robohand_8h_ad6439a5f36449ef355a3a1220b726946_ad6439a5f36449ef355a3a1220b726946}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_COMP\_LAT@{ADS1115\_COMP\_LAT}}
+\index{ADS1115\_COMP\_LAT@{ADS1115\_COMP\_LAT}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_COMP\_LAT}{ADS1115\_COMP\_LAT}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+COMP\+\_\+\+LAT~0x0000}
+
+
+
+Non-\/latching. 
+
+\mbox{\Hypertarget{Robohand_8h_ad722e16431305ce92a4efc7c061ddc7b_ad722e16431305ce92a4efc7c061ddc7b}\label{Robohand_8h_ad722e16431305ce92a4efc7c061ddc7b_ad722e16431305ce92a4efc7c061ddc7b}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_COMP\_MODE@{ADS1115\_COMP\_MODE}}
+\index{ADS1115\_COMP\_MODE@{ADS1115\_COMP\_MODE}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_COMP\_MODE}{ADS1115\_COMP\_MODE}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+COMP\+\_\+\+MODE~0x0000}
+
+
+
+Traditional comparator. 
+
+\mbox{\Hypertarget{Robohand_8h_ad2232b30ece1a1f5bfbf8a55217e3e2c_ad2232b30ece1a1f5bfbf8a55217e3e2c}\label{Robohand_8h_ad2232b30ece1a1f5bfbf8a55217e3e2c_ad2232b30ece1a1f5bfbf8a55217e3e2c}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_COMP\_POL@{ADS1115\_COMP\_POL}}
+\index{ADS1115\_COMP\_POL@{ADS1115\_COMP\_POL}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_COMP\_POL}{ADS1115\_COMP\_POL}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+COMP\+\_\+\+POL~0x0000}
+
+
+
+Active low. 
+
+\mbox{\Hypertarget{Robohand_8h_a4f20b25599f011f334267ec0be2e2e63_a4f20b25599f011f334267ec0be2e2e63}\label{Robohand_8h_a4f20b25599f011f334267ec0be2e2e63_a4f20b25599f011f334267ec0be2e2e63}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_COMP\_QUE@{ADS1115\_COMP\_QUE}}
+\index{ADS1115\_COMP\_QUE@{ADS1115\_COMP\_QUE}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_COMP\_QUE}{ADS1115\_COMP\_QUE}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+COMP\+\_\+\+QUE~0x0003}
+
+
+
+Disable comparator. 
+
+\mbox{\Hypertarget{Robohand_8h_a7312912eceac133da7688cfb74b8f9c1_a7312912eceac133da7688cfb74b8f9c1}\label{Robohand_8h_a7312912eceac133da7688cfb74b8f9c1_a7312912eceac133da7688cfb74b8f9c1}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_DR\_128SPS@{ADS1115\_DR\_128SPS}}
+\index{ADS1115\_DR\_128SPS@{ADS1115\_DR\_128SPS}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_DR\_128SPS}{ADS1115\_DR\_128SPS}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+DR\+\_\+128\+SPS~0x0080}
+
+
+
+128 samples/sec 
+
+\mbox{\Hypertarget{Robohand_8h_a9977c1764f651e77f5e38741656de7ca_a9977c1764f651e77f5e38741656de7ca}\label{Robohand_8h_a9977c1764f651e77f5e38741656de7ca_a9977c1764f651e77f5e38741656de7ca}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_FSR\_4V096@{ADS1115\_FSR\_4V096}}
+\index{ADS1115\_FSR\_4V096@{ADS1115\_FSR\_4V096}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_FSR\_4V096}{ADS1115\_FSR\_4V096}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+FSR\+\_\+4\+V096~0x0200}
+
+
+
+±4.096V range. 
+
+\mbox{\Hypertarget{Robohand_8h_afc6501330db362d3744a0494b15d67ee_afc6501330db362d3744a0494b15d67ee}\label{Robohand_8h_afc6501330db362d3744a0494b15d67ee_afc6501330db362d3744a0494b15d67ee}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_INT\_PIN@{ADS1115\_INT\_PIN}}
+\index{ADS1115\_INT\_PIN@{ADS1115\_INT\_PIN}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_INT\_PIN}{ADS1115\_INT\_PIN}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+INT\+\_\+\+PIN~21}
+
+
+
+Data ready pin for the ADS1115. 
+
+\mbox{\Hypertarget{Robohand_8h_ac9dbd94549bb902dfdfcc1c238cadbe0_ac9dbd94549bb902dfdfcc1c238cadbe0}\label{Robohand_8h_ac9dbd94549bb902dfdfcc1c238cadbe0_ac9dbd94549bb902dfdfcc1c238cadbe0}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_MODE\_SINGLE@{ADS1115\_MODE\_SINGLE}}
+\index{ADS1115\_MODE\_SINGLE@{ADS1115\_MODE\_SINGLE}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_MODE\_SINGLE}{ADS1115\_MODE\_SINGLE}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+MODE\+\_\+\+SINGLE~0x0100}
+
+
+
+Single-\/shot mode. 
+
+\mbox{\Hypertarget{Robohand_8h_ad76dbdc476c07b26c8c1d7ecb157adaf_ad76dbdc476c07b26c8c1d7ecb157adaf}\label{Robohand_8h_ad76dbdc476c07b26c8c1d7ecb157adaf_ad76dbdc476c07b26c8c1d7ecb157adaf}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_MUX\_AIN0@{ADS1115\_MUX\_AIN0}}
+\index{ADS1115\_MUX\_AIN0@{ADS1115\_MUX\_AIN0}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_MUX\_AIN0}{ADS1115\_MUX\_AIN0}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+MUX\+\_\+\+AIN0~0x4000}
+
+
+
+AIN0 vs GND. 
+
+\mbox{\Hypertarget{Robohand_8h_a084841df97af4a166cb4e431b29bd7a9_a084841df97af4a166cb4e431b29bd7a9}\label{Robohand_8h_a084841df97af4a166cb4e431b29bd7a9_a084841df97af4a166cb4e431b29bd7a9}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_MUX\_AIN1@{ADS1115\_MUX\_AIN1}}
+\index{ADS1115\_MUX\_AIN1@{ADS1115\_MUX\_AIN1}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_MUX\_AIN1}{ADS1115\_MUX\_AIN1}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+MUX\+\_\+\+AIN1~0x5000}
+
+
+
+AIN1 vs GND. 
+
+\mbox{\Hypertarget{Robohand_8h_a069ff0c9cbfbc8e0509253ba75418ce8_a069ff0c9cbfbc8e0509253ba75418ce8}\label{Robohand_8h_a069ff0c9cbfbc8e0509253ba75418ce8_a069ff0c9cbfbc8e0509253ba75418ce8}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_MUX\_AIN2@{ADS1115\_MUX\_AIN2}}
+\index{ADS1115\_MUX\_AIN2@{ADS1115\_MUX\_AIN2}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_MUX\_AIN2}{ADS1115\_MUX\_AIN2}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+MUX\+\_\+\+AIN2~0x6000}
+
+
+
+AIN2 vs GND. 
+
+\mbox{\Hypertarget{Robohand_8h_a900c8e7e834d55e7b8fb6548c81883f3_a900c8e7e834d55e7b8fb6548c81883f3}\label{Robohand_8h_a900c8e7e834d55e7b8fb6548c81883f3_a900c8e7e834d55e7b8fb6548c81883f3}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_MUX\_AIN3@{ADS1115\_MUX\_AIN3}}
+\index{ADS1115\_MUX\_AIN3@{ADS1115\_MUX\_AIN3}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_MUX\_AIN3}{ADS1115\_MUX\_AIN3}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+MUX\+\_\+\+AIN3~0x7000}
+
+
+
+AIN3 vs GND. 
+
+\mbox{\Hypertarget{Robohand_8h_af573ec619021cd56f4379c1753dbff3e_af573ec619021cd56f4379c1753dbff3e}\label{Robohand_8h_af573ec619021cd56f4379c1753dbff3e_af573ec619021cd56f4379c1753dbff3e}} 
+\index{Robohand.h@{Robohand.h}!ADS1115\_OS\_SINGLE@{ADS1115\_OS\_SINGLE}}
+\index{ADS1115\_OS\_SINGLE@{ADS1115\_OS\_SINGLE}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ADS1115\_OS\_SINGLE}{ADS1115\_OS\_SINGLE}}
+{\footnotesize\ttfamily \#define ADS1115\+\_\+\+OS\+\_\+\+SINGLE~0x8000}
+
+
+
+Start single-\/conversion. 
+
+\mbox{\Hypertarget{Robohand_8h_ac9be9d353e7467e5f6cd20f68bd912dc_ac9be9d353e7467e5f6cd20f68bd912dc}\label{Robohand_8h_ac9be9d353e7467e5f6cd20f68bd912dc_ac9be9d353e7467e5f6cd20f68bd912dc}} 
+\index{Robohand.h@{Robohand.h}!CLK\_DIV@{CLK\_DIV}}
+\index{CLK\_DIV@{CLK\_DIV}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{CLK\_DIV}{CLK\_DIV}}
+{\footnotesize\ttfamily \#define CLK\+\_\+\+DIV~64.f}
+
+
+
+Clock divisor used for PWM. 
+
+\mbox{\Hypertarget{Robohand_8h_ae534547361f20b9a2207606251572301_ae534547361f20b9a2207606251572301}\label{Robohand_8h_ae534547361f20b9a2207606251572301_ae534547361f20b9a2207606251572301}} 
+\index{Robohand.h@{Robohand.h}!constrain@{constrain}}
+\index{constrain@{constrain}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{constrain}{constrain}}
+{\footnotesize\ttfamily \#define constrain(\begin{DoxyParamCaption}\item[{}]{value,  }\item[{}]{min,  }\item[{}]{max }\end{DoxyParamCaption})~((value) $<$ (min) ? (min) \+: ((value) $>$ (max) ? (max) \+: (value)))}
+
+
+
+Macro for constraining. 
+
+\mbox{\Hypertarget{Robohand_8h_ad72dbcf6d0153db1b8d8a58001feed83_ad72dbcf6d0153db1b8d8a58001feed83}\label{Robohand_8h_ad72dbcf6d0153db1b8d8a58001feed83_ad72dbcf6d0153db1b8d8a58001feed83}} 
+\index{Robohand.h@{Robohand.h}!DEBUG@{DEBUG}}
+\index{DEBUG@{DEBUG}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{DEBUG}{DEBUG}}
+{\footnotesize\ttfamily \#define DEBUG~1}
+
+
+
+Enable debug output (0 -\/ Disabled, 1 -\/ Enabled) 
+
+\mbox{\Hypertarget{Robohand_8h_af119b4868adcc173dd7122077d40ac4b_af119b4868adcc173dd7122077d40ac4b}\label{Robohand_8h_af119b4868adcc173dd7122077d40ac4b_af119b4868adcc173dd7122077d40ac4b}} 
+\index{Robohand.h@{Robohand.h}!HAS\_ADC@{HAS\_ADC}}
+\index{HAS\_ADC@{HAS\_ADC}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HAS\_ADC}{HAS\_ADC}}
+{\footnotesize\ttfamily \#define HAS\+\_\+\+ADC~(\mbox{\hyperlink{Robohand_8h_a11c897a53daf3a72a81433e78af9a944_a11c897a53daf3a72a81433e78af9a944}{HAS\+\_\+\+PI\+\_\+\+ADC}} $\vert$$\vert$ \mbox{\hyperlink{Robohand_8h_aa4a1deb992fe6228b78dc7c06188bd87_aa4a1deb992fe6228b78dc7c06188bd87}{HAS\+\_\+\+ADS1115}})}
+
+
+
+Whether or not ADC initalization is required. 
+
+\mbox{\Hypertarget{Robohand_8h_aa4a1deb992fe6228b78dc7c06188bd87_aa4a1deb992fe6228b78dc7c06188bd87}\label{Robohand_8h_aa4a1deb992fe6228b78dc7c06188bd87_aa4a1deb992fe6228b78dc7c06188bd87}} 
+\index{Robohand.h@{Robohand.h}!HAS\_ADS1115@{HAS\_ADS1115}}
+\index{HAS\_ADS1115@{HAS\_ADS1115}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HAS\_ADS1115}{HAS\_ADS1115}}
+{\footnotesize\ttfamily \#define HAS\+\_\+\+ADS1115~false}
+
+
+
+Whether the ADS1115 (ADC) is connected to the I2C bus. 
+
+\mbox{\Hypertarget{Robohand_8h_a90c97a383865dea7c8273b9fea4ee04d_a90c97a383865dea7c8273b9fea4ee04d}\label{Robohand_8h_a90c97a383865dea7c8273b9fea4ee04d_a90c97a383865dea7c8273b9fea4ee04d}} 
+\index{Robohand.h@{Robohand.h}!HAS\_HMC5883L@{HAS\_HMC5883L}}
+\index{HAS\_HMC5883L@{HAS\_HMC5883L}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HAS\_HMC5883L}{HAS\_HMC5883L}}
+{\footnotesize\ttfamily \#define HAS\+\_\+\+HMC5883L~true}
+
+
+
+Whether the HMC5883L (Magnometer) is connected to the i2c bus. 
+
+\mbox{\Hypertarget{Robohand_8h_adfd7d8557f1c222f987ad3d5eb1e55a9_adfd7d8557f1c222f987ad3d5eb1e55a9}\label{Robohand_8h_adfd7d8557f1c222f987ad3d5eb1e55a9_adfd7d8557f1c222f987ad3d5eb1e55a9}} 
+\index{Robohand.h@{Robohand.h}!HAS\_I2C@{HAS\_I2C}}
+\index{HAS\_I2C@{HAS\_I2C}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HAS\_I2C}{HAS\_I2C}}
+{\footnotesize\ttfamily \#define HAS\+\_\+\+I2C~(\mbox{\hyperlink{Robohand_8h_aa4a1deb992fe6228b78dc7c06188bd87_aa4a1deb992fe6228b78dc7c06188bd87}{HAS\+\_\+\+ADS1115}} $\vert$$\vert$ \mbox{\hyperlink{Robohand_8h_a90c97a383865dea7c8273b9fea4ee04d_a90c97a383865dea7c8273b9fea4ee04d}{HAS\+\_\+\+HMC5883L}} $\vert$$\vert$ \mbox{\hyperlink{Robohand_8h_a6f65ff425a34f722a5a490d8bce32c04_a6f65ff425a34f722a5a490d8bce32c04}{HAS\+\_\+\+MPU6050}})}
+
+
+
+Whether or not I2C initialization is required. 
+
+\mbox{\Hypertarget{Robohand_8h_a6f65ff425a34f722a5a490d8bce32c04_a6f65ff425a34f722a5a490d8bce32c04}\label{Robohand_8h_a6f65ff425a34f722a5a490d8bce32c04_a6f65ff425a34f722a5a490d8bce32c04}} 
+\index{Robohand.h@{Robohand.h}!HAS\_MPU6050@{HAS\_MPU6050}}
+\index{HAS\_MPU6050@{HAS\_MPU6050}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HAS\_MPU6050}{HAS\_MPU6050}}
+{\footnotesize\ttfamily \#define HAS\+\_\+\+MPU6050~true}
+
+
+
+Whether the MPU6050 (Accelerometer) is connected to the i2c bus. 
+
+\mbox{\Hypertarget{Robohand_8h_a11c897a53daf3a72a81433e78af9a944_a11c897a53daf3a72a81433e78af9a944}\label{Robohand_8h_a11c897a53daf3a72a81433e78af9a944_a11c897a53daf3a72a81433e78af9a944}} 
+\index{Robohand.h@{Robohand.h}!HAS\_PI\_ADC@{HAS\_PI\_ADC}}
+\index{HAS\_PI\_ADC@{HAS\_PI\_ADC}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HAS\_PI\_ADC}{HAS\_PI\_ADC}}
+{\footnotesize\ttfamily \#define HAS\+\_\+\+PI\+\_\+\+ADC~false}
+
+
+
+Whether a pressure sensor is connected to the pi pico. 
+
+\mbox{\Hypertarget{Robohand_8h_a57b2243265b02ebca4b921fea515f43e_a57b2243265b02ebca4b921fea515f43e}\label{Robohand_8h_a57b2243265b02ebca4b921fea515f43e_a57b2243265b02ebca4b921fea515f43e}} 
+\index{Robohand.h@{Robohand.h}!HAS\_RGB@{HAS\_RGB}}
+\index{HAS\_RGB@{HAS\_RGB}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HAS\_RGB}{HAS\_RGB}}
+{\footnotesize\ttfamily \#define HAS\+\_\+\+RGB~true}
+
+
+
+Whether common Cathode RGB LED is connected to the pi pico. 
+
+\mbox{\Hypertarget{Robohand_8h_a147c0cd6f4aad08c7cb5f3bb14f4712a_a147c0cd6f4aad08c7cb5f3bb14f4712a}\label{Robohand_8h_a147c0cd6f4aad08c7cb5f3bb14f4712a_a147c0cd6f4aad08c7cb5f3bb14f4712a}} 
+\index{Robohand.h@{Robohand.h}!HAS\_SERVOS@{HAS\_SERVOS}}
+\index{HAS\_SERVOS@{HAS\_SERVOS}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HAS\_SERVOS}{HAS\_SERVOS}}
+{\footnotesize\ttfamily \#define HAS\+\_\+\+SERVOS~false}
+
+
+
+Whether servos are connected to the device. 
+
+\mbox{\Hypertarget{Robohand_8h_af476bf33d389e5fc597d87cac399088d_af476bf33d389e5fc597d87cac399088d}\label{Robohand_8h_af476bf33d389e5fc597d87cac399088d_af476bf33d389e5fc597d87cac399088d}} 
+\index{Robohand.h@{Robohand.h}!HMC5883L\_ADDR@{HMC5883L\_ADDR}}
+\index{HMC5883L\_ADDR@{HMC5883L\_ADDR}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HMC5883L\_ADDR}{HMC5883L\_ADDR}}
+{\footnotesize\ttfamily \#define HMC5883\+L\+\_\+\+ADDR~0x1E}
+
+
+
+I2C address of HMC5883L magnetometer. 
+
+\mbox{\Hypertarget{Robohand_8h_afe68cba5c46e009c0706ea39d98ad306_afe68cba5c46e009c0706ea39d98ad306}\label{Robohand_8h_afe68cba5c46e009c0706ea39d98ad306_afe68cba5c46e009c0706ea39d98ad306}} 
+\index{Robohand.h@{Robohand.h}!HMC5883L\_CONFIG\_A@{HMC5883L\_CONFIG\_A}}
+\index{HMC5883L\_CONFIG\_A@{HMC5883L\_CONFIG\_A}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HMC5883L\_CONFIG\_A}{HMC5883L\_CONFIG\_A}}
+{\footnotesize\ttfamily \#define HMC5883\+L\+\_\+\+CONFIG\+\_\+A~0x00}
+
+
+
+Configuration register A. 
+
+\mbox{\Hypertarget{Robohand_8h_ae72bf49f0c3c48e17071fe0ca2719c30_ae72bf49f0c3c48e17071fe0ca2719c30}\label{Robohand_8h_ae72bf49f0c3c48e17071fe0ca2719c30_ae72bf49f0c3c48e17071fe0ca2719c30}} 
+\index{Robohand.h@{Robohand.h}!HMC5883L\_CONFIG\_B@{HMC5883L\_CONFIG\_B}}
+\index{HMC5883L\_CONFIG\_B@{HMC5883L\_CONFIG\_B}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HMC5883L\_CONFIG\_B}{HMC5883L\_CONFIG\_B}}
+{\footnotesize\ttfamily \#define HMC5883\+L\+\_\+\+CONFIG\+\_\+B~0x01}
+
+
+
+Configuration register B. 
+
+\mbox{\Hypertarget{Robohand_8h_a32b275676d95c201467d6163c43ae06c_a32b275676d95c201467d6163c43ae06c}\label{Robohand_8h_a32b275676d95c201467d6163c43ae06c_a32b275676d95c201467d6163c43ae06c}} 
+\index{Robohand.h@{Robohand.h}!HMC5883L\_DATA@{HMC5883L\_DATA}}
+\index{HMC5883L\_DATA@{HMC5883L\_DATA}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HMC5883L\_DATA}{HMC5883L\_DATA}}
+{\footnotesize\ttfamily \#define HMC5883\+L\+\_\+\+DATA~0x03}
+
+
+
+Data output register. 
+
+\mbox{\Hypertarget{Robohand_8h_ad3436a0f6a5e31193c89c44551738d10_ad3436a0f6a5e31193c89c44551738d10}\label{Robohand_8h_ad3436a0f6a5e31193c89c44551738d10_ad3436a0f6a5e31193c89c44551738d10}} 
+\index{Robohand.h@{Robohand.h}!HMC5883L\_INT\_PIN@{HMC5883L\_INT\_PIN}}
+\index{HMC5883L\_INT\_PIN@{HMC5883L\_INT\_PIN}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HMC5883L\_INT\_PIN}{HMC5883L\_INT\_PIN}}
+{\footnotesize\ttfamily \#define HMC5883\+L\+\_\+\+INT\+\_\+\+PIN~22}
+
+
+
+Data ready pin for the HMC5883L. 
+
+\mbox{\Hypertarget{Robohand_8h_a0e32eeb11f0b893996d2ab33b8a1267d_a0e32eeb11f0b893996d2ab33b8a1267d}\label{Robohand_8h_a0e32eeb11f0b893996d2ab33b8a1267d_a0e32eeb11f0b893996d2ab33b8a1267d}} 
+\index{Robohand.h@{Robohand.h}!HMC5883L\_MODE@{HMC5883L\_MODE}}
+\index{HMC5883L\_MODE@{HMC5883L\_MODE}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HMC5883L\_MODE}{HMC5883L\_MODE}}
+{\footnotesize\ttfamily \#define HMC5883\+L\+\_\+\+MODE~0x02}
+
+
+
+Mode register. 
+
+\mbox{\Hypertarget{Robohand_8h_a5a00872ffa302c326df93fcbae704d7f_a5a00872ffa302c326df93fcbae704d7f}\label{Robohand_8h_a5a00872ffa302c326df93fcbae704d7f_a5a00872ffa302c326df93fcbae704d7f}} 
+\index{Robohand.h@{Robohand.h}!HMC5883L\_MODE\_CONTINUOUS@{HMC5883L\_MODE\_CONTINUOUS}}
+\index{HMC5883L\_MODE\_CONTINUOUS@{HMC5883L\_MODE\_CONTINUOUS}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{HMC5883L\_MODE\_CONTINUOUS}{HMC5883L\_MODE\_CONTINUOUS}}
+{\footnotesize\ttfamily \#define HMC5883\+L\+\_\+\+MODE\+\_\+\+CONTINUOUS~0x00}
+
+
+
+Continious sampling mode. 
+
+\mbox{\Hypertarget{Robohand_8h_ad9ecf80e1eac083d16ec47f9d3aeb39f_ad9ecf80e1eac083d16ec47f9d3aeb39f}\label{Robohand_8h_ad9ecf80e1eac083d16ec47f9d3aeb39f_ad9ecf80e1eac083d16ec47f9d3aeb39f}} 
+\index{Robohand.h@{Robohand.h}!I2C\_PORT@{I2C\_PORT}}
+\index{I2C\_PORT@{I2C\_PORT}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{I2C\_PORT}{I2C\_PORT}}
+{\footnotesize\ttfamily \#define I2\+C\+\_\+\+PORT~i2c1}
+
+
+
+I2C port used for device connections(i2c1 on pico) 
+
+\mbox{\Hypertarget{Robohand_8h_a98cfbf806e9c6d29c9b7b0b93f5704c2_a98cfbf806e9c6d29c9b7b0b93f5704c2}\label{Robohand_8h_a98cfbf806e9c6d29c9b7b0b93f5704c2_a98cfbf806e9c6d29c9b7b0b93f5704c2}} 
+\index{Robohand.h@{Robohand.h}!MAX\_MOVE\_DURATION\_MS@{MAX\_MOVE\_DURATION\_MS}}
+\index{MAX\_MOVE\_DURATION\_MS@{MAX\_MOVE\_DURATION\_MS}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_MOVE\_DURATION\_MS}{MAX\_MOVE\_DURATION\_MS}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+MOVE\+\_\+\+DURATION\+\_\+\+MS~15000}
+
+
+
+Max amount of time the motor is allowed to move over before timeout. 
+
+\mbox{\Hypertarget{Robohand_8h_a1f8e37c6538458d5b81022040324a211_a1f8e37c6538458d5b81022040324a211}\label{Robohand_8h_a1f8e37c6538458d5b81022040324a211_a1f8e37c6538458d5b81022040324a211}} 
+\index{Robohand.h@{Robohand.h}!MAX\_SERVO\_ACCEL@{MAX\_SERVO\_ACCEL}}
+\index{MAX\_SERVO\_ACCEL@{MAX\_SERVO\_ACCEL}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_SERVO\_ACCEL}{MAX\_SERVO\_ACCEL}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+SERVO\+\_\+\+ACCEL~2500}
+
+
+
+µs/s² (adjust for servo dynamics) 
+
+\mbox{\Hypertarget{Robohand_8h_a444ee693cac934a19d2cd4821f4dd7ea_a444ee693cac934a19d2cd4821f4dd7ea}\label{Robohand_8h_a444ee693cac934a19d2cd4821f4dd7ea_a444ee693cac934a19d2cd4821f4dd7ea}} 
+\index{Robohand.h@{Robohand.h}!MPU6050\_ACCEL\_XOUT\_H@{MPU6050\_ACCEL\_XOUT\_H}}
+\index{MPU6050\_ACCEL\_XOUT\_H@{MPU6050\_ACCEL\_XOUT\_H}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{MPU6050\_ACCEL\_XOUT\_H}{MPU6050\_ACCEL\_XOUT\_H}}
+{\footnotesize\ttfamily \#define MPU6050\+\_\+\+ACCEL\+\_\+\+XOUT\+\_\+H~0x3B}
+
+
+
+Accelerometer data register. 
+
+\mbox{\Hypertarget{Robohand_8h_ad4d6255d8f7e5dc770e773b787977508_ad4d6255d8f7e5dc770e773b787977508}\label{Robohand_8h_ad4d6255d8f7e5dc770e773b787977508_ad4d6255d8f7e5dc770e773b787977508}} 
+\index{Robohand.h@{Robohand.h}!MPU6050\_ADDR@{MPU6050\_ADDR}}
+\index{MPU6050\_ADDR@{MPU6050\_ADDR}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{MPU6050\_ADDR}{MPU6050\_ADDR}}
+{\footnotesize\ttfamily \#define MPU6050\+\_\+\+ADDR~0x68}
+
+
+
+I2C address of MPU6050 IMU. 
+
+\mbox{\Hypertarget{Robohand_8h_abc0b4573a3ee76a93b8595f346d36066_abc0b4573a3ee76a93b8595f346d36066}\label{Robohand_8h_abc0b4573a3ee76a93b8595f346d36066_abc0b4573a3ee76a93b8595f346d36066}} 
+\index{Robohand.h@{Robohand.h}!MPU6050\_INT\_PIN@{MPU6050\_INT\_PIN}}
+\index{MPU6050\_INT\_PIN@{MPU6050\_INT\_PIN}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{MPU6050\_INT\_PIN}{MPU6050\_INT\_PIN}}
+{\footnotesize\ttfamily \#define MPU6050\+\_\+\+INT\+\_\+\+PIN~20}
+
+
+
+Data ready pin for the MPU6050. 
+
+\mbox{\Hypertarget{Robohand_8h_a29f2d140921f7fd4bb29699b9f301452_a29f2d140921f7fd4bb29699b9f301452}\label{Robohand_8h_a29f2d140921f7fd4bb29699b9f301452_a29f2d140921f7fd4bb29699b9f301452}} 
+\index{Robohand.h@{Robohand.h}!NUM\_PRESPNTS@{NUM\_PRESPNTS}}
+\index{NUM\_PRESPNTS@{NUM\_PRESPNTS}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{NUM\_PRESPNTS}{NUM\_PRESPNTS}}
+{\footnotesize\ttfamily \#define NUM\+\_\+\+PRESPNTS~5}
+
+
+
+Number of pressure points to sample. 
+
+\mbox{\Hypertarget{Robohand_8h_a4ad670f00edea29150a5303b470c5385_a4ad670f00edea29150a5303b470c5385}\label{Robohand_8h_a4ad670f00edea29150a5303b470c5385_a4ad670f00edea29150a5303b470c5385}} 
+\index{Robohand.h@{Robohand.h}!NUM\_SERVOS@{NUM\_SERVOS}}
+\index{NUM\_SERVOS@{NUM\_SERVOS}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{NUM\_SERVOS}{NUM\_SERVOS}}
+{\footnotesize\ttfamily \#define NUM\+\_\+\+SERVOS~5}
+
+
+
+Number of servos to control. 
+
+\mbox{\Hypertarget{Robohand_8h_a6cc9d696e520a31363325c1553c6fecb_a6cc9d696e520a31363325c1553c6fecb}\label{Robohand_8h_a6cc9d696e520a31363325c1553c6fecb_a6cc9d696e520a31363325c1553c6fecb}} 
+\index{Robohand.h@{Robohand.h}!RGB\_BLUE\_PIN@{RGB\_BLUE\_PIN}}
+\index{RGB\_BLUE\_PIN@{RGB\_BLUE\_PIN}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{RGB\_BLUE\_PIN}{RGB\_BLUE\_PIN}}
+{\footnotesize\ttfamily \#define RGB\+\_\+\+BLUE\+\_\+\+PIN~16}
+
+
+
+GPIO pin connected to the blue channel. 
+
+\mbox{\Hypertarget{Robohand_8h_ae575a1e42e15f26660fa41c50771e05e_ae575a1e42e15f26660fa41c50771e05e}\label{Robohand_8h_ae575a1e42e15f26660fa41c50771e05e_ae575a1e42e15f26660fa41c50771e05e}} 
+\index{Robohand.h@{Robohand.h}!RGB\_GREEN\_PIN@{RGB\_GREEN\_PIN}}
+\index{RGB\_GREEN\_PIN@{RGB\_GREEN\_PIN}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{RGB\_GREEN\_PIN}{RGB\_GREEN\_PIN}}
+{\footnotesize\ttfamily \#define RGB\+\_\+\+GREEN\+\_\+\+PIN~17}
+
+
+
+GPIO pin connected to the green channel. 
+
+\mbox{\Hypertarget{Robohand_8h_a674fcfb292e527072f6912335ab5f7eb_a674fcfb292e527072f6912335ab5f7eb}\label{Robohand_8h_a674fcfb292e527072f6912335ab5f7eb_a674fcfb292e527072f6912335ab5f7eb}} 
+\index{Robohand.h@{Robohand.h}!RGB\_RED\_PIN@{RGB\_RED\_PIN}}
+\index{RGB\_RED\_PIN@{RGB\_RED\_PIN}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{RGB\_RED\_PIN}{RGB\_RED\_PIN}}
+{\footnotesize\ttfamily \#define RGB\+\_\+\+RED\+\_\+\+PIN~18}
+
+
+
+GPIO pin connected to the red channel. 
+
+\mbox{\Hypertarget{Robohand_8h_a0bf8a969b88323b8d2b7559f1c984aad_a0bf8a969b88323b8d2b7559f1c984aad}\label{Robohand_8h_a0bf8a969b88323b8d2b7559f1c984aad_a0bf8a969b88323b8d2b7559f1c984aad}} 
+\index{Robohand.h@{Robohand.h}!ROBOHAND\_LED\_PIN@{ROBOHAND\_LED\_PIN}}
+\index{ROBOHAND\_LED\_PIN@{ROBOHAND\_LED\_PIN}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{ROBOHAND\_LED\_PIN}{ROBOHAND\_LED\_PIN}}
+{\footnotesize\ttfamily \#define ROBOHAND\+\_\+\+LED\+\_\+\+PIN~25}
+
+
+
+Pin to use for heartbeat callback ~\newline
+ 
+
+\begin{DoxyRefDesc}{Todo}
+\item[\mbox{\hyperlink{todo__todo000002}{Todo}}]Fix issues present within code, check for correctness. 
+
+Ensure code for preventing the running of code on missing components does not break functionality. 
+
+Fix issue with HMC5883L always returning 0. (observed behavior when running program with USB driver) \end{DoxyRefDesc}
+\mbox{\Hypertarget{Robohand_8h_a06c967e78bcedcee909a70764f879433_a06c967e78bcedcee909a70764f879433}\label{Robohand_8h_a06c967e78bcedcee909a70764f879433_a06c967e78bcedcee909a70764f879433}} 
+\index{Robohand.h@{Robohand.h}!SCL\_PIN@{SCL\_PIN}}
+\index{SCL\_PIN@{SCL\_PIN}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{SCL\_PIN}{SCL\_PIN}}
+{\footnotesize\ttfamily \#define SCL\+\_\+\+PIN~1}
+
+
+
+GPIO pin for I2C SCL. 
+
+\mbox{\Hypertarget{Robohand_8h_a526d580d324bce60a3e964066fae77e3_a526d580d324bce60a3e964066fae77e3}\label{Robohand_8h_a526d580d324bce60a3e964066fae77e3_a526d580d324bce60a3e964066fae77e3}} 
+\index{Robohand.h@{Robohand.h}!SDA\_PIN@{SDA\_PIN}}
+\index{SDA\_PIN@{SDA\_PIN}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{SDA\_PIN}{SDA\_PIN}}
+{\footnotesize\ttfamily \#define SDA\+\_\+\+PIN~0}
+
+
+
+GPIO pin for I2C SDA. 
+
+\mbox{\Hypertarget{Robohand_8h_a0ffde0a9cfa57775eef67831f0a6da54_a0ffde0a9cfa57775eef67831f0a6da54}\label{Robohand_8h_a0ffde0a9cfa57775eef67831f0a6da54_a0ffde0a9cfa57775eef67831f0a6da54}} 
+\index{Robohand.h@{Robohand.h}!SERVO\_MAX\_PULSE@{SERVO\_MAX\_PULSE}}
+\index{SERVO\_MAX\_PULSE@{SERVO\_MAX\_PULSE}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{SERVO\_MAX\_PULSE}{SERVO\_MAX\_PULSE}}
+{\footnotesize\ttfamily \#define SERVO\+\_\+\+MAX\+\_\+\+PULSE~2500}
+
+
+
+Upper threshold for pulse time. 
+
+\mbox{\Hypertarget{Robohand_8h_aaee3e47827f209f898338b76dfb1866b_aaee3e47827f209f898338b76dfb1866b}\label{Robohand_8h_aaee3e47827f209f898338b76dfb1866b_aaee3e47827f209f898338b76dfb1866b}} 
+\index{Robohand.h@{Robohand.h}!SERVO\_MIN\_PULSE@{SERVO\_MIN\_PULSE}}
+\index{SERVO\_MIN\_PULSE@{SERVO\_MIN\_PULSE}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{SERVO\_MIN\_PULSE}{SERVO\_MIN\_PULSE}}
+{\footnotesize\ttfamily \#define SERVO\+\_\+\+MIN\+\_\+\+PULSE~500}
+
+
+
+Lower threshold for pulse time. 
+
+\mbox{\Hypertarget{Robohand_8h_a0eb250599505bd3600d26b6bad6a415f_a0eb250599505bd3600d26b6bad6a415f}\label{Robohand_8h_a0eb250599505bd3600d26b6bad6a415f_a0eb250599505bd3600d26b6bad6a415f}} 
+\index{Robohand.h@{Robohand.h}!SERVO\_PWM\_FREQ@{SERVO\_PWM\_FREQ}}
+\index{SERVO\_PWM\_FREQ@{SERVO\_PWM\_FREQ}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{SERVO\_PWM\_FREQ}{SERVO\_PWM\_FREQ}}
+{\footnotesize\ttfamily \#define SERVO\+\_\+\+PWM\+\_\+\+FREQ~50}
+
+
+
+Desired frequency for PWM response. 
+
+\mbox{\Hypertarget{Robohand_8h_a847e43fc2212c2865906a764aa01ec74_a847e43fc2212c2865906a764aa01ec74}\label{Robohand_8h_a847e43fc2212c2865906a764aa01ec74_a847e43fc2212c2865906a764aa01ec74}} 
+\index{Robohand.h@{Robohand.h}!SYS\_CLOCK@{SYS\_CLOCK}}
+\index{SYS\_CLOCK@{SYS\_CLOCK}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{SYS\_CLOCK}{SYS\_CLOCK}}
+{\footnotesize\ttfamily \#define SYS\+\_\+\+CLOCK~125000000}
+
+
+
+System operating frequency. 
+
+\mbox{\Hypertarget{Robohand_8h_a95dc25e71503f6c12eeda9e8e09810d3_a95dc25e71503f6c12eeda9e8e09810d3}\label{Robohand_8h_a95dc25e71503f6c12eeda9e8e09810d3_a95dc25e71503f6c12eeda9e8e09810d3}} 
+\index{Robohand.h@{Robohand.h}!USE\_DMA@{USE\_DMA}}
+\index{USE\_DMA@{USE\_DMA}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{USE\_DMA}{USE\_DMA}}
+{\footnotesize\ttfamily \#define USE\+\_\+\+DMA~false}
+
+
+
+Use DMA for system communication. 
+
+\mbox{\Hypertarget{Robohand_8h_a37739a3dd14f14e5c80b59682a5b154e_a37739a3dd14f14e5c80b59682a5b154e}\label{Robohand_8h_a37739a3dd14f14e5c80b59682a5b154e_a37739a3dd14f14e5c80b59682a5b154e}} 
+\index{Robohand.h@{Robohand.h}!USE\_FALLBACK@{USE\_FALLBACK}}
+\index{USE\_FALLBACK@{USE\_FALLBACK}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{USE\_FALLBACK}{USE\_FALLBACK}}
+{\footnotesize\ttfamily \#define USE\+\_\+\+FALLBACK~(!(\mbox{\hyperlink{Robohand_8h_a63845246be374d0a4099237f399ba51a_a63845246be374d0a4099237f399ba51a}{USE\+\_\+\+INTERRUPTS}} $\vert$$\vert$ \mbox{\hyperlink{Robohand_8h_a95dc25e71503f6c12eeda9e8e09810d3_a95dc25e71503f6c12eeda9e8e09810d3}{USE\+\_\+\+DMA}}))}
+
+
+
+Use fallback if other options are not selected. 
+
+\mbox{\Hypertarget{Robohand_8h_a63845246be374d0a4099237f399ba51a_a63845246be374d0a4099237f399ba51a}\label{Robohand_8h_a63845246be374d0a4099237f399ba51a_a63845246be374d0a4099237f399ba51a}} 
+\index{Robohand.h@{Robohand.h}!USE\_INTERRUPTS@{USE\_INTERRUPTS}}
+\index{USE\_INTERRUPTS@{USE\_INTERRUPTS}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{USE\_INTERRUPTS}{USE\_INTERRUPTS}}
+{\footnotesize\ttfamily \#define USE\+\_\+\+INTERRUPTS~false}
+
+
+
+Use interupts for system communication. 
+
+\mbox{\Hypertarget{Robohand_8h_ac072c1de6ff73f80e2060b1431219935_ac072c1de6ff73f80e2060b1431219935}\label{Robohand_8h_ac072c1de6ff73f80e2060b1431219935_ac072c1de6ff73f80e2060b1431219935}} 
+\index{Robohand.h@{Robohand.h}!WATCHDOG\_IRQ@{WATCHDOG\_IRQ}}
+\index{WATCHDOG\_IRQ@{WATCHDOG\_IRQ}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{WATCHDOG\_IRQ}{WATCHDOG\_IRQ}}
+{\footnotesize\ttfamily \#define WATCHDOG\+\_\+\+IRQ~1}
+
+
+
+Needed for watchdog intervention. 
+
+\mbox{\Hypertarget{Robohand_8h_a2df66581a18d065737b723286b47f0c9_a2df66581a18d065737b723286b47f0c9}\label{Robohand_8h_a2df66581a18d065737b723286b47f0c9_a2df66581a18d065737b723286b47f0c9}} 
+\index{Robohand.h@{Robohand.h}!WRAP\_VAL@{WRAP\_VAL}}
+\index{WRAP\_VAL@{WRAP\_VAL}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{WRAP\_VAL}{WRAP\_VAL}}
+{\footnotesize\ttfamily \#define WRAP\+\_\+\+VAL~((\mbox{\hyperlink{Robohand_8h_a847e43fc2212c2865906a764aa01ec74_a847e43fc2212c2865906a764aa01ec74}{SYS\+\_\+\+CLOCK}} / (\mbox{\hyperlink{Robohand_8h_a0eb250599505bd3600d26b6bad6a415f_a0eb250599505bd3600d26b6bad6a415f}{SERVO\+\_\+\+PWM\+\_\+\+FREQ}} $\ast$ \mbox{\hyperlink{Robohand_8h_ac9be9d353e7467e5f6cd20f68bd912dc_ac9be9d353e7467e5f6cd20f68bd912dc}{CLK\+\_\+\+DIV}})) -\/ 1)}
+
+
+
+125MHz divided by the clock divider and the desired frequency. Will loop from 0 -\/ calculated value 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group__user__facing_ga6ff6126a0906c10b85405b6e7f642419_ga6ff6126a0906c10b85405b6e7f642419}\label{group__user__facing_ga6ff6126a0906c10b85405b6e7f642419_ga6ff6126a0906c10b85405b6e7f642419}} 
+\index{Robohand.h@{Robohand.h}!actuate\_servo@{actuate\_servo}}
+\index{actuate\_servo@{actuate\_servo}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{actuate\_servo()}{actuate\_servo()}}
+{\footnotesize\ttfamily void actuate\+\_\+servo (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{servo,  }\item[{uint16\+\_\+t}]{pulse\+\_\+width,  }\item[{uint16\+\_\+t}]{duration\+\_\+ms }\end{DoxyParamCaption})}
+
+
+
+Actuates a servo to a specified position over a given duration. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em servo} & Servo index (0 to NUM\+\_\+\+SERVOS-\/1). \\
+\hline
+{\em pulse\+\_\+width} & Target pulse width in microseconds (500-\/2500µs). \\
+\hline
+{\em duration\+\_\+ms} & Movement duration in milliseconds.\\
+\hline
+\end{DoxyParams}
+Actuates a servo to a specified position over a given duration. \mbox{\Hypertarget{group__user__facing_ga256c6af47832d1d3cd38d8633bc91d79_ga256c6af47832d1d3cd38d8633bc91d79}\label{group__user__facing_ga256c6af47832d1d3cd38d8633bc91d79_ga256c6af47832d1d3cd38d8633bc91d79}} 
+\index{Robohand.h@{Robohand.h}!convert\_sensor\_data@{convert\_sensor\_data}}
+\index{convert\_sensor\_data@{convert\_sensor\_data}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{convert\_sensor\_data()}{convert\_sensor\_data()}}
+{\footnotesize\ttfamily bool convert\+\_\+sensor\+\_\+data (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} $\ast$}]{raw,  }\item[{\mbox{\hyperlink{structsensor__data__physical}{sensor\+\_\+data\+\_\+physical}} $\ast$}]{converted }\end{DoxyParamCaption})}
+
+
+
+Converts passed sensor data to physical parameters. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em raw} & Pointer to \mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} structure to containing unconverted values. \\
+\hline
+\mbox{\texttt{ out}}  & {\em converted} & Pointer to \mbox{\hyperlink{structsensor__data__physical}{sensor\+\_\+data\+\_\+physical}} structure to receive readings as physical parameters. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if data copied successfully, false if mutex was busy. 
+\end{DoxyReturn}
+\begin{DoxyWarning}{Warning}
+Caller must allocate destination buffer. Data valid until next update.
+\end{DoxyWarning}
+Converts passed sensor data to physical parameters. \mbox{\Hypertarget{group__user__facing_ga677531d0ec7a1f4b9b9d8ebb4b3d4521_ga677531d0ec7a1f4b9b9d8ebb4b3d4521}\label{group__user__facing_ga677531d0ec7a1f4b9b9d8ebb4b3d4521_ga677531d0ec7a1f4b9b9d8ebb4b3d4521}} 
+\index{Robohand.h@{Robohand.h}!core1\_entry@{core1\_entry}}
+\index{core1\_entry@{core1\_entry}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{core1\_entry()}{core1\_entry()}}
+{\footnotesize\ttfamily void core1\+\_\+entry (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Core 1 main execution loop. 
+
+Handles all hardware-\/related operations\+:
+\begin{DoxyItemize}
+\item Sensor polling (accelerometer, gyroscope, magnetometer)
+\item ADC sampling
+\item Servo control
+\item System status monitoring \begin{DoxyPrecond}{Precondition}
+The system has been initialized. 
+\end{DoxyPrecond}
+\begin{DoxyNote}{Note}
+Runs indefinitely after system initialization.
+\end{DoxyNote}
+Core 1 main execution loop. 
+\end{DoxyItemize}\mbox{\Hypertarget{group__user__facing_gadf9b8d3e6af2e27ec0d4ff22385763b0_gadf9b8d3e6af2e27ec0d4ff22385763b0}\label{group__user__facing_gadf9b8d3e6af2e27ec0d4ff22385763b0_gadf9b8d3e6af2e27ec0d4ff22385763b0}} 
+\index{Robohand.h@{Robohand.h}!get\_sensor\_data@{get\_sensor\_data}}
+\index{get\_sensor\_data@{get\_sensor\_data}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{get\_sensor\_data()}{get\_sensor\_data()}}
+{\footnotesize\ttfamily bool get\+\_\+sensor\+\_\+data (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} $\ast$}]{dest }\end{DoxyParamCaption})}
+
+
+
+Retrieves current sensor data in a thread-\/safe manner. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em dest} & Pointer to \mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} structure to receive readings. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if data copied successfully, false if mutex was busy. 
+\end{DoxyReturn}
+\begin{DoxyPrecond}{Precondition}
+dest points to a valid \mbox{\hyperlink{structsensor__data}{sensor\+\_\+data}} object. 
+\end{DoxyPrecond}
+\begin{DoxyWarning}{Warning}
+Caller must allocate destination buffer. Data valid until next update.
+\end{DoxyWarning}
+Retrieves current sensor data in a thread-\/safe manner. \mbox{\Hypertarget{group__user__facing_ga5806875532f40fd013132a0bde396102_ga5806875532f40fd013132a0bde396102}\label{group__user__facing_ga5806875532f40fd013132a0bde396102_ga5806875532f40fd013132a0bde396102}} 
+\index{Robohand.h@{Robohand.h}!get\_servo\_status@{get\_servo\_status}}
+\index{get\_servo\_status@{get\_servo\_status}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{get\_servo\_status()}{get\_servo\_status()}}
+{\footnotesize\ttfamily bool get\+\_\+servo\+\_\+status (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{servo,  }\item[{\mbox{\hyperlink{structservo__motion__profile}{servo\+\_\+motion\+\_\+profile}} $\ast$}]{dest }\end{DoxyParamCaption})}
+
+
+
+Retrieves the current status of a servo. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em servo} & Servo index (0 to NUM\+\_\+\+SERVOS-\/1). \\
+\hline
+\mbox{\texttt{ out}}  & {\em dest} & Pointer to \mbox{\hyperlink{structservo__motion__profile}{servo\+\_\+motion\+\_\+profile}} to populate. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if successfully acquired, false if error. 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+An error in this case could simply be that the mutexes could not be acquired
+\end{DoxyNote}
+Retrieves the current status of a servo. \mbox{\Hypertarget{group__user__facing_ga6c4baa6e0f3129e683d99dcfeb50d7a8_ga6c4baa6e0f3129e683d99dcfeb50d7a8}\label{group__user__facing_ga6c4baa6e0f3129e683d99dcfeb50d7a8_ga6c4baa6e0f3129e683d99dcfeb50d7a8}} 
+\index{Robohand.h@{Robohand.h}!get\_system\_status@{get\_system\_status}}
+\index{get\_system\_status@{get\_system\_status}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{get\_system\_status()}{get\_system\_status()}}
+{\footnotesize\ttfamily void get\+\_\+system\+\_\+status (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structsystem__status}{system\+\_\+status}} $\ast$}]{dest }\end{DoxyParamCaption})}
+
+
+
+Retrieves the current status of the system. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em dest} & Pointer to \mbox{\hyperlink{structsystem__status}{system\+\_\+status}} structure to populate.\\
+\hline
+\end{DoxyParams}
+Retrieves the current status of the system. \mbox{\Hypertarget{group__user__facing_ga0bd257db3fb98bba6461790c9be316d7_ga0bd257db3fb98bba6461790c9be316d7}\label{group__user__facing_ga0bd257db3fb98bba6461790c9be316d7_ga0bd257db3fb98bba6461790c9be316d7}} 
+\index{Robohand.h@{Robohand.h}!init\_rgb@{init\_rgb}}
+\index{init\_rgb@{init\_rgb}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{init\_rgb()}{init\_rgb()}}
+{\footnotesize\ttfamily void init\+\_\+rgb (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Initializes the RGB LED subsystem. 
+
+Configures PWM hardware and initializes mutexes.
+
+Initializes the RGB LED subsystem. \mbox{\Hypertarget{group__user__facing_gacd4f5679386691fb5594833e6464e4e6_gacd4f5679386691fb5594833e6464e4e6}\label{group__user__facing_gacd4f5679386691fb5594833e6464e4e6_gacd4f5679386691fb5594833e6464e4e6}} 
+\index{Robohand.h@{Robohand.h}!init\_robohand\_system@{init\_robohand\_system}}
+\index{init\_robohand\_system@{init\_robohand\_system}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{init\_robohand\_system()}{init\_robohand\_system()}}
+{\footnotesize\ttfamily void init\+\_\+robohand\+\_\+system (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Initializes the robotic hand system and launches Core 1. 
+
+Performs critical system initialization including\+:
+\begin{DoxyItemize}
+\item Mutex initialization for shared data
+\item Core 1 launch for hardware I/O operations \begin{DoxyPrecond}{Precondition}
+This should be run from core 0. 
+\end{DoxyPrecond}
+\begin{DoxyPostcond}{Postcondition}
+Core 1 handles sensor polling, servo control, and system monitoring.
+\end{DoxyPostcond}
+Initializes the robotic hand system and launches Core 1. 
+\end{DoxyItemize}\mbox{\Hypertarget{group__user__facing_gaeb13944903e95d893183e13611de5980_gaeb13944903e95d893183e13611de5980}\label{group__user__facing_gaeb13944903e95d893183e13611de5980_gaeb13944903e95d893183e13611de5980}} 
+\index{Robohand.h@{Robohand.h}!rgb\_blink@{rgb\_blink}}
+\index{rgb\_blink@{rgb\_blink}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{rgb\_blink()}{rgb\_blink()}}
+{\footnotesize\ttfamily void rgb\+\_\+blink (\begin{DoxyParamCaption}\item[{bool}]{enable,  }\item[{uint32\+\_\+t}]{interval\+\_\+ms }\end{DoxyParamCaption})}
+
+
+
+Configures the RGB to blink at a specified interval. 
+
+Uses a repeating timer callback to achieve blinking functionality. \begin{DoxyPrecond}{Precondition}
+This should be run from core 0. 
+\end{DoxyPrecond}
+\begin{DoxyPostcond}{Postcondition}
+Core 1 handles sensor polling, servo control, and system monitoring.
+\end{DoxyPostcond}
+Configures the RGB to blink at a specified interval. \mbox{\Hypertarget{group__user__facing_ga97c22cab147a306a16b9926a813f8e11_ga97c22cab147a306a16b9926a813f8e11}\label{group__user__facing_ga97c22cab147a306a16b9926a813f8e11_ga97c22cab147a306a16b9926a813f8e11}} 
+\index{Robohand.h@{Robohand.h}!rgb\_set\_brightness@{rgb\_set\_brightness}}
+\index{rgb\_set\_brightness@{rgb\_set\_brightness}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{rgb\_set\_brightness()}{rgb\_set\_brightness()}}
+{\footnotesize\ttfamily void rgb\+\_\+set\+\_\+brightness (\begin{DoxyParamCaption}\item[{float}]{brightness }\end{DoxyParamCaption})}
+
+
+
+Initializes the robotic hand system and launches Core 1. 
+
+Performs critical system initialization including\+:
+\begin{DoxyItemize}
+\item Mutex initialization for shared data
+\item Core 1 launch for hardware I/O operations \begin{DoxyPrecond}{Precondition}
+This should be run from core 0. 
+\end{DoxyPrecond}
+\begin{DoxyPostcond}{Postcondition}
+Core 1 handles sensor polling, servo control, and system monitoring.
+\end{DoxyPostcond}
+Initializes the robotic hand system and launches Core 1. 
+\end{DoxyItemize}\mbox{\Hypertarget{group__user__facing_gac8f53af3cb41054a3cd27280dbd64a33_gac8f53af3cb41054a3cd27280dbd64a33}\label{group__user__facing_gac8f53af3cb41054a3cd27280dbd64a33_gac8f53af3cb41054a3cd27280dbd64a33}} 
+\index{Robohand.h@{Robohand.h}!rgb\_set\_color@{rgb\_set\_color}}
+\index{rgb\_set\_color@{rgb\_set\_color}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{rgb\_set\_color()}{rgb\_set\_color()}}
+{\footnotesize\ttfamily void rgb\+\_\+set\+\_\+color (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{r,  }\item[{uint8\+\_\+t}]{g,  }\item[{uint8\+\_\+t}]{b }\end{DoxyParamCaption})}
+
+
+
+Sets the RGB LED color. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em r} & Red component (0-\/255). \\
+\hline
+\mbox{\texttt{ in}}  & {\em g} & Green component (0-\/255). \\
+\hline
+\mbox{\texttt{ in}}  & {\em b} & Blue component (0-\/255).\\
+\hline
+\end{DoxyParams}
+Sets the RGB LED color. 
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{Robohand_8h_af3a89c094634c5d0df87c443ba4e8604_af3a89c094634c5d0df87c443ba4e8604}\label{Robohand_8h_af3a89c094634c5d0df87c443ba4e8604_af3a89c094634c5d0df87c443ba4e8604}} 
+\index{Robohand.h@{Robohand.h}!gamma\_table@{gamma\_table}}
+\index{gamma\_table@{gamma\_table}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{gamma\_table}{gamma\_table}}
+{\footnotesize\ttfamily const uint8\+\_\+t gamma\+\_\+table\mbox{[}256\mbox{]}\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Gamma table for brightness scaling. 
+
+\mbox{\Hypertarget{Robohand_8h_a10d1fb5584744ca218c65e6762c62256_a10d1fb5584744ca218c65e6762c62256}\label{Robohand_8h_a10d1fb5584744ca218c65e6762c62256_a10d1fb5584744ca218c65e6762c62256}} 
+\index{Robohand.h@{Robohand.h}!SERVO\_PINS@{SERVO\_PINS}}
+\index{SERVO\_PINS@{SERVO\_PINS}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{SERVO\_PINS}{SERVO\_PINS}}
+{\footnotesize\ttfamily const uint SERVO\+\_\+\+PINS\mbox{[}\mbox{\hyperlink{Robohand_8h_a4ad670f00edea29150a5303b470c5385_a4ad670f00edea29150a5303b470c5385}{NUM\+\_\+\+SERVOS}}\mbox{]}\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Servo control pins. 
+
+Servo control pins. \mbox{\Hypertarget{Robohand_8h_adb94a381a8d01ef3cdb4dbb672b1a19f_adb94a381a8d01ef3cdb4dbb672b1a19f}\label{Robohand_8h_adb94a381a8d01ef3cdb4dbb672b1a19f_adb94a381a8d01ef3cdb4dbb672b1a19f}} 
+\index{Robohand.h@{Robohand.h}!servo\_profiles@{servo\_profiles}}
+\index{servo\_profiles@{servo\_profiles}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{servo\_profiles}{servo\_profiles}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structservo__motion__profile}{servo\+\_\+motion\+\_\+profile}} servo\+\_\+profiles\mbox{[}\mbox{\hyperlink{Robohand_8h_a4ad670f00edea29150a5303b470c5385_a4ad670f00edea29150a5303b470c5385}{NUM\+\_\+\+SERVOS}}\mbox{]}\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Data structure array for holding servo profiles. 
+
+\mbox{\Hypertarget{Robohand_8h_a4f603fe07a300e25158c4ee749247e9b_a4f603fe07a300e25158c4ee749247e9b}\label{Robohand_8h_a4f603fe07a300e25158c4ee749247e9b_a4f603fe07a300e25158c4ee749247e9b}} 
+\index{Robohand.h@{Robohand.h}!sys\_status@{sys\_status}}
+\index{sys\_status@{sys\_status}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{sys\_status}{sys\_status}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structsystem__status}{system\+\_\+status}} sys\+\_\+status\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+System status data structure instance. 
+
+System status data structure instance. \mbox{\Hypertarget{Robohand_8h_a756eb5d7f77a0a56516b9a41828801ec_a756eb5d7f77a0a56516b9a41828801ec}\label{Robohand_8h_a756eb5d7f77a0a56516b9a41828801ec_a756eb5d7f77a0a56516b9a41828801ec}} 
+\index{Robohand.h@{Robohand.h}!VOLTAGE\_DIVIDER\_RATIO@{VOLTAGE\_DIVIDER\_RATIO}}
+\index{VOLTAGE\_DIVIDER\_RATIO@{VOLTAGE\_DIVIDER\_RATIO}!Robohand.h@{Robohand.h}}
+\doxysubsubsection{\texorpdfstring{VOLTAGE\_DIVIDER\_RATIO}{VOLTAGE\_DIVIDER\_RATIO}}
+{\footnotesize\ttfamily const float VOLTAGE\+\_\+\+DIVIDER\+\_\+\+RATIO\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Voltage divider ratio (1\+:1) 
+
+Voltage divider ratio (1\+:1) 

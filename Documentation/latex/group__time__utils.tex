@@ -1,0 +1,61 @@
+\hypertarget{group__time__utils}{}\doxysection{Time Compatibility Layer}
+\label{group__time__utils}\index{Time Compatibility Layer@{Time Compatibility Layer}}
+
+
+POSIX time functions for micro-\/\+ROS compatibility.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{group__time__utils_ga6fa4fcf1ad1f2f62773a03323f08592e_ga6fa4fcf1ad1f2f62773a03323f08592e}{clock\+\_\+gettime}} (clockid\+\_\+t clk\+\_\+id, struct timespec $\ast$tp)
+\begin{DoxyCompactList}\small\item\em Provides POSIX-\/compatible clock implementation. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__time__utils_ga5df1456e1b3afb7af60ea51a799b2365_ga5df1456e1b3afb7af60ea51a799b2365}{usleep}} (uint64\+\_\+t us)
+\begin{DoxyCompactList}\small\item\em Provides POSIX-\/compatible sleep implementation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+POSIX time functions for micro-\/\+ROS compatibility. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group__time__utils_ga6fa4fcf1ad1f2f62773a03323f08592e_ga6fa4fcf1ad1f2f62773a03323f08592e}\label{group__time__utils_ga6fa4fcf1ad1f2f62773a03323f08592e_ga6fa4fcf1ad1f2f62773a03323f08592e}} 
+\index{Time Compatibility Layer@{Time Compatibility Layer}!clock\_gettime@{clock\_gettime}}
+\index{clock\_gettime@{clock\_gettime}!Time Compatibility Layer@{Time Compatibility Layer}}
+\doxysubsubsection{\texorpdfstring{clock\_gettime()}{clock\_gettime()}}
+{\footnotesize\ttfamily int clock\+\_\+gettime (\begin{DoxyParamCaption}\item[{clockid\+\_\+t}]{clk\+\_\+id,  }\item[{struct timespec $\ast$}]{tp }\end{DoxyParamCaption})}
+
+
+
+Provides POSIX-\/compatible clock implementation. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em clk\+\_\+id} & Clock identifier (unused). \\
+\hline
+\mbox{\texttt{ out}}  & {\em tp} & Timespec structure to populate. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Always returns 0 (success). 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Uses Pico\textquotesingle{}s time\+\_\+us\+\_\+64() for timing.
+\end{DoxyNote}
+Provides POSIX-\/compatible clock implementation. \mbox{\Hypertarget{group__time__utils_ga5df1456e1b3afb7af60ea51a799b2365_ga5df1456e1b3afb7af60ea51a799b2365}\label{group__time__utils_ga5df1456e1b3afb7af60ea51a799b2365_ga5df1456e1b3afb7af60ea51a799b2365}} 
+\index{Time Compatibility Layer@{Time Compatibility Layer}!usleep@{usleep}}
+\index{usleep@{usleep}!Time Compatibility Layer@{Time Compatibility Layer}}
+\doxysubsubsection{\texorpdfstring{usleep()}{usleep()}}
+{\footnotesize\ttfamily void usleep (\begin{DoxyParamCaption}\item[{uint64\+\_\+t}]{us }\end{DoxyParamCaption})}
+
+
+
+Provides POSIX-\/compatible sleep implementation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em us} & Microsecond count to sleep.\\
+\hline
+\end{DoxyParams}
+Provides POSIX-\/compatible sleep implementation. 

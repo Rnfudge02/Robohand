@@ -1,0 +1,126 @@
+\hypertarget{structservo__motion__profile}{}\doxysection{servo\+\_\+motion\+\_\+profile Struct Reference}
+\label{structservo__motion__profile}\index{servo\_motion\_profile@{servo\_motion\_profile}}
+
+
+Servo motion profile structure.  
+
+
+
+
+{\ttfamily \#include $<$Robohand.\+h$>$}
+
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{structservo__motion__profile_a00d38447b0c07114c800d19899b00a7d_a00d38447b0c07114c800d19899b00a7d}{pin}}
+\begin{DoxyCompactList}\small\item\em Pin to use for PWM modulation. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{structservo__motion__profile_a09f13619c35d0ed23899dcd301657b07_a09f13619c35d0ed23899dcd301657b07}{is\+\_\+moving}}
+\begin{DoxyCompactList}\small\item\em Movement status flag. \end{DoxyCompactList}\item 
+uint16\+\_\+t \mbox{\hyperlink{structservo__motion__profile_a59f56758b103de9ceddc0c5dadb353df_a59f56758b103de9ceddc0c5dadb353df}{current\+\_\+pw}}
+\begin{DoxyCompactList}\small\item\em Current pulse width (µs) \end{DoxyCompactList}\item 
+uint16\+\_\+t \mbox{\hyperlink{structservo__motion__profile_a958ac3e4d4365c5f27843c77613bedb8_a958ac3e4d4365c5f27843c77613bedb8}{target\+\_\+pw}}
+\begin{DoxyCompactList}\small\item\em Target pulse width (µs) \end{DoxyCompactList}\item 
+uint16\+\_\+t \mbox{\hyperlink{structservo__motion__profile_a744080788ecfade3f13616be4e983ef4_a744080788ecfade3f13616be4e983ef4}{duration\+\_\+ms}}
+\begin{DoxyCompactList}\small\item\em Total movement duration (ms) \end{DoxyCompactList}\item 
+uint32\+\_\+t \mbox{\hyperlink{structservo__motion__profile_a40aa852d616ef54d5199c03e9f9be216_a40aa852d616ef54d5199c03e9f9be216}{start\+\_\+time}}
+\begin{DoxyCompactList}\small\item\em Movement start timestamp (µs) \end{DoxyCompactList}\item 
+mutex\+\_\+t \mbox{\hyperlink{structservo__motion__profile_a3c11b535263f8e303c927f064daef92e_a3c11b535263f8e303c927f064daef92e}{profile\+\_\+mutex}}
+\begin{DoxyCompactList}\small\item\em Mutex for safe access. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{structservo__motion__profile_a5aaed2a8ffe0dd72103566958f9e6968_a5aaed2a8ffe0dd72103566958f9e6968}{\+\_\+\+\_\+p11}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Mutex is struct containing io\+\_\+rw\+\_\+32 and bool, maintain 32-\/bit alignment. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Servo motion profile structure. 
+
+Stores parameters for smooth servo movement using trapezoidal profiles. \begin{DoxyNote}{Note}
+Maintains explicit 
+\end{DoxyNote}
+
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{structservo__motion__profile_a5aaed2a8ffe0dd72103566958f9e6968_a5aaed2a8ffe0dd72103566958f9e6968}\label{structservo__motion__profile_a5aaed2a8ffe0dd72103566958f9e6968_a5aaed2a8ffe0dd72103566958f9e6968}} 
+\index{servo\_motion\_profile@{servo\_motion\_profile}!\_\_p11@{\_\_p11}}
+\index{\_\_p11@{\_\_p11}!servo\_motion\_profile@{servo\_motion\_profile}}
+\doxysubsubsection{\texorpdfstring{\_\_p11}{\_\_p11}}
+{\footnotesize\ttfamily uint8\+\_\+t servo\+\_\+motion\+\_\+profile\+::\+\_\+\+\_\+p11\mbox{[}3\mbox{]}}
+
+
+
+Mutex is struct containing io\+\_\+rw\+\_\+32 and bool, maintain 32-\/bit alignment. 
+
+\mbox{\Hypertarget{structservo__motion__profile_a59f56758b103de9ceddc0c5dadb353df_a59f56758b103de9ceddc0c5dadb353df}\label{structservo__motion__profile_a59f56758b103de9ceddc0c5dadb353df_a59f56758b103de9ceddc0c5dadb353df}} 
+\index{servo\_motion\_profile@{servo\_motion\_profile}!current\_pw@{current\_pw}}
+\index{current\_pw@{current\_pw}!servo\_motion\_profile@{servo\_motion\_profile}}
+\doxysubsubsection{\texorpdfstring{current\_pw}{current\_pw}}
+{\footnotesize\ttfamily uint16\+\_\+t servo\+\_\+motion\+\_\+profile\+::current\+\_\+pw}
+
+
+
+Current pulse width (µs) 
+
+\mbox{\Hypertarget{structservo__motion__profile_a744080788ecfade3f13616be4e983ef4_a744080788ecfade3f13616be4e983ef4}\label{structservo__motion__profile_a744080788ecfade3f13616be4e983ef4_a744080788ecfade3f13616be4e983ef4}} 
+\index{servo\_motion\_profile@{servo\_motion\_profile}!duration\_ms@{duration\_ms}}
+\index{duration\_ms@{duration\_ms}!servo\_motion\_profile@{servo\_motion\_profile}}
+\doxysubsubsection{\texorpdfstring{duration\_ms}{duration\_ms}}
+{\footnotesize\ttfamily uint16\+\_\+t servo\+\_\+motion\+\_\+profile\+::duration\+\_\+ms}
+
+
+
+Total movement duration (ms) 
+
+\mbox{\Hypertarget{structservo__motion__profile_a09f13619c35d0ed23899dcd301657b07_a09f13619c35d0ed23899dcd301657b07}\label{structservo__motion__profile_a09f13619c35d0ed23899dcd301657b07_a09f13619c35d0ed23899dcd301657b07}} 
+\index{servo\_motion\_profile@{servo\_motion\_profile}!is\_moving@{is\_moving}}
+\index{is\_moving@{is\_moving}!servo\_motion\_profile@{servo\_motion\_profile}}
+\doxysubsubsection{\texorpdfstring{is\_moving}{is\_moving}}
+{\footnotesize\ttfamily bool servo\+\_\+motion\+\_\+profile\+::is\+\_\+moving}
+
+
+
+Movement status flag. 
+
+\mbox{\Hypertarget{structservo__motion__profile_a00d38447b0c07114c800d19899b00a7d_a00d38447b0c07114c800d19899b00a7d}\label{structservo__motion__profile_a00d38447b0c07114c800d19899b00a7d_a00d38447b0c07114c800d19899b00a7d}} 
+\index{servo\_motion\_profile@{servo\_motion\_profile}!pin@{pin}}
+\index{pin@{pin}!servo\_motion\_profile@{servo\_motion\_profile}}
+\doxysubsubsection{\texorpdfstring{pin}{pin}}
+{\footnotesize\ttfamily uint8\+\_\+t servo\+\_\+motion\+\_\+profile\+::pin}
+
+
+
+Pin to use for PWM modulation. 
+
+\mbox{\Hypertarget{structservo__motion__profile_a3c11b535263f8e303c927f064daef92e_a3c11b535263f8e303c927f064daef92e}\label{structservo__motion__profile_a3c11b535263f8e303c927f064daef92e_a3c11b535263f8e303c927f064daef92e}} 
+\index{servo\_motion\_profile@{servo\_motion\_profile}!profile\_mutex@{profile\_mutex}}
+\index{profile\_mutex@{profile\_mutex}!servo\_motion\_profile@{servo\_motion\_profile}}
+\doxysubsubsection{\texorpdfstring{profile\_mutex}{profile\_mutex}}
+{\footnotesize\ttfamily mutex\+\_\+t servo\+\_\+motion\+\_\+profile\+::profile\+\_\+mutex}
+
+
+
+Mutex for safe access. 
+
+\mbox{\Hypertarget{structservo__motion__profile_a40aa852d616ef54d5199c03e9f9be216_a40aa852d616ef54d5199c03e9f9be216}\label{structservo__motion__profile_a40aa852d616ef54d5199c03e9f9be216_a40aa852d616ef54d5199c03e9f9be216}} 
+\index{servo\_motion\_profile@{servo\_motion\_profile}!start\_time@{start\_time}}
+\index{start\_time@{start\_time}!servo\_motion\_profile@{servo\_motion\_profile}}
+\doxysubsubsection{\texorpdfstring{start\_time}{start\_time}}
+{\footnotesize\ttfamily uint32\+\_\+t servo\+\_\+motion\+\_\+profile\+::start\+\_\+time}
+
+
+
+Movement start timestamp (µs) 
+
+\mbox{\Hypertarget{structservo__motion__profile_a958ac3e4d4365c5f27843c77613bedb8_a958ac3e4d4365c5f27843c77613bedb8}\label{structservo__motion__profile_a958ac3e4d4365c5f27843c77613bedb8_a958ac3e4d4365c5f27843c77613bedb8}} 
+\index{servo\_motion\_profile@{servo\_motion\_profile}!target\_pw@{target\_pw}}
+\index{target\_pw@{target\_pw}!servo\_motion\_profile@{servo\_motion\_profile}}
+\doxysubsubsection{\texorpdfstring{target\_pw}{target\_pw}}
+{\footnotesize\ttfamily uint16\+\_\+t servo\+\_\+motion\+\_\+profile\+::target\+\_\+pw}
+
+
+
+Target pulse width (µs) 
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Include/\mbox{\hyperlink{Robohand_8h}{Robohand.\+h}}\end{DoxyCompactItemize}

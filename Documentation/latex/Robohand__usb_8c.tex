@@ -1,0 +1,104 @@
+\hypertarget{Robohand__usb_8c}{}\doxysection{Src/\+Robohand\+\_\+usb.c File Reference}
+\label{Robohand__usb_8c}\index{Src/Robohand\_usb.c@{Src/Robohand\_usb.c}}
+
+
+USB interface for robotic hand control.  
+
+
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$stdatomic.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Robohand.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}pico/stdlib.\+h\char`\"{}}\newline
+Include dependency graph for Robohand\+\_\+usb.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{Robohand__usb_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{Robohand__usb_8c_a92a69f8a6dcf9ad9ae6cb7628fc3b855_a92a69f8a6dcf9ad9ae6cb7628fc3b855}{STATUS\+\_\+\+UPDATE\+\_\+\+MS}}~1000
+\begin{DoxyCompactList}\small\item\em Millisecond timer for status retrieval, soon to be deprecated. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{Robohand__usb_8c_a8a0465f8e8bbe71e4d6e8011e975bf75_a8a0465f8e8bbe71e4d6e8011e975bf75}{CMD\+\_\+\+BUFFER\+\_\+\+SIZE}}~64
+\begin{DoxyCompactList}\small\item\em Size of the command buffer, exceeding this will cause overflow. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{Robohand__usb_8c_a2e60e97e7ff6e8dd49afadecc274b938_a2e60e97e7ff6e8dd49afadecc274b938}{process\+\_\+command}} (const char $\ast$cmd)
+\begin{DoxyCompactList}\small\item\em Handles commands over USB. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{Robohand__usb_8c_a840291bc02cba5474a4cb46a9b9566fe_a840291bc02cba5474a4cb46a9b9566fe}{main}} (void)
+\begin{DoxyCompactList}\small\item\em Core 0 main loop routine -\/ USB Variation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+USB interface for robotic hand control. 
+
+\begin{DoxyAuthor}{Author}
+Robert Fudge \href{mailto:rnfudge@mun.ca}{\texttt{ rnfudge@mun.\+ca}} 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2025 
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Apache 2.\+0 License 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{Robohand__usb_8c_a8a0465f8e8bbe71e4d6e8011e975bf75_a8a0465f8e8bbe71e4d6e8011e975bf75}\label{Robohand__usb_8c_a8a0465f8e8bbe71e4d6e8011e975bf75_a8a0465f8e8bbe71e4d6e8011e975bf75}} 
+\index{Robohand\_usb.c@{Robohand\_usb.c}!CMD\_BUFFER\_SIZE@{CMD\_BUFFER\_SIZE}}
+\index{CMD\_BUFFER\_SIZE@{CMD\_BUFFER\_SIZE}!Robohand\_usb.c@{Robohand\_usb.c}}
+\doxysubsubsection{\texorpdfstring{CMD\_BUFFER\_SIZE}{CMD\_BUFFER\_SIZE}}
+{\footnotesize\ttfamily \#define CMD\+\_\+\+BUFFER\+\_\+\+SIZE~64}
+
+
+
+Size of the command buffer, exceeding this will cause overflow. 
+
+\mbox{\Hypertarget{Robohand__usb_8c_a92a69f8a6dcf9ad9ae6cb7628fc3b855_a92a69f8a6dcf9ad9ae6cb7628fc3b855}\label{Robohand__usb_8c_a92a69f8a6dcf9ad9ae6cb7628fc3b855_a92a69f8a6dcf9ad9ae6cb7628fc3b855}} 
+\index{Robohand\_usb.c@{Robohand\_usb.c}!STATUS\_UPDATE\_MS@{STATUS\_UPDATE\_MS}}
+\index{STATUS\_UPDATE\_MS@{STATUS\_UPDATE\_MS}!Robohand\_usb.c@{Robohand\_usb.c}}
+\doxysubsubsection{\texorpdfstring{STATUS\_UPDATE\_MS}{STATUS\_UPDATE\_MS}}
+{\footnotesize\ttfamily \#define STATUS\+\_\+\+UPDATE\+\_\+\+MS~1000}
+
+
+
+Millisecond timer for status retrieval, soon to be deprecated. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{Robohand__usb_8c_a840291bc02cba5474a4cb46a9b9566fe_a840291bc02cba5474a4cb46a9b9566fe}\label{Robohand__usb_8c_a840291bc02cba5474a4cb46a9b9566fe_a840291bc02cba5474a4cb46a9b9566fe}} 
+\index{Robohand\_usb.c@{Robohand\_usb.c}!main@{main}}
+\index{main@{main}!Robohand\_usb.c@{Robohand\_usb.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Core 0 main loop routine -\/ USB Variation. 
+
+\mbox{\Hypertarget{Robohand__usb_8c_a2e60e97e7ff6e8dd49afadecc274b938_a2e60e97e7ff6e8dd49afadecc274b938}\label{Robohand__usb_8c_a2e60e97e7ff6e8dd49afadecc274b938_a2e60e97e7ff6e8dd49afadecc274b938}} 
+\index{Robohand\_usb.c@{Robohand\_usb.c}!process\_command@{process\_command}}
+\index{process\_command@{process\_command}!Robohand\_usb.c@{Robohand\_usb.c}}
+\doxysubsubsection{\texorpdfstring{process\_command()}{process\_command()}}
+{\footnotesize\ttfamily void process\+\_\+command (\begin{DoxyParamCaption}\item[{const char $\ast$}]{cmd }\end{DoxyParamCaption})}
+
+
+
+Handles commands over USB. 
+
+Command processing function.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cmd} & Pointer to command array for reading. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyPrecond}{Precondition}
+The cmd array should be null-\/terminated. 
+\end{DoxyPrecond}

@@ -1,0 +1,6 @@
+var searchData=
+[
+  ['clock_5fgettime_226',['clock_gettime',['../group__time__utils_ga6fa4fcf1ad1f2f62773a03323f08592e.html#ga6fa4fcf1ad1f2f62773a03323f08592e',1,'clock_gettime(clockid_t clk_id, struct timespec *tp):&#160;Robohand_uros.c'],['../group__time__utils_ga6fa4fcf1ad1f2f62773a03323f08592e.html#ga6fa4fcf1ad1f2f62773a03323f08592e',1,'clock_gettime(clockid_t clk_id, struct timespec *tp):&#160;Robohand_uros.c']]],
+  ['convert_5fsensor_5fdata_227',['convert_sensor_data',['../group__user__facing_ga256c6af47832d1d3cd38d8633bc91d79.html#ga256c6af47832d1d3cd38d8633bc91d79',1,'convert_sensor_data(const sensor_data *raw, sensor_data_physical *converted):&#160;Robohand.c'],['../group__user__facing_ga256c6af47832d1d3cd38d8633bc91d79.html#ga256c6af47832d1d3cd38d8633bc91d79',1,'convert_sensor_data(const sensor_data *raw, sensor_data_physical *converted):&#160;Robohand.c']]],
+  ['core1_5fentry_228',['core1_entry',['../group__user__facing_ga677531d0ec7a1f4b9b9d8ebb4b3d4521.html#ga677531d0ec7a1f4b9b9d8ebb4b3d4521',1,'core1_entry(void):&#160;Robohand.c'],['../group__user__facing_ga677531d0ec7a1f4b9b9d8ebb4b3d4521.html#ga677531d0ec7a1f4b9b9d8ebb4b3d4521',1,'core1_entry(void):&#160;Robohand.c']]]
+];

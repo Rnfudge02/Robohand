@@ -1,0 +1,372 @@
+\hypertarget{Robohand__uros_8c}{}\doxysection{Src/\+Robohand\+\_\+uros.c File Reference}
+\label{Robohand__uros_8c}\index{Src/Robohand\_uros.c@{Src/Robohand\_uros.c}}
+
+
+micro-\/\+ROS interface for robotic hand control.  
+
+
+{\ttfamily \#include \char`\"{}Robohand.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Robohand\+\_\+uros.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$rcl/rcl.\+h$>$}\newline
+{\ttfamily \#include $<$rclc/rclc.\+h$>$}\newline
+{\ttfamily \#include $<$std\+\_\+msgs/msg/int32\+\_\+multi\+\_\+array.\+h$>$}\newline
+{\ttfamily \#include $<$std\+\_\+msgs/msg/float32\+\_\+multi\+\_\+array.\+h$>$}\newline
+{\ttfamily \#include $<$std\+\_\+msgs/msg/color\+\_\+rgba.\+h$>$}\newline
+{\ttfamily \#include $<$sensor\+\_\+msgs/msg/imu.\+h$>$}\newline
+{\ttfamily \#include $<$sensor\+\_\+msgs/msg/magnetic\+\_\+field.\+h$>$}\newline
+{\ttfamily \#include $<$uxr/client/profile/transport/custom/custom\+\_\+transport.\+h$>$}\newline
+Include dependency graph for Robohand\+\_\+uros.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{Robohand__uros_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \mbox{\hyperlink{Robohand__uros_8c_ad1ea17680c29e8fa01d7220611cbcabc_ad1ea17680c29e8fa01d7220611cbcabc}{rgb\+\_\+callback}} (const void $\ast$)
+\begin{DoxyCompactList}\small\item\em Copy of global debug macro. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__time__utils_ga6fa4fcf1ad1f2f62773a03323f08592e_ga6fa4fcf1ad1f2f62773a03323f08592e}{clock\+\_\+gettime}} (clockid\+\_\+t clk\+\_\+id, struct timespec $\ast$tp)
+\begin{DoxyCompactList}\small\item\em Time retrieval function for compatibility between uros and pi pico. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__time__utils_ga5df1456e1b3afb7af60ea51a799b2365_ga5df1456e1b3afb7af60ea51a799b2365}{usleep}} (uint64\+\_\+t us)
+\begin{DoxyCompactList}\small\item\em Function for microsecond sleep compatibility. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__transport__functions_ga54218b67473dd83430389027baa4810a_ga54218b67473dd83430389027baa4810a}{pico\+\_\+serial\+\_\+transport\+\_\+close}} (struct uxr\+Custom\+Transport $\ast$transport)
+\begin{DoxyCompactList}\small\item\em Function for closing the desired serial interface. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__transport__functions_ga940f86650426a565a5e9a1aad68fd61c_ga940f86650426a565a5e9a1aad68fd61c}{pico\+\_\+serial\+\_\+transport\+\_\+open}} (struct uxr\+Custom\+Transport $\ast$transport)
+\begin{DoxyCompactList}\small\item\em Function for opening the desired serial interface. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{group__transport__functions_gae687daa22c00f9798accef62354419f0_gae687daa22c00f9798accef62354419f0}{pico\+\_\+serial\+\_\+transport\+\_\+read}} (struct uxr\+Custom\+Transport $\ast$transport, uint8\+\_\+t $\ast$buf, size\+\_\+t len, int timeout, uint8\+\_\+t $\ast$errcode)
+\begin{DoxyCompactList}\small\item\em Function for reading from the desired serial interface. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{group__transport__functions_ga1c2aa907fb1db45b54c88f68bd75c58f_ga1c2aa907fb1db45b54c88f68bd75c58f}{pico\+\_\+serial\+\_\+transport\+\_\+write}} (struct uxr\+Custom\+Transport $\ast$transport, const uint8\+\_\+t $\ast$buf, size\+\_\+t len, uint8\+\_\+t $\ast$errcode)
+\begin{DoxyCompactList}\small\item\em Function for writing to the desired serial interface. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__ros__interface_ga27bbb1de4a2b8f5c34ad2c2453445b53_ga27bbb1de4a2b8f5c34ad2c2453445b53}{servo\+\_\+callback}} (const void $\ast$msg\+\_\+in)
+\begin{DoxyCompactList}\small\item\em Function for actuating servos. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__ros__interface_gad3c5aead99c558bb4b03da37d4820a4d_gad3c5aead99c558bb4b03da37d4820a4d}{sensor\+\_\+timer\+\_\+callback}} (rcl\+\_\+timer\+\_\+t $\ast$timer, int64\+\_\+t last\+\_\+call\+\_\+time)
+\begin{DoxyCompactList}\small\item\em Function for checking the sensor values, and updating the ROS2 messages. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{Robohand__uros_8c_ae66f6b31b5ad750f1fe042a706a4e3d4_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}} ()
+\begin{DoxyCompactList}\small\item\em Core 0 main loop routine -\/ Micro\+ROS Variation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+static rclc\+\_\+executor\+\_\+t \mbox{\hyperlink{Robohand__uros_8c_a864bc8f364fa8dd00b7265f7fd39ce84_a864bc8f364fa8dd00b7265f7fd39ce84}{executor}}
+\item 
+static rclc\+\_\+support\+\_\+t \mbox{\hyperlink{Robohand__uros_8c_ad7ca784e9d6a36f1a990ccef47340149_ad7ca784e9d6a36f1a990ccef47340149}{support}}
+\begin{DoxyCompactList}\small\item\em Micro-\/\+ROS Executor container. \end{DoxyCompactList}\item 
+static rcl\+\_\+allocator\+\_\+t \mbox{\hyperlink{Robohand__uros_8c_acc1518bac7ff8bf75ac11589055d7578_acc1518bac7ff8bf75ac11589055d7578}{allocator}}
+\begin{DoxyCompactList}\small\item\em Micro-\/\+ROS Support container. \end{DoxyCompactList}\item 
+static rcl\+\_\+node\+\_\+t \mbox{\hyperlink{Robohand__uros_8c_ab69e3b0b5d335275c7e2da94c0886b1c_ab69e3b0b5d335275c7e2da94c0886b1c}{node}}
+\begin{DoxyCompactList}\small\item\em Micro-\/\+ROS Allocator container. \end{DoxyCompactList}\item 
+static rcl\+\_\+publisher\+\_\+t \mbox{\hyperlink{Robohand__uros_8c_a688250369d3950df5c7d6c796be79023_a688250369d3950df5c7d6c796be79023}{sensor\+\_\+pub}}
+\begin{DoxyCompactList}\small\item\em Micro-\/\+ROS Node container. \end{DoxyCompactList}\item 
+static rcl\+\_\+subscription\+\_\+t \mbox{\hyperlink{Robohand__uros_8c_a832c81074b10d9c590a0ac104a82cd7a_a832c81074b10d9c590a0ac104a82cd7a}{servo\+\_\+sub}}
+\begin{DoxyCompactList}\small\item\em Sensor publishing component -\/ Provides access to sensor data. \end{DoxyCompactList}\item 
+static rcl\+\_\+timer\+\_\+t \mbox{\hyperlink{Robohand__uros_8c_a611c38608d84596473705074bd90ba6c_a611c38608d84596473705074bd90ba6c}{sensor\+\_\+timer}}
+\begin{DoxyCompactList}\small\item\em Servo subcriber component -\/ Allows for servo actuation from host device. \end{DoxyCompactList}\item 
+static rcl\+\_\+publisher\+\_\+t \mbox{\hyperlink{Robohand__uros_8c_a2e4513ba3b982722736be1889946661c_a2e4513ba3b982722736be1889946661c}{imu\+\_\+pub}}
+\begin{DoxyCompactList}\small\item\em Sensor timer component -\/ How often should publishing happen for sensor data. \end{DoxyCompactList}\item 
+static rcl\+\_\+publisher\+\_\+t \mbox{\hyperlink{Robohand__uros_8c_aeec59bf76380ea4bfc3bec2a8de6e0fe_aeec59bf76380ea4bfc3bec2a8de6e0fe}{mag\+\_\+pub}}
+\begin{DoxyCompactList}\small\item\em IMU publishing component -\/ Publishes data from the MPU6050. \end{DoxyCompactList}\item 
+static rcl\+\_\+publisher\+\_\+t \mbox{\hyperlink{Robohand__uros_8c_ae97578294363deb77265e6cfc845b0c7_ae97578294363deb77265e6cfc845b0c7}{adc\+\_\+pub}}
+\begin{DoxyCompactList}\small\item\em Magnometer publishing component -\/ Publishes data from the HMC5883L. \end{DoxyCompactList}\item 
+static rcl\+\_\+subscription\+\_\+t \mbox{\hyperlink{Robohand__uros_8c_a5b6b26f8a8315b7383fa803467e0bdb0_a5b6b26f8a8315b7383fa803467e0bdb0}{rgb\+\_\+sub}}
+\begin{DoxyCompactList}\small\item\em Ananlog-\/\+Digital Converter publishing component -\/ Allows user to access voltages at ADC inputs. \end{DoxyCompactList}\item 
+static std\+\_\+msgs\+\_\+\+\_\+msg\+\_\+\+\_\+\+Int32\+Multi\+Array \mbox{\hyperlink{Robohand__uros_8c_a5d2746fa1271a131cbba535280b983f4_a5d2746fa1271a131cbba535280b983f4}{servo\+\_\+cmd\+\_\+msg}}
+\begin{DoxyCompactList}\small\item\em RGB Subscriber component -\/ Provides access to RGB LED configuration. \end{DoxyCompactList}\item 
+static std\+\_\+msgs\+\_\+\+\_\+msg\+\_\+\+\_\+\+Float32\+Multi\+Array \mbox{\hyperlink{Robohand__uros_8c_a210ed10634103fd798469e8bbf35a5ce_a210ed10634103fd798469e8bbf35a5ce}{sensor\+\_\+msg}}
+\begin{DoxyCompactList}\small\item\em Servo command message \mbox{[}SERVO POSITION TIME\mbox{]}. \end{DoxyCompactList}\item 
+static sensor\+\_\+msgs\+\_\+\+\_\+msg\+\_\+\+\_\+\+Imu \mbox{\hyperlink{Robohand__uros_8c_ab3301e0bbafd1e938b14b10ad07c24e6_ab3301e0bbafd1e938b14b10ad07c24e6}{imu\+\_\+msg}}
+\begin{DoxyCompactList}\small\item\em Sensor message, unsure of why I made this again. \end{DoxyCompactList}\item 
+static sensor\+\_\+msgs\+\_\+\+\_\+msg\+\_\+\+\_\+\+Magnetic\+Field \mbox{\hyperlink{Robohand__uros_8c_a62d43db4e1ff7979f024a574cb969408_a62d43db4e1ff7979f024a574cb969408}{mag\+\_\+msg}}
+\begin{DoxyCompactList}\small\item\em IMU message, contains Linear Acceleration and Orientation. \end{DoxyCompactList}\item 
+static std\+\_\+msgs\+\_\+\+\_\+msg\+\_\+\+\_\+\+Float32\+Multi\+Array \mbox{\hyperlink{Robohand__uros_8c_a49e1920e298c3899c9309531929daace_a49e1920e298c3899c9309531929daace}{adc\+\_\+msg}}
+\begin{DoxyCompactList}\small\item\em Magnetic Field message, contains field in microtesla. \end{DoxyCompactList}\item 
+static uint8\+\_\+t \mbox{\hyperlink{Robohand__uros_8c_a52c99903aeb24336693ca32035cc2ae6_a52c99903aeb24336693ca32035cc2ae6}{debug}} = \mbox{\hyperlink{Robohand_8h_ad72dbcf6d0153db1b8d8a58001feed83_ad72dbcf6d0153db1b8d8a58001feed83}{DEBUG}}
+\begin{DoxyCompactList}\small\item\em ADC message, contains the ADC readings in volts. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+micro-\/\+ROS interface for robotic hand control. 
+
+\begin{DoxyAuthor}{Author}
+Robert Fudge 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2025 
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Apache 2.\+0 License 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group__time__utils_ga6fa4fcf1ad1f2f62773a03323f08592e_ga6fa4fcf1ad1f2f62773a03323f08592e}\label{group__time__utils_ga6fa4fcf1ad1f2f62773a03323f08592e_ga6fa4fcf1ad1f2f62773a03323f08592e}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!clock\_gettime@{clock\_gettime}}
+\index{clock\_gettime@{clock\_gettime}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{clock\_gettime()}{clock\_gettime()}}
+{\footnotesize\ttfamily int clock\+\_\+gettime (\begin{DoxyParamCaption}\item[{clockid\+\_\+t}]{clk\+\_\+id,  }\item[{struct timespec $\ast$}]{tp }\end{DoxyParamCaption})}
+
+
+
+Time retrieval function for compatibility between uros and pi pico. 
+
+Provides POSIX-\/compatible clock implementation. \mbox{\Hypertarget{Robohand__uros_8c_ae66f6b31b5ad750f1fe042a706a4e3d4_ae66f6b31b5ad750f1fe042a706a4e3d4}\label{Robohand__uros_8c_ae66f6b31b5ad750f1fe042a706a4e3d4_ae66f6b31b5ad750f1fe042a706a4e3d4}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!main@{main}}
+\index{main@{main}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Core 0 main loop routine -\/ Micro\+ROS Variation. 
+
+\begin{DoxyRefDesc}{Todo}
+\item[\mbox{\hyperlink{todo__todo000004}{Todo}}]Code does not make it past here currently, why? \end{DoxyRefDesc}
+\mbox{\Hypertarget{group__transport__functions_ga54218b67473dd83430389027baa4810a_ga54218b67473dd83430389027baa4810a}\label{group__transport__functions_ga54218b67473dd83430389027baa4810a_ga54218b67473dd83430389027baa4810a}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!pico\_serial\_transport\_close@{pico\_serial\_transport\_close}}
+\index{pico\_serial\_transport\_close@{pico\_serial\_transport\_close}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{pico\_serial\_transport\_close()}{pico\_serial\_transport\_close()}}
+{\footnotesize\ttfamily bool pico\+\_\+serial\+\_\+transport\+\_\+close (\begin{DoxyParamCaption}\item[{struct uxr\+Custom\+Transport $\ast$}]{transport }\end{DoxyParamCaption})}
+
+
+
+Function for closing the desired serial interface. 
+
+Closes custom serial transport. \mbox{\Hypertarget{group__transport__functions_ga940f86650426a565a5e9a1aad68fd61c_ga940f86650426a565a5e9a1aad68fd61c}\label{group__transport__functions_ga940f86650426a565a5e9a1aad68fd61c_ga940f86650426a565a5e9a1aad68fd61c}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!pico\_serial\_transport\_open@{pico\_serial\_transport\_open}}
+\index{pico\_serial\_transport\_open@{pico\_serial\_transport\_open}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{pico\_serial\_transport\_open()}{pico\_serial\_transport\_open()}}
+{\footnotesize\ttfamily bool pico\+\_\+serial\+\_\+transport\+\_\+open (\begin{DoxyParamCaption}\item[{struct uxr\+Custom\+Transport $\ast$}]{transport }\end{DoxyParamCaption})}
+
+
+
+Function for opening the desired serial interface. 
+
+Initializes custom serial transport for micro-\/\+ROS. \mbox{\Hypertarget{group__transport__functions_gae687daa22c00f9798accef62354419f0_gae687daa22c00f9798accef62354419f0}\label{group__transport__functions_gae687daa22c00f9798accef62354419f0_gae687daa22c00f9798accef62354419f0}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!pico\_serial\_transport\_read@{pico\_serial\_transport\_read}}
+\index{pico\_serial\_transport\_read@{pico\_serial\_transport\_read}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{pico\_serial\_transport\_read()}{pico\_serial\_transport\_read()}}
+{\footnotesize\ttfamily size\+\_\+t pico\+\_\+serial\+\_\+transport\+\_\+read (\begin{DoxyParamCaption}\item[{struct uxr\+Custom\+Transport $\ast$}]{transport,  }\item[{uint8\+\_\+t $\ast$}]{buf,  }\item[{size\+\_\+t}]{len,  }\item[{int}]{timeout,  }\item[{uint8\+\_\+t $\ast$}]{errcode }\end{DoxyParamCaption})}
+
+
+
+Function for reading from the desired serial interface. 
+
+Reads data from serial transport. \mbox{\Hypertarget{group__transport__functions_ga1c2aa907fb1db45b54c88f68bd75c58f_ga1c2aa907fb1db45b54c88f68bd75c58f}\label{group__transport__functions_ga1c2aa907fb1db45b54c88f68bd75c58f_ga1c2aa907fb1db45b54c88f68bd75c58f}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!pico\_serial\_transport\_write@{pico\_serial\_transport\_write}}
+\index{pico\_serial\_transport\_write@{pico\_serial\_transport\_write}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{pico\_serial\_transport\_write()}{pico\_serial\_transport\_write()}}
+{\footnotesize\ttfamily size\+\_\+t pico\+\_\+serial\+\_\+transport\+\_\+write (\begin{DoxyParamCaption}\item[{struct uxr\+Custom\+Transport $\ast$}]{transport,  }\item[{const uint8\+\_\+t $\ast$}]{buf,  }\item[{size\+\_\+t}]{len,  }\item[{uint8\+\_\+t $\ast$}]{errcode }\end{DoxyParamCaption})}
+
+
+
+Function for writing to the desired serial interface. 
+
+Writes data through serial transport. \mbox{\Hypertarget{Robohand__uros_8c_ad1ea17680c29e8fa01d7220611cbcabc_ad1ea17680c29e8fa01d7220611cbcabc}\label{Robohand__uros_8c_ad1ea17680c29e8fa01d7220611cbcabc_ad1ea17680c29e8fa01d7220611cbcabc}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!rgb\_callback@{rgb\_callback}}
+\index{rgb\_callback@{rgb\_callback}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{rgb\_callback()}{rgb\_callback()}}
+{\footnotesize\ttfamily static void rgb\+\_\+callback (\begin{DoxyParamCaption}\item[{const void $\ast$}]{msg\+\_\+in }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Copy of global debug macro. 
+
+RGB subscription command callback. \mbox{\Hypertarget{group__ros__interface_gad3c5aead99c558bb4b03da37d4820a4d_gad3c5aead99c558bb4b03da37d4820a4d}\label{group__ros__interface_gad3c5aead99c558bb4b03da37d4820a4d_gad3c5aead99c558bb4b03da37d4820a4d}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!sensor\_timer\_callback@{sensor\_timer\_callback}}
+\index{sensor\_timer\_callback@{sensor\_timer\_callback}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{sensor\_timer\_callback()}{sensor\_timer\_callback()}}
+{\footnotesize\ttfamily void sensor\+\_\+timer\+\_\+callback (\begin{DoxyParamCaption}\item[{rcl\+\_\+timer\+\_\+t $\ast$}]{timer,  }\item[{int64\+\_\+t}]{last\+\_\+call\+\_\+time }\end{DoxyParamCaption})}
+
+
+
+Function for checking the sensor values, and updating the ROS2 messages. 
+
+Timer callback for sensor data publishing. \mbox{\Hypertarget{group__ros__interface_ga27bbb1de4a2b8f5c34ad2c2453445b53_ga27bbb1de4a2b8f5c34ad2c2453445b53}\label{group__ros__interface_ga27bbb1de4a2b8f5c34ad2c2453445b53_ga27bbb1de4a2b8f5c34ad2c2453445b53}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!servo\_callback@{servo\_callback}}
+\index{servo\_callback@{servo\_callback}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{servo\_callback()}{servo\_callback()}}
+{\footnotesize\ttfamily void servo\+\_\+callback (\begin{DoxyParamCaption}\item[{const void $\ast$}]{msg\+\_\+in }\end{DoxyParamCaption})}
+
+
+
+Function for actuating servos. 
+
+Callback for servo command messages. \mbox{\Hypertarget{group__time__utils_ga5df1456e1b3afb7af60ea51a799b2365_ga5df1456e1b3afb7af60ea51a799b2365}\label{group__time__utils_ga5df1456e1b3afb7af60ea51a799b2365_ga5df1456e1b3afb7af60ea51a799b2365}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!usleep@{usleep}}
+\index{usleep@{usleep}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{usleep()}{usleep()}}
+{\footnotesize\ttfamily void usleep (\begin{DoxyParamCaption}\item[{uint64\+\_\+t}]{us }\end{DoxyParamCaption})}
+
+
+
+Function for microsecond sleep compatibility. 
+
+Provides POSIX-\/compatible sleep implementation. 
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{Robohand__uros_8c_a49e1920e298c3899c9309531929daace_a49e1920e298c3899c9309531929daace}\label{Robohand__uros_8c_a49e1920e298c3899c9309531929daace_a49e1920e298c3899c9309531929daace}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!adc\_msg@{adc\_msg}}
+\index{adc\_msg@{adc\_msg}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{adc\_msg}{adc\_msg}}
+{\footnotesize\ttfamily std\+\_\+msgs\+\_\+\+\_\+msg\+\_\+\+\_\+\+Float32\+Multi\+Array adc\+\_\+msg\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Magnetic Field message, contains field in microtesla. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_ae97578294363deb77265e6cfc845b0c7_ae97578294363deb77265e6cfc845b0c7}\label{Robohand__uros_8c_ae97578294363deb77265e6cfc845b0c7_ae97578294363deb77265e6cfc845b0c7}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!adc\_pub@{adc\_pub}}
+\index{adc\_pub@{adc\_pub}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{adc\_pub}{adc\_pub}}
+{\footnotesize\ttfamily rcl\+\_\+publisher\+\_\+t adc\+\_\+pub\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Magnometer publishing component -\/ Publishes data from the HMC5883L. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_acc1518bac7ff8bf75ac11589055d7578_acc1518bac7ff8bf75ac11589055d7578}\label{Robohand__uros_8c_acc1518bac7ff8bf75ac11589055d7578_acc1518bac7ff8bf75ac11589055d7578}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!allocator@{allocator}}
+\index{allocator@{allocator}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{allocator}{allocator}}
+{\footnotesize\ttfamily rcl\+\_\+allocator\+\_\+t allocator\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Micro-\/\+ROS Support container. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_a52c99903aeb24336693ca32035cc2ae6_a52c99903aeb24336693ca32035cc2ae6}\label{Robohand__uros_8c_a52c99903aeb24336693ca32035cc2ae6_a52c99903aeb24336693ca32035cc2ae6}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!debug@{debug}}
+\index{debug@{debug}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{debug}{debug}}
+{\footnotesize\ttfamily uint8\+\_\+t debug = \mbox{\hyperlink{Robohand_8h_ad72dbcf6d0153db1b8d8a58001feed83_ad72dbcf6d0153db1b8d8a58001feed83}{DEBUG}}\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+ADC message, contains the ADC readings in volts. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_a864bc8f364fa8dd00b7265f7fd39ce84_a864bc8f364fa8dd00b7265f7fd39ce84}\label{Robohand__uros_8c_a864bc8f364fa8dd00b7265f7fd39ce84_a864bc8f364fa8dd00b7265f7fd39ce84}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!executor@{executor}}
+\index{executor@{executor}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{executor}{executor}}
+{\footnotesize\ttfamily rclc\+\_\+executor\+\_\+t executor\hspace{0.3cm}{\ttfamily [static]}}
+
+TODO Fix issues present within code, check for correctness. Finish converted sensor data publishing. \mbox{\Hypertarget{Robohand__uros_8c_ab3301e0bbafd1e938b14b10ad07c24e6_ab3301e0bbafd1e938b14b10ad07c24e6}\label{Robohand__uros_8c_ab3301e0bbafd1e938b14b10ad07c24e6_ab3301e0bbafd1e938b14b10ad07c24e6}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!imu\_msg@{imu\_msg}}
+\index{imu\_msg@{imu\_msg}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{imu\_msg}{imu\_msg}}
+{\footnotesize\ttfamily sensor\+\_\+msgs\+\_\+\+\_\+msg\+\_\+\+\_\+\+Imu imu\+\_\+msg\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sensor message, unsure of why I made this again. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_a2e4513ba3b982722736be1889946661c_a2e4513ba3b982722736be1889946661c}\label{Robohand__uros_8c_a2e4513ba3b982722736be1889946661c_a2e4513ba3b982722736be1889946661c}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!imu\_pub@{imu\_pub}}
+\index{imu\_pub@{imu\_pub}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{imu\_pub}{imu\_pub}}
+{\footnotesize\ttfamily rcl\+\_\+publisher\+\_\+t imu\+\_\+pub\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sensor timer component -\/ How often should publishing happen for sensor data. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_a62d43db4e1ff7979f024a574cb969408_a62d43db4e1ff7979f024a574cb969408}\label{Robohand__uros_8c_a62d43db4e1ff7979f024a574cb969408_a62d43db4e1ff7979f024a574cb969408}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!mag\_msg@{mag\_msg}}
+\index{mag\_msg@{mag\_msg}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{mag\_msg}{mag\_msg}}
+{\footnotesize\ttfamily sensor\+\_\+msgs\+\_\+\+\_\+msg\+\_\+\+\_\+\+Magnetic\+Field mag\+\_\+msg\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+IMU message, contains Linear Acceleration and Orientation. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_aeec59bf76380ea4bfc3bec2a8de6e0fe_aeec59bf76380ea4bfc3bec2a8de6e0fe}\label{Robohand__uros_8c_aeec59bf76380ea4bfc3bec2a8de6e0fe_aeec59bf76380ea4bfc3bec2a8de6e0fe}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!mag\_pub@{mag\_pub}}
+\index{mag\_pub@{mag\_pub}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{mag\_pub}{mag\_pub}}
+{\footnotesize\ttfamily rcl\+\_\+publisher\+\_\+t mag\+\_\+pub\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+IMU publishing component -\/ Publishes data from the MPU6050. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_ab69e3b0b5d335275c7e2da94c0886b1c_ab69e3b0b5d335275c7e2da94c0886b1c}\label{Robohand__uros_8c_ab69e3b0b5d335275c7e2da94c0886b1c_ab69e3b0b5d335275c7e2da94c0886b1c}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!node@{node}}
+\index{node@{node}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{node}{node}}
+{\footnotesize\ttfamily rcl\+\_\+node\+\_\+t node\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Micro-\/\+ROS Allocator container. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_a5b6b26f8a8315b7383fa803467e0bdb0_a5b6b26f8a8315b7383fa803467e0bdb0}\label{Robohand__uros_8c_a5b6b26f8a8315b7383fa803467e0bdb0_a5b6b26f8a8315b7383fa803467e0bdb0}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!rgb\_sub@{rgb\_sub}}
+\index{rgb\_sub@{rgb\_sub}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{rgb\_sub}{rgb\_sub}}
+{\footnotesize\ttfamily rcl\+\_\+subscription\+\_\+t rgb\+\_\+sub\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Ananlog-\/\+Digital Converter publishing component -\/ Allows user to access voltages at ADC inputs. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_a210ed10634103fd798469e8bbf35a5ce_a210ed10634103fd798469e8bbf35a5ce}\label{Robohand__uros_8c_a210ed10634103fd798469e8bbf35a5ce_a210ed10634103fd798469e8bbf35a5ce}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!sensor\_msg@{sensor\_msg}}
+\index{sensor\_msg@{sensor\_msg}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{sensor\_msg}{sensor\_msg}}
+{\footnotesize\ttfamily std\+\_\+msgs\+\_\+\+\_\+msg\+\_\+\+\_\+\+Float32\+Multi\+Array sensor\+\_\+msg\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Servo command message \mbox{[}SERVO POSITION TIME\mbox{]}. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_a688250369d3950df5c7d6c796be79023_a688250369d3950df5c7d6c796be79023}\label{Robohand__uros_8c_a688250369d3950df5c7d6c796be79023_a688250369d3950df5c7d6c796be79023}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!sensor\_pub@{sensor\_pub}}
+\index{sensor\_pub@{sensor\_pub}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{sensor\_pub}{sensor\_pub}}
+{\footnotesize\ttfamily rcl\+\_\+publisher\+\_\+t sensor\+\_\+pub\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Micro-\/\+ROS Node container. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_a611c38608d84596473705074bd90ba6c_a611c38608d84596473705074bd90ba6c}\label{Robohand__uros_8c_a611c38608d84596473705074bd90ba6c_a611c38608d84596473705074bd90ba6c}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!sensor\_timer@{sensor\_timer}}
+\index{sensor\_timer@{sensor\_timer}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{sensor\_timer}{sensor\_timer}}
+{\footnotesize\ttfamily rcl\+\_\+timer\+\_\+t sensor\+\_\+timer\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Servo subcriber component -\/ Allows for servo actuation from host device. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_a5d2746fa1271a131cbba535280b983f4_a5d2746fa1271a131cbba535280b983f4}\label{Robohand__uros_8c_a5d2746fa1271a131cbba535280b983f4_a5d2746fa1271a131cbba535280b983f4}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!servo\_cmd\_msg@{servo\_cmd\_msg}}
+\index{servo\_cmd\_msg@{servo\_cmd\_msg}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{servo\_cmd\_msg}{servo\_cmd\_msg}}
+{\footnotesize\ttfamily std\+\_\+msgs\+\_\+\+\_\+msg\+\_\+\+\_\+\+Int32\+Multi\+Array servo\+\_\+cmd\+\_\+msg\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+RGB Subscriber component -\/ Provides access to RGB LED configuration. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_a832c81074b10d9c590a0ac104a82cd7a_a832c81074b10d9c590a0ac104a82cd7a}\label{Robohand__uros_8c_a832c81074b10d9c590a0ac104a82cd7a_a832c81074b10d9c590a0ac104a82cd7a}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!servo\_sub@{servo\_sub}}
+\index{servo\_sub@{servo\_sub}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{servo\_sub}{servo\_sub}}
+{\footnotesize\ttfamily rcl\+\_\+subscription\+\_\+t servo\+\_\+sub\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sensor publishing component -\/ Provides access to sensor data. 
+
+\mbox{\Hypertarget{Robohand__uros_8c_ad7ca784e9d6a36f1a990ccef47340149_ad7ca784e9d6a36f1a990ccef47340149}\label{Robohand__uros_8c_ad7ca784e9d6a36f1a990ccef47340149_ad7ca784e9d6a36f1a990ccef47340149}} 
+\index{Robohand\_uros.c@{Robohand\_uros.c}!support@{support}}
+\index{support@{support}!Robohand\_uros.c@{Robohand\_uros.c}}
+\doxysubsubsection{\texorpdfstring{support}{support}}
+{\footnotesize\ttfamily rclc\+\_\+support\+\_\+t support\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Micro-\/\+ROS Executor container. 
+

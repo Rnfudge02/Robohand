@@ -1,0 +1,52 @@
+\hypertarget{group__debug__macros}{}\doxysection{Micro\+ROS Debugging Macros}
+\label{group__debug__macros}\index{MicroROS Debugging Macros@{MicroROS Debugging Macros}}
+
+
+Macros to provide extra stability to the application. Prints error message if referenced function returns an error.  
+
+
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{group__debug__macros_ga9cb001747cb67f240459b3b105a63529_ga9cb001747cb67f240459b3b105a63529}{RCCHECK}}(fn)
+\begin{DoxyCompactList}\small\item\em Checks return code from RCL functions. Logs failures with file/line info when DEBUG is enabled. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__debug__macros_ga7970198dc43b523050ff0fa9b0a94b8d_ga7970198dc43b523050ff0fa9b0a94b8d}{RCSOFTCHECK}}(fn)~\mbox{\hyperlink{group__debug__macros_ga9cb001747cb67f240459b3b105a63529_ga9cb001747cb67f240459b3b105a63529}{RCCHECK}}(fn)
+\begin{DoxyCompactList}\small\item\em Soft error checking macro for non-\/critical operations. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Macros to provide extra stability to the application. Prints error message if referenced function returns an error. 
+
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{group__debug__macros_ga9cb001747cb67f240459b3b105a63529_ga9cb001747cb67f240459b3b105a63529}\label{group__debug__macros_ga9cb001747cb67f240459b3b105a63529_ga9cb001747cb67f240459b3b105a63529}} 
+\index{MicroROS Debugging Macros@{MicroROS Debugging Macros}!RCCHECK@{RCCHECK}}
+\index{RCCHECK@{RCCHECK}!MicroROS Debugging Macros@{MicroROS Debugging Macros}}
+\doxysubsubsection{\texorpdfstring{RCCHECK}{RCCHECK}}
+{\footnotesize\ttfamily \#define RCCHECK(\begin{DoxyParamCaption}\item[{}]{fn }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{    \{ \(\backslash\)}
+\DoxyCodeLine{    rcl\_ret\_t temp\_rc = fn; \(\backslash\)}
+\DoxyCodeLine{    if((temp\_rc != RCL\_RET\_OK) \&\& \mbox{\hyperlink{Robohand_8h_ad72dbcf6d0153db1b8d8a58001feed83_ad72dbcf6d0153db1b8d8a58001feed83}{DEBUG}}) \{ \(\backslash\)}
+\DoxyCodeLine{        printf(\textcolor{stringliteral}{"{}[\%s:\%d] Failed: \%d\(\backslash\)n"{}}, \_\_FILE\_\_, \_\_LINE\_\_, (\textcolor{keywordtype}{int})temp\_rc); \(\backslash\)}
+\DoxyCodeLine{    \} \(\backslash\)}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+Checks return code from RCL functions. Logs failures with file/line info when DEBUG is enabled. 
+
+\mbox{\Hypertarget{group__debug__macros_ga7970198dc43b523050ff0fa9b0a94b8d_ga7970198dc43b523050ff0fa9b0a94b8d}\label{group__debug__macros_ga7970198dc43b523050ff0fa9b0a94b8d_ga7970198dc43b523050ff0fa9b0a94b8d}} 
+\index{MicroROS Debugging Macros@{MicroROS Debugging Macros}!RCSOFTCHECK@{RCSOFTCHECK}}
+\index{RCSOFTCHECK@{RCSOFTCHECK}!MicroROS Debugging Macros@{MicroROS Debugging Macros}}
+\doxysubsubsection{\texorpdfstring{RCSOFTCHECK}{RCSOFTCHECK}}
+{\footnotesize\ttfamily \#define RCSOFTCHECK(\begin{DoxyParamCaption}\item[{}]{fn }\end{DoxyParamCaption})~\mbox{\hyperlink{group__debug__macros_ga9cb001747cb67f240459b3b105a63529_ga9cb001747cb67f240459b3b105a63529}{RCCHECK}}(fn)}
+
+
+
+Soft error checking macro for non-\/critical operations. 
+

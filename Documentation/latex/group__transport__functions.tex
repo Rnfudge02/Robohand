@@ -1,0 +1,116 @@
+\hypertarget{group__transport__functions}{}\doxysection{Custom Transport Implementation}
+\label{group__transport__functions}\index{Custom Transport Implementation@{Custom Transport Implementation}}
+
+
+Low-\/level serial communication functions for micro-\/\+ROS.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{group__transport__functions_ga940f86650426a565a5e9a1aad68fd61c_ga940f86650426a565a5e9a1aad68fd61c}{pico\+\_\+serial\+\_\+transport\+\_\+open}} (struct uxr\+Custom\+Transport $\ast$transport)
+\begin{DoxyCompactList}\small\item\em Initializes custom serial transport for micro-\/\+ROS. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__transport__functions_ga54218b67473dd83430389027baa4810a_ga54218b67473dd83430389027baa4810a}{pico\+\_\+serial\+\_\+transport\+\_\+close}} (struct uxr\+Custom\+Transport $\ast$transport)
+\begin{DoxyCompactList}\small\item\em Closes custom serial transport. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{group__transport__functions_ga1c2aa907fb1db45b54c88f68bd75c58f_ga1c2aa907fb1db45b54c88f68bd75c58f}{pico\+\_\+serial\+\_\+transport\+\_\+write}} (struct uxr\+Custom\+Transport $\ast$transport, const uint8\+\_\+t $\ast$buf, size\+\_\+t len, uint8\+\_\+t $\ast$errcode)
+\begin{DoxyCompactList}\small\item\em Writes data through serial transport. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{group__transport__functions_gae687daa22c00f9798accef62354419f0_gae687daa22c00f9798accef62354419f0}{pico\+\_\+serial\+\_\+transport\+\_\+read}} (struct uxr\+Custom\+Transport $\ast$transport, uint8\+\_\+t $\ast$buf, size\+\_\+t len, int timeout, uint8\+\_\+t $\ast$errcode)
+\begin{DoxyCompactList}\small\item\em Reads data from serial transport. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Low-\/level serial communication functions for micro-\/\+ROS. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group__transport__functions_ga54218b67473dd83430389027baa4810a_ga54218b67473dd83430389027baa4810a}\label{group__transport__functions_ga54218b67473dd83430389027baa4810a_ga54218b67473dd83430389027baa4810a}} 
+\index{Custom Transport Implementation@{Custom Transport Implementation}!pico\_serial\_transport\_close@{pico\_serial\_transport\_close}}
+\index{pico\_serial\_transport\_close@{pico\_serial\_transport\_close}!Custom Transport Implementation@{Custom Transport Implementation}}
+\doxysubsubsection{\texorpdfstring{pico\_serial\_transport\_close()}{pico\_serial\_transport\_close()}}
+{\footnotesize\ttfamily bool pico\+\_\+serial\+\_\+transport\+\_\+close (\begin{DoxyParamCaption}\item[{struct uxr\+Custom\+Transport $\ast$}]{transport }\end{DoxyParamCaption})}
+
+
+
+Closes custom serial transport. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em transport} & Pointer to custom transport structure. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Always returns true (Pico serial doesn\textquotesingle{}t require close handling).
+\end{DoxyReturn}
+Closes custom serial transport. \mbox{\Hypertarget{group__transport__functions_ga940f86650426a565a5e9a1aad68fd61c_ga940f86650426a565a5e9a1aad68fd61c}\label{group__transport__functions_ga940f86650426a565a5e9a1aad68fd61c_ga940f86650426a565a5e9a1aad68fd61c}} 
+\index{Custom Transport Implementation@{Custom Transport Implementation}!pico\_serial\_transport\_open@{pico\_serial\_transport\_open}}
+\index{pico\_serial\_transport\_open@{pico\_serial\_transport\_open}!Custom Transport Implementation@{Custom Transport Implementation}}
+\doxysubsubsection{\texorpdfstring{pico\_serial\_transport\_open()}{pico\_serial\_transport\_open()}}
+{\footnotesize\ttfamily bool pico\+\_\+serial\+\_\+transport\+\_\+open (\begin{DoxyParamCaption}\item[{struct uxr\+Custom\+Transport $\ast$}]{transport }\end{DoxyParamCaption})}
+
+
+
+Initializes custom serial transport for micro-\/\+ROS. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em transport} & Pointer to custom transport structure. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if initialization succeeded, false otherwise. 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Configures standard I/O only once during first call.
+\end{DoxyNote}
+Initializes custom serial transport for micro-\/\+ROS. \mbox{\Hypertarget{group__transport__functions_gae687daa22c00f9798accef62354419f0_gae687daa22c00f9798accef62354419f0}\label{group__transport__functions_gae687daa22c00f9798accef62354419f0_gae687daa22c00f9798accef62354419f0}} 
+\index{Custom Transport Implementation@{Custom Transport Implementation}!pico\_serial\_transport\_read@{pico\_serial\_transport\_read}}
+\index{pico\_serial\_transport\_read@{pico\_serial\_transport\_read}!Custom Transport Implementation@{Custom Transport Implementation}}
+\doxysubsubsection{\texorpdfstring{pico\_serial\_transport\_read()}{pico\_serial\_transport\_read()}}
+{\footnotesize\ttfamily size\+\_\+t pico\+\_\+serial\+\_\+transport\+\_\+read (\begin{DoxyParamCaption}\item[{struct uxr\+Custom\+Transport $\ast$}]{transport,  }\item[{uint8\+\_\+t $\ast$}]{buf,  }\item[{size\+\_\+t}]{len,  }\item[{int}]{timeout,  }\item[{uint8\+\_\+t $\ast$}]{errcode }\end{DoxyParamCaption})}
+
+
+
+Reads data from serial transport. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em transport} & Pointer to custom transport structure. \\
+\hline
+\mbox{\texttt{ out}}  & {\em buf} & Buffer to store read data. \\
+\hline
+\mbox{\texttt{ in}}  & {\em len} & Maximum length to read. \\
+\hline
+\mbox{\texttt{ in}}  & {\em timeout} & Timeout in milliseconds. \\
+\hline
+\mbox{\texttt{ out}}  & {\em errcode} & Error code output (1 on failure). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Number of bytes actually read.
+\end{DoxyReturn}
+Reads data from serial transport. \mbox{\Hypertarget{group__transport__functions_ga1c2aa907fb1db45b54c88f68bd75c58f_ga1c2aa907fb1db45b54c88f68bd75c58f}\label{group__transport__functions_ga1c2aa907fb1db45b54c88f68bd75c58f_ga1c2aa907fb1db45b54c88f68bd75c58f}} 
+\index{Custom Transport Implementation@{Custom Transport Implementation}!pico\_serial\_transport\_write@{pico\_serial\_transport\_write}}
+\index{pico\_serial\_transport\_write@{pico\_serial\_transport\_write}!Custom Transport Implementation@{Custom Transport Implementation}}
+\doxysubsubsection{\texorpdfstring{pico\_serial\_transport\_write()}{pico\_serial\_transport\_write()}}
+{\footnotesize\ttfamily size\+\_\+t pico\+\_\+serial\+\_\+transport\+\_\+write (\begin{DoxyParamCaption}\item[{struct uxr\+Custom\+Transport $\ast$}]{transport,  }\item[{const uint8\+\_\+t $\ast$}]{buf,  }\item[{size\+\_\+t}]{len,  }\item[{uint8\+\_\+t $\ast$}]{errcode }\end{DoxyParamCaption})}
+
+
+
+Writes data through serial transport. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em transport} & Pointer to custom transport structure. \\
+\hline
+\mbox{\texttt{ in}}  & {\em buf} & Buffer containing data to write. \\
+\hline
+\mbox{\texttt{ in}}  & {\em len} & Length of data to write. \\
+\hline
+\mbox{\texttt{ out}}  & {\em errcode} & Error code output (1 on failure). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Number of bytes actually written.
+\end{DoxyReturn}
+Writes data through serial transport. 

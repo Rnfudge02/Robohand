@@ -19,9 +19,11 @@
  * @{
  */
 
+static void robohand_init_backend(void);
 static bool robohand_init_ads1115(void);
 static void robohand_init_bme280(void);
 static bool robohand_init_mpu6050(void);
+static bool robohand_configure_mpu6050(void);
 static bool robohand_init_qmc5883l(void);
 
 /** @} */
@@ -95,10 +97,8 @@ bool robohand_init_components(void) {
         }
     }
     
-    // Initialize I2C
-    if (HAS_I2C) {
-        robohand_init_i2c();
-    }
+    //Init backend I2C connection
+    robohand_init_backend();
     
     // Initialize individual sensors
     if (HAS_ADS1115) {
@@ -136,27 +136,42 @@ bool robohand_init_components(void) {
         }
     }
     
+    return success;
+}
+
+/**
+ * @brief Initializes the systems reading backend, including I2C
+ * @details Used for coordinating resource access
+ * @pre Only one USE_X flag is set in the macro configuration
+ * @post Desired backend will be used
+ */
+static void robohand_init_backend(void) {
+    // Initialize I2C
+    if (HAS_I2C) {
+        robohand_init_i2c();
+    }
+
     // Initialize DMA if enabled
     if (USE_DMA) {
         if (DEBUG > 0) {
             printf("Initializing DMA backend\r\n");
         }
-        
+    
         init_dma();
-        
+    
         if (DEBUG > 0) {
             printf("DMA backend initialized\r\n");
         }
     }
-    
+
     // Configure appropriate data acquisition method
     if (USE_INTERRUPTS) {
         if (DEBUG > 0) {
             printf("Initializing interrupt backend\r\n");
         }
-        
+    
         init_interrupts();
-        
+    
         if (DEBUG > 0) {
             printf("Interrupt backend initialized\r\n");
         }
@@ -165,20 +180,18 @@ bool robohand_init_components(void) {
         if (DEBUG > 0) {
             printf("Initializing callback backend\r\n");
         }
-        
+    
         init_callbacks();
-        
+    
         if (DEBUG > 0) {
             printf("Callback backend initialized\r\n");
         }
     }
-    
-    return success;
 }
 
 /**
  * @brief Initializes the MPU6050 accelerometer and gyroscope
- * 
+ * @pre System is operating in a single core fashion, to prevent race conditions and resource conflicts
  * @return true if initialization was successful, false otherwise
  */
 static bool robohand_init_mpu6050(void) {
@@ -188,7 +201,7 @@ static bool robohand_init_mpu6050(void) {
         printf("Configuring MPU6050...\r\n");
     }
     
-    // Step 1: Reset device
+    // Reset device
     if (!i2c_write_reg(MPU6050_ADDR, 0x6B, 0x80)) { // PWR_MGMT_1, reset bit
         if (DEBUG > 0) {
             printf("Failed to reset MPU6050\r\n");
@@ -198,7 +211,7 @@ static bool robohand_init_mpu6050(void) {
     
     sleep_ms(100); // Wait for reset
     
-    // Step 2: Wake up device and select best clock source
+    // Wake up device and select best clock source
     if (!i2c_write_reg(MPU6050_ADDR, 0x6B, 0x01)) { // PWR_MGMT_1, clock source = PLL with X-axis gyro
         if (DEBUG > 0) {
             printf("Failed to wake up MPU6050\r\n");
@@ -208,62 +221,21 @@ static bool robohand_init_mpu6050(void) {
     
     sleep_ms(10);
     
-    // Step 3: Disable sleep mode
+    // Disable sleep mode
     if (!i2c_write_reg(MPU6050_ADDR, 0x6C, 0x00)) { // PWR_MGMT_2, enable all axes
         if (DEBUG > 0) {
             printf("Failed to disable sleep mode on MPU6050\r\n");
         }
         return false;
     }
-    
-    // Step 4: Configure gyro for ±250 dps range
-    if (!i2c_write_reg(MPU6050_ADDR, 0x1B, 0x00)) { // GYRO_CONFIG
-        if (DEBUG > 0) {
-            printf("Failed to configure MPU6050 gyro range\r\n");
-        }
+
+    bool ret = robohand_configure_mpu6050();
+
+    if (ret == false) {
         return false;
     }
     
-    // Step 5: Configure accel for ±2g range
-    if (!i2c_write_reg(MPU6050_ADDR, 0x1C, 0x00)) { // ACCEL_CONFIG
-        if (DEBUG > 0) {
-            printf("Failed to configure MPU6050 accel range\r\n");
-        }
-        return false;
-    }
-    
-    // Step 6: Configure digital low-pass filter
-    if (!i2c_write_reg(MPU6050_ADDR, 0x1A, 0x03)) { // CONFIG, DLPF_CFG=3 (42Hz bandwidth)
-        if (DEBUG > 0) {
-            printf("Failed to configure MPU6050 DLPF\r\n");
-        }
-        return false;
-    }
-    
-    // Step 7: Configure sample rate divider
-    if (!i2c_write_reg(MPU6050_ADDR, 0x19, 0x04)) { // SMPLRT_DIV (1000 / (1 + 4) = 200Hz)
-        if (DEBUG > 0) {
-            printf("Failed to configure MPU6050 sample rate\r\n");
-        }
-        return false;
-    }
-    
-    // Step 8: Configure interrupts
-    if (!i2c_write_reg(MPU6050_ADDR, 0x37, 0x20)) { // INT_PIN_CFG: clear on read
-        if (DEBUG > 0) {
-            printf("Failed to configure MPU6050 interrupts\r\n");
-        }
-        return false;
-    }
-    
-    if (!i2c_write_reg(MPU6050_ADDR, 0x38, 0x01)) { // INT_ENABLE: data ready
-        if (DEBUG > 0) {
-            printf("Failed to enable MPU6050 interrupts\r\n");
-        }
-        return false;
-    }
-    
-    // Step 9: Verify WHO_AM_I register (should be 0x68)
+    // Verify WHO_AM_I register (should be 0x68)
     uint8_t who_am_i = 0;
     if (i2c_read_reg(MPU6050_ADDR, 0x75, &who_am_i, 1)) {
         if (who_am_i != 0x68) {
@@ -287,8 +259,64 @@ static bool robohand_init_mpu6050(void) {
 }
 
 /**
+ * @brief Configures the MPU6050 accelerometer and gyroscope
+ * @details Writes to configuration registers
+ * @pre System is operating in a single core fashion, to prevent race conditions and resource conflicts
+ * @return true if initialization was successful, false otherwise
+ */
+static bool robohand_configure_mpu6050(void) {
+    // Configure gyro for ±250 dps range
+    if (!i2c_write_reg(MPU6050_ADDR, 0x1B, 0x00)) { // GYRO_CONFIG
+        if (DEBUG > 0) {
+            printf("Failed to configure MPU6050 gyro range\r\n");
+        }
+        return false;
+    }
+
+    // Configure accel for ±2g range
+    if (!i2c_write_reg(MPU6050_ADDR, 0x1C, 0x00)) { // ACCEL_CONFIG
+        if (DEBUG > 0) {
+            printf("Failed to configure MPU6050 accel range\r\n");
+        }
+        return false;
+    }
+
+    // Configure digital low-pass filter
+    if (!i2c_write_reg(MPU6050_ADDR, 0x1A, 0x03)) { // CONFIG, DLPF_CFG=3 (42Hz bandwidth)
+        if (DEBUG > 0) {
+            printf("Failed to configure MPU6050 DLPF\r\n");
+        }
+        return false;
+    }
+
+    // Configure sample rate divider
+    if (!i2c_write_reg(MPU6050_ADDR, 0x19, 0x04)) { // SMPLRT_DIV (1000 / (1 + 4) = 200Hz)
+        if (DEBUG > 0) {
+            printf("Failed to configure MPU6050 sample rate\r\n");
+        }
+        return false;
+    }
+
+    // Configure interrupts
+    if (!i2c_write_reg(MPU6050_ADDR, 0x37, 0x20)) { // INT_PIN_CFG: clear on read
+        if (DEBUG > 0) {
+            printf("Failed to configure MPU6050 interrupts\r\n");
+        }
+        return false;
+    }
+
+    if (!i2c_write_reg(MPU6050_ADDR, 0x38, 0x01)) { // INT_ENABLE: data ready
+        if (DEBUG > 0) {
+            printf("Failed to enable MPU6050 interrupts\r\n");
+        }
+        return false;
+    }
+    return true;
+}
+
+/**
  * @brief Initializes the ADS1115 analog-to-digital converter
- * 
+ * @pre System is operating in a single core fashion, to prevent race conditions and resource conflicts
  * @return true if initialization was successful, false otherwise
  */
 static bool robohand_init_ads1115(void) {
@@ -350,6 +378,8 @@ static bool robohand_init_qmc5883l(void) {
             printf("QMC5883L configuration finished.\r\n");
         }
     }
+
+    return true;
 }
 
 /**

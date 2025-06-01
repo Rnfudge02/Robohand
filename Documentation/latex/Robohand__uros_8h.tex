@@ -1,0 +1,294 @@
+\hypertarget{Robohand__uros_8h}{}\doxysection{Include/\+Robohand\+\_\+uros.h File Reference}
+\label{Robohand__uros_8h}\index{Include/Robohand\_uros.h@{Include/Robohand\_uros.h}}
+
+
+Micro-\/\+ROS interface for robotic hand control system.  
+
+
+{\ttfamily \#include \char`\"{}pico/stdlib.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$rcl/rcl.\+h$>$}\newline
+{\ttfamily \#include $<$rclc/rclc.\+h$>$}\newline
+{\ttfamily \#include $<$std\+\_\+msgs/msg/int32\+\_\+multi\+\_\+array.\+h$>$}\newline
+{\ttfamily \#include $<$std\+\_\+msgs/msg/float32\+\_\+multi\+\_\+array.\+h$>$}\newline
+{\ttfamily \#include $<$uxr/client/profile/transport/custom/custom\+\_\+transport.\+h$>$}\newline
+{\ttfamily \#include $<$rcl/error\+\_\+handling.\+h$>$}\newline
+{\ttfamily \#include $<$rclc/executor.\+h$>$}\newline
+{\ttfamily \#include $<$rmw\+\_\+microros/rmw\+\_\+microros.\+h$>$}\newline
+Include dependency graph for Robohand\+\_\+uros.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{Robohand__uros_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=219pt]{Robohand__uros_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{Robohand__uros_8h_aff698ed9accd74bcf1bc4dddd6ce1f75_aff698ed9accd74bcf1bc4dddd6ce1f75}{SENSOR\+\_\+\+DATA\+\_\+\+COUNT}}~14
+\item 
+\mbox{\Hypertarget{Robohand__uros_8h_aa0524940d5969f1c8d5c269a491a88c6}\label{Robohand__uros_8h_aa0524940d5969f1c8d5c269a491a88c6}} 
+\#define {\bfseries SENSOR\+\_\+\+PUB\+\_\+\+INTERVAL\+\_\+\+MS}~1000
+\item 
+\#define \mbox{\hyperlink{group__debug__macros_ga9cb001747cb67f240459b3b105a63529_ga9cb001747cb67f240459b3b105a63529}{RCCHECK}}(fn)
+\begin{DoxyCompactList}\small\item\em Checks return code from RCL functions. Logs failures with file/line info when DEBUG is enabled. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group__debug__macros_ga7970198dc43b523050ff0fa9b0a94b8d_ga7970198dc43b523050ff0fa9b0a94b8d}{RCSOFTCHECK}}(fn)~\mbox{\hyperlink{group__debug__macros_ga9cb001747cb67f240459b3b105a63529_ga9cb001747cb67f240459b3b105a63529}{RCCHECK}}(fn)
+\begin{DoxyCompactList}\small\item\em Soft error checking macro for non-\/critical operations. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{group__time__utils_ga6fa4fcf1ad1f2f62773a03323f08592e_ga6fa4fcf1ad1f2f62773a03323f08592e}{clock\+\_\+gettime}} (clockid\+\_\+t clk\+\_\+id, struct timespec $\ast$tp)
+\begin{DoxyCompactList}\small\item\em Provides POSIX-\/compatible clock implementation. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__time__utils_ga5df1456e1b3afb7af60ea51a799b2365_ga5df1456e1b3afb7af60ea51a799b2365}{usleep}} (uint64\+\_\+t us)
+\begin{DoxyCompactList}\small\item\em Provides POSIX-\/compatible sleep implementation. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__transport__functions_ga940f86650426a565a5e9a1aad68fd61c_ga940f86650426a565a5e9a1aad68fd61c}{pico\+\_\+serial\+\_\+transport\+\_\+open}} (struct uxr\+Custom\+Transport $\ast$transport)
+\begin{DoxyCompactList}\small\item\em Initializes custom serial transport for micro-\/\+ROS. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__transport__functions_ga54218b67473dd83430389027baa4810a_ga54218b67473dd83430389027baa4810a}{pico\+\_\+serial\+\_\+transport\+\_\+close}} (struct uxr\+Custom\+Transport $\ast$transport)
+\begin{DoxyCompactList}\small\item\em Closes custom serial transport. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{group__transport__functions_ga1c2aa907fb1db45b54c88f68bd75c58f_ga1c2aa907fb1db45b54c88f68bd75c58f}{pico\+\_\+serial\+\_\+transport\+\_\+write}} (struct uxr\+Custom\+Transport $\ast$transport, const uint8\+\_\+t $\ast$buf, size\+\_\+t len, uint8\+\_\+t $\ast$errcode)
+\begin{DoxyCompactList}\small\item\em Writes data through serial transport. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{group__transport__functions_gae687daa22c00f9798accef62354419f0_gae687daa22c00f9798accef62354419f0}{pico\+\_\+serial\+\_\+transport\+\_\+read}} (struct uxr\+Custom\+Transport $\ast$transport, uint8\+\_\+t $\ast$buf, size\+\_\+t len, int timeout, uint8\+\_\+t $\ast$errcode)
+\begin{DoxyCompactList}\small\item\em Reads data from serial transport. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__ros__interface_ga27bbb1de4a2b8f5c34ad2c2453445b53_ga27bbb1de4a2b8f5c34ad2c2453445b53}{servo\+\_\+callback}} (const void $\ast$msg\+\_\+in)
+\begin{DoxyCompactList}\small\item\em Callback for servo command messages. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__ros__interface_gad3c5aead99c558bb4b03da37d4820a4d_gad3c5aead99c558bb4b03da37d4820a4d}{sensor\+\_\+timer\+\_\+callback}} (rcl\+\_\+timer\+\_\+t $\ast$timer, int64\+\_\+t last\+\_\+call\+\_\+time)
+\begin{DoxyCompactList}\small\item\em Timer callback for sensor data publishing. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Micro-\/\+ROS interface for robotic hand control system. 
+
+Provides declarations for micro-\/\+ROS integration with sensor data publishing and servo command subscription. Manages custom serial transport implementation for Pico-\/\+RTOS compatibility. \begin{DoxyAuthor}{Author}
+Robert Fudge \href{mailto:rnfudge@mun.ca}{\texttt{ rnfudge@mun.\+ca}} 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2025 
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Apache 2.\+0 License 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{group__debug__macros_ga9cb001747cb67f240459b3b105a63529_ga9cb001747cb67f240459b3b105a63529}\label{group__debug__macros_ga9cb001747cb67f240459b3b105a63529_ga9cb001747cb67f240459b3b105a63529}} 
+\index{Robohand\_uros.h@{Robohand\_uros.h}!RCCHECK@{RCCHECK}}
+\index{RCCHECK@{RCCHECK}!Robohand\_uros.h@{Robohand\_uros.h}}
+\doxysubsubsection{\texorpdfstring{RCCHECK}{RCCHECK}}
+{\footnotesize\ttfamily \#define RCCHECK(\begin{DoxyParamCaption}\item[{}]{fn }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{    \{ \(\backslash\)}
+\DoxyCodeLine{    rcl\_ret\_t temp\_rc = fn; \(\backslash\)}
+\DoxyCodeLine{    if((temp\_rc != RCL\_RET\_OK) \&\& \mbox{\hyperlink{Robohand_8h_ad72dbcf6d0153db1b8d8a58001feed83_ad72dbcf6d0153db1b8d8a58001feed83}{DEBUG}}) \{ \(\backslash\)}
+\DoxyCodeLine{        printf(\textcolor{stringliteral}{"{}[\%s:\%d] Failed: \%d\(\backslash\)n"{}}, \_\_FILE\_\_, \_\_LINE\_\_, (\textcolor{keywordtype}{int})temp\_rc); \(\backslash\)}
+\DoxyCodeLine{    \} \(\backslash\)}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+Checks return code from RCL functions. Logs failures with file/line info when DEBUG is enabled. 
+
+\mbox{\Hypertarget{group__debug__macros_ga7970198dc43b523050ff0fa9b0a94b8d_ga7970198dc43b523050ff0fa9b0a94b8d}\label{group__debug__macros_ga7970198dc43b523050ff0fa9b0a94b8d_ga7970198dc43b523050ff0fa9b0a94b8d}} 
+\index{Robohand\_uros.h@{Robohand\_uros.h}!RCSOFTCHECK@{RCSOFTCHECK}}
+\index{RCSOFTCHECK@{RCSOFTCHECK}!Robohand\_uros.h@{Robohand\_uros.h}}
+\doxysubsubsection{\texorpdfstring{RCSOFTCHECK}{RCSOFTCHECK}}
+{\footnotesize\ttfamily \#define RCSOFTCHECK(\begin{DoxyParamCaption}\item[{}]{fn }\end{DoxyParamCaption})~\mbox{\hyperlink{group__debug__macros_ga9cb001747cb67f240459b3b105a63529_ga9cb001747cb67f240459b3b105a63529}{RCCHECK}}(fn)}
+
+
+
+Soft error checking macro for non-\/critical operations. 
+
+\mbox{\Hypertarget{Robohand__uros_8h_aff698ed9accd74bcf1bc4dddd6ce1f75_aff698ed9accd74bcf1bc4dddd6ce1f75}\label{Robohand__uros_8h_aff698ed9accd74bcf1bc4dddd6ce1f75_aff698ed9accd74bcf1bc4dddd6ce1f75}} 
+\index{Robohand\_uros.h@{Robohand\_uros.h}!SENSOR\_DATA\_COUNT@{SENSOR\_DATA\_COUNT}}
+\index{SENSOR\_DATA\_COUNT@{SENSOR\_DATA\_COUNT}!Robohand\_uros.h@{Robohand\_uros.h}}
+\doxysubsubsection{\texorpdfstring{SENSOR\_DATA\_COUNT}{SENSOR\_DATA\_COUNT}}
+{\footnotesize\ttfamily \#define SENSOR\+\_\+\+DATA\+\_\+\+COUNT~14}
+
+\begin{DoxyRefDesc}{Todo}
+\item[\mbox{\hyperlink{todo__todo000001}{Todo}}]Fix issues present within code, check for correctness. 
+
+Ensure code for preventing the running of code on missing components does not break functionality. 
+
+Fix issue with HMC5883L always returning 0. (observed behavior when running program with USB driver) \end{DoxyRefDesc}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group__time__utils_ga6fa4fcf1ad1f2f62773a03323f08592e_ga6fa4fcf1ad1f2f62773a03323f08592e}\label{group__time__utils_ga6fa4fcf1ad1f2f62773a03323f08592e_ga6fa4fcf1ad1f2f62773a03323f08592e}} 
+\index{Robohand\_uros.h@{Robohand\_uros.h}!clock\_gettime@{clock\_gettime}}
+\index{clock\_gettime@{clock\_gettime}!Robohand\_uros.h@{Robohand\_uros.h}}
+\doxysubsubsection{\texorpdfstring{clock\_gettime()}{clock\_gettime()}}
+{\footnotesize\ttfamily int clock\+\_\+gettime (\begin{DoxyParamCaption}\item[{clockid\+\_\+t}]{clk\+\_\+id,  }\item[{struct timespec $\ast$}]{tp }\end{DoxyParamCaption})}
+
+
+
+Provides POSIX-\/compatible clock implementation. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em clk\+\_\+id} & Clock identifier (unused). \\
+\hline
+\mbox{\texttt{ out}}  & {\em tp} & Timespec structure to populate. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Always returns 0 (success). 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Uses Pico\textquotesingle{}s time\+\_\+us\+\_\+64() for timing.
+\end{DoxyNote}
+Provides POSIX-\/compatible clock implementation. \mbox{\Hypertarget{group__transport__functions_ga54218b67473dd83430389027baa4810a_ga54218b67473dd83430389027baa4810a}\label{group__transport__functions_ga54218b67473dd83430389027baa4810a_ga54218b67473dd83430389027baa4810a}} 
+\index{Robohand\_uros.h@{Robohand\_uros.h}!pico\_serial\_transport\_close@{pico\_serial\_transport\_close}}
+\index{pico\_serial\_transport\_close@{pico\_serial\_transport\_close}!Robohand\_uros.h@{Robohand\_uros.h}}
+\doxysubsubsection{\texorpdfstring{pico\_serial\_transport\_close()}{pico\_serial\_transport\_close()}}
+{\footnotesize\ttfamily bool pico\+\_\+serial\+\_\+transport\+\_\+close (\begin{DoxyParamCaption}\item[{struct uxr\+Custom\+Transport $\ast$}]{transport }\end{DoxyParamCaption})}
+
+
+
+Closes custom serial transport. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em transport} & Pointer to custom transport structure. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Always returns true (Pico serial doesn\textquotesingle{}t require close handling).
+\end{DoxyReturn}
+Closes custom serial transport. \mbox{\Hypertarget{group__transport__functions_ga940f86650426a565a5e9a1aad68fd61c_ga940f86650426a565a5e9a1aad68fd61c}\label{group__transport__functions_ga940f86650426a565a5e9a1aad68fd61c_ga940f86650426a565a5e9a1aad68fd61c}} 
+\index{Robohand\_uros.h@{Robohand\_uros.h}!pico\_serial\_transport\_open@{pico\_serial\_transport\_open}}
+\index{pico\_serial\_transport\_open@{pico\_serial\_transport\_open}!Robohand\_uros.h@{Robohand\_uros.h}}
+\doxysubsubsection{\texorpdfstring{pico\_serial\_transport\_open()}{pico\_serial\_transport\_open()}}
+{\footnotesize\ttfamily bool pico\+\_\+serial\+\_\+transport\+\_\+open (\begin{DoxyParamCaption}\item[{struct uxr\+Custom\+Transport $\ast$}]{transport }\end{DoxyParamCaption})}
+
+
+
+Initializes custom serial transport for micro-\/\+ROS. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em transport} & Pointer to custom transport structure. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if initialization succeeded, false otherwise. 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Configures standard I/O only once during first call.
+\end{DoxyNote}
+Initializes custom serial transport for micro-\/\+ROS. \mbox{\Hypertarget{group__transport__functions_gae687daa22c00f9798accef62354419f0_gae687daa22c00f9798accef62354419f0}\label{group__transport__functions_gae687daa22c00f9798accef62354419f0_gae687daa22c00f9798accef62354419f0}} 
+\index{Robohand\_uros.h@{Robohand\_uros.h}!pico\_serial\_transport\_read@{pico\_serial\_transport\_read}}
+\index{pico\_serial\_transport\_read@{pico\_serial\_transport\_read}!Robohand\_uros.h@{Robohand\_uros.h}}
+\doxysubsubsection{\texorpdfstring{pico\_serial\_transport\_read()}{pico\_serial\_transport\_read()}}
+{\footnotesize\ttfamily size\+\_\+t pico\+\_\+serial\+\_\+transport\+\_\+read (\begin{DoxyParamCaption}\item[{struct uxr\+Custom\+Transport $\ast$}]{transport,  }\item[{uint8\+\_\+t $\ast$}]{buf,  }\item[{size\+\_\+t}]{len,  }\item[{int}]{timeout,  }\item[{uint8\+\_\+t $\ast$}]{errcode }\end{DoxyParamCaption})}
+
+
+
+Reads data from serial transport. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em transport} & Pointer to custom transport structure. \\
+\hline
+\mbox{\texttt{ out}}  & {\em buf} & Buffer to store read data. \\
+\hline
+\mbox{\texttt{ in}}  & {\em len} & Maximum length to read. \\
+\hline
+\mbox{\texttt{ in}}  & {\em timeout} & Timeout in milliseconds. \\
+\hline
+\mbox{\texttt{ out}}  & {\em errcode} & Error code output (1 on failure). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Number of bytes actually read.
+\end{DoxyReturn}
+Reads data from serial transport. \mbox{\Hypertarget{group__transport__functions_ga1c2aa907fb1db45b54c88f68bd75c58f_ga1c2aa907fb1db45b54c88f68bd75c58f}\label{group__transport__functions_ga1c2aa907fb1db45b54c88f68bd75c58f_ga1c2aa907fb1db45b54c88f68bd75c58f}} 
+\index{Robohand\_uros.h@{Robohand\_uros.h}!pico\_serial\_transport\_write@{pico\_serial\_transport\_write}}
+\index{pico\_serial\_transport\_write@{pico\_serial\_transport\_write}!Robohand\_uros.h@{Robohand\_uros.h}}
+\doxysubsubsection{\texorpdfstring{pico\_serial\_transport\_write()}{pico\_serial\_transport\_write()}}
+{\footnotesize\ttfamily size\+\_\+t pico\+\_\+serial\+\_\+transport\+\_\+write (\begin{DoxyParamCaption}\item[{struct uxr\+Custom\+Transport $\ast$}]{transport,  }\item[{const uint8\+\_\+t $\ast$}]{buf,  }\item[{size\+\_\+t}]{len,  }\item[{uint8\+\_\+t $\ast$}]{errcode }\end{DoxyParamCaption})}
+
+
+
+Writes data through serial transport. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em transport} & Pointer to custom transport structure. \\
+\hline
+\mbox{\texttt{ in}}  & {\em buf} & Buffer containing data to write. \\
+\hline
+\mbox{\texttt{ in}}  & {\em len} & Length of data to write. \\
+\hline
+\mbox{\texttt{ out}}  & {\em errcode} & Error code output (1 on failure). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Number of bytes actually written.
+\end{DoxyReturn}
+Writes data through serial transport. \mbox{\Hypertarget{group__ros__interface_gad3c5aead99c558bb4b03da37d4820a4d_gad3c5aead99c558bb4b03da37d4820a4d}\label{group__ros__interface_gad3c5aead99c558bb4b03da37d4820a4d_gad3c5aead99c558bb4b03da37d4820a4d}} 
+\index{Robohand\_uros.h@{Robohand\_uros.h}!sensor\_timer\_callback@{sensor\_timer\_callback}}
+\index{sensor\_timer\_callback@{sensor\_timer\_callback}!Robohand\_uros.h@{Robohand\_uros.h}}
+\doxysubsubsection{\texorpdfstring{sensor\_timer\_callback()}{sensor\_timer\_callback()}}
+{\footnotesize\ttfamily void sensor\+\_\+timer\+\_\+callback (\begin{DoxyParamCaption}\item[{rcl\+\_\+timer\+\_\+t $\ast$}]{timer,  }\item[{int64\+\_\+t}]{last\+\_\+call\+\_\+time }\end{DoxyParamCaption})}
+
+
+
+Timer callback for sensor data publishing. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em timer} & Timer object reference. \\
+\hline
+\mbox{\texttt{ in}}  & {\em last\+\_\+call\+\_\+time} & Timestamp of last invocation (unused).\\
+\hline
+\end{DoxyParams}
+Publishes combined sensor data at 10Hz rate\+:
+\begin{DoxyItemize}
+\item Accelerometer (3 axes, m/s²)
+\item Gyroscope (3 axes, rad/s)
+\item Magnetometer (3 axes, μT)
+\item Analog sensors (5 channels, volts)
+\end{DoxyItemize}
+
+Timer callback for sensor data publishing. \mbox{\Hypertarget{group__ros__interface_ga27bbb1de4a2b8f5c34ad2c2453445b53_ga27bbb1de4a2b8f5c34ad2c2453445b53}\label{group__ros__interface_ga27bbb1de4a2b8f5c34ad2c2453445b53_ga27bbb1de4a2b8f5c34ad2c2453445b53}} 
+\index{Robohand\_uros.h@{Robohand\_uros.h}!servo\_callback@{servo\_callback}}
+\index{servo\_callback@{servo\_callback}!Robohand\_uros.h@{Robohand\_uros.h}}
+\doxysubsubsection{\texorpdfstring{servo\_callback()}{servo\_callback()}}
+{\footnotesize\ttfamily void servo\+\_\+callback (\begin{DoxyParamCaption}\item[{const void $\ast$}]{msg\+\_\+in }\end{DoxyParamCaption})}
+
+
+
+Callback for servo command messages. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em msg\+\_\+in} & Received Int32\+Multi\+Array message pointer.\\
+\hline
+\end{DoxyParams}
+Expects message data in triplets\+: \mbox{[}servo\+\_\+num, target\+\_\+pw, duration\+\_\+ms\mbox{]}. \begin{DoxyNote}{Note}
+Servo numbers are validated against NUM\+\_\+\+SERVOS constant.
+\end{DoxyNote}
+Callback for servo command messages. \mbox{\Hypertarget{group__time__utils_ga5df1456e1b3afb7af60ea51a799b2365_ga5df1456e1b3afb7af60ea51a799b2365}\label{group__time__utils_ga5df1456e1b3afb7af60ea51a799b2365_ga5df1456e1b3afb7af60ea51a799b2365}} 
+\index{Robohand\_uros.h@{Robohand\_uros.h}!usleep@{usleep}}
+\index{usleep@{usleep}!Robohand\_uros.h@{Robohand\_uros.h}}
+\doxysubsubsection{\texorpdfstring{usleep()}{usleep()}}
+{\footnotesize\ttfamily void usleep (\begin{DoxyParamCaption}\item[{uint64\+\_\+t}]{us }\end{DoxyParamCaption})}
+
+
+
+Provides POSIX-\/compatible sleep implementation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em us} & Microsecond count to sleep.\\
+\hline
+\end{DoxyParams}
+Provides POSIX-\/compatible sleep implementation. 

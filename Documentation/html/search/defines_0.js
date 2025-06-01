@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['adc2_5fpin_350',['ADC2_PIN',['../Robohand_8h_afb2f4f2a136b1a0dd1f1926defbae195.html#afb2f4f2a136b1a0dd1f1926defbae195',1,'Robohand.h']]],
+  ['adc_5fread_5fflag_351',['ADC_READ_FLAG',['../Robohand_8c_abd2d73d436cf7099c73852548cb49fbf.html#abd2d73d436cf7099c73852548cb49fbf',1,'Robohand.c']]],
+  ['ads1115_5faddr_352',['ADS1115_ADDR',['../Robohand_8h_a43399318a1e1436f9f3e44e3e76c57cf.html#a43399318a1e1436f9f3e44e3e76c57cf',1,'Robohand.h']]],
+  ['ads1115_5fbase_5fconfig_353',['ADS1115_BASE_CONFIG',['../Robohand_8h_aa28000ceada503faaffe22f8f4e4c29b.html#aa28000ceada503faaffe22f8f4e4c29b',1,'Robohand.h']]],
+  ['ads1115_5fcomp_5flat_354',['ADS1115_COMP_LAT',['../Robohand_8h_ad6439a5f36449ef355a3a1220b726946.html#ad6439a5f36449ef355a3a1220b726946',1,'Robohand.h']]],
+  ['ads1115_5fcomp_5fmode_355',['ADS1115_COMP_MODE',['../Robohand_8h_ad722e16431305ce92a4efc7c061ddc7b.html#ad722e16431305ce92a4efc7c061ddc7b',1,'Robohand.h']]],
+  ['ads1115_5fcomp_5fpol_356',['ADS1115_COMP_POL',['../Robohand_8h_ad2232b30ece1a1f5bfbf8a55217e3e2c.html#ad2232b30ece1a1f5bfbf8a55217e3e2c',1,'Robohand.h']]],
+  ['ads1115_5fcomp_5fque_357',['ADS1115_COMP_QUE',['../Robohand_8h_a4f20b25599f011f334267ec0be2e2e63.html#a4f20b25599f011f334267ec0be2e2e63',1,'Robohand.h']]],
+  ['ads1115_5fdr_5f128sps_358',['ADS1115_DR_128SPS',['../Robohand_8h_a7312912eceac133da7688cfb74b8f9c1.html#a7312912eceac133da7688cfb74b8f9c1',1,'Robohand.h']]],
+  ['ads1115_5ffsr_5f4v096_359',['ADS1115_FSR_4V096',['../Robohand_8h_a9977c1764f651e77f5e38741656de7ca.html#a9977c1764f651e77f5e38741656de7ca',1,'Robohand.h']]],
+  ['ads1115_5fint_5fpin_360',['ADS1115_INT_PIN',['../Robohand_8h_afc6501330db362d3744a0494b15d67ee.html#afc6501330db362d3744a0494b15d67ee',1,'Robohand.h']]],
+  ['ads1115_5fmode_5fsingle_361',['ADS1115_MODE_SINGLE',['../Robohand_8h_ac9dbd94549bb902dfdfcc1c238cadbe0.html#ac9dbd94549bb902dfdfcc1c238cadbe0',1,'Robohand.h']]],
+  ['ads1115_5fmux_5fain0_362',['ADS1115_MUX_AIN0',['../Robohand_8h_ad76dbdc476c07b26c8c1d7ecb157adaf.html#ad76dbdc476c07b26c8c1d7ecb157adaf',1,'Robohand.h']]],
+  ['ads1115_5fmux_5fain1_363',['ADS1115_MUX_AIN1',['../Robohand_8h_a084841df97af4a166cb4e431b29bd7a9.html#a084841df97af4a166cb4e431b29bd7a9',1,'Robohand.h']]],
+  ['ads1115_5fmux_5fain2_364',['ADS1115_MUX_AIN2',['../Robohand_8h_a069ff0c9cbfbc8e0509253ba75418ce8.html#a069ff0c9cbfbc8e0509253ba75418ce8',1,'Robohand.h']]],
+  ['ads1115_5fmux_5fain3_365',['ADS1115_MUX_AIN3',['../Robohand_8h_a900c8e7e834d55e7b8fb6548c81883f3.html#a900c8e7e834d55e7b8fb6548c81883f3',1,'Robohand.h']]],
+  ['ads1115_5fos_5fsingle_366',['ADS1115_OS_SINGLE',['../Robohand_8h_af573ec619021cd56f4379c1753dbff3e.html#af573ec619021cd56f4379c1753dbff3e',1,'Robohand.h']]]
+];

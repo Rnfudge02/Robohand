@@ -1,0 +1,6 @@
+<map id="Include/Robohand.h" name="Include/Robohand.h">
+<area shape="rect" id="node1" title="Robotic hand control hardware interface." alt="" coords="185,5,335,32"/>
+<area shape="rect" id="node2" href="$Robohand__usb_8c.html" title="USB interface for robotic hand control." alt="" coords="5,80,157,107"/>
+<area shape="rect" id="node3" href="$Robohand__uros_8c.html" title="micro&#45;ROS interface for robotic hand control." alt="" coords="181,80,339,107"/>
+<area shape="rect" id="node4" href="$Robohand_8c.html" title="Implementation of robotic hand control system with dual&#45;core operation." alt="" coords="363,80,485,107"/>
+</map>
